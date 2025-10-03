@@ -1,12 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
-
 
 [System.Serializable]
 public class AngleRange
@@ -15,22 +11,37 @@ public class AngleRange
     public float Min;
 }
 
+[System.Serializable]
+public struct HitSlowEffect
+{
+    [Tooltip("공격이 히트 시 정지효과를 주는 시간")]
+    [SerializeField]
+    public float HitStopTime;
+
+    [Tooltip("공격이 히트 시 슬로우 효과를 주는 강도")]
+    [SerializeField]
+    public float HitSlowScale;
+
+
+    [Tooltip("공격이 히트 시 슬로우 효과를 주는 시간")]
+    public float HitSlowTime;
+}
 
 
 public class GameManager : MonoBehaviour
 {
-    ////////////////////////////////////////
-    // 게임 메니저 자기자신을 저장
-    ////////////////////////////////////////
     [ReadOnly]
     public static GameManager instance;
-    [Header("score")]
-
-    //[SerializeField]
-    //TextMeshProUGUI ScoreTextUI;
-
     [SerializeField]
+    [Tooltip("게임의 점수")]
     int score;
+
+    [Header("Game Setting")]
+    [Tooltip("공격 히트 후 효과수치")]
+    [SerializeField]
+    HitSlowEffect hitSlowEffect;
+
+    Coroutine hitEffectRoutine;
 
     ////////////////////////////////////////
     /// 배경화면 관련
@@ -38,12 +49,15 @@ public class GameManager : MonoBehaviour
 
     [Header("Background")]
 
+    [Tooltip("배경 루프")]
     [SerializeField]
-    GameObject Background;
+    GameObject[] BackgroundLayer;
 
+    [Tooltip("배경이 내려가는 거리")]
     [SerializeField]
     float BackgroundDownDistance; // 배경 내려가는 거리
 
+    [Tooltip("배경이 내려갈 시 걸리는 시간")]
     [SerializeField]
     float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
 
@@ -56,46 +70,56 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject Player;
 
+    [Tooltip("공격하는 걸리는 시간")]
     [SerializeField]
-    public float AttackDuration;
+    public float AttackDuration; //공격하는데 걸리는 시간
 
-    float AttackSpeed;
-
+    [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
-    float PlayerDownDuration;
+    float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
 
-    float PlayerDownSpeed;
-
-    bool PlayerisMove;
-
-    [ReadOnly]
+    [Tooltip("공격 이후 관성(미구현)")]
     [SerializeField]
-    Vector2 PlayerMovePos;
+    float reboundPower;
 
+    // [Tooltip("")]
+    // [ReadOnly]
+    // [SerializeField]
+    // Vector2 PlayerMovePos;
+
+
+    // 플레이어가 죽을시 true가 되는 변수
     [HideInInspector]
     public bool isDead;
+    
 
     ////////////////////////////////////////
     /// 적 관련
     ////////////////////////////////////////
     [Header("Enemy")]
 
+    [Tooltip("적 프리펩")]
     [SerializeField]
     GameObject Enemy; // 적 프리펩
 
+    [Tooltip("적 소환시 부모지정")]
     [SerializeField]
-    GameObject Enemies; // 적 부모 오브젝트
+    GameObject EnemyParents; // 적 부모 오브젝트
 
+    [Tooltip("적 스폰시 기준 오브젝트")]
     [SerializeField]
     GameObject EnemySpawnLines; // 적 스폰 위치들
 
+    [Tooltip("적 소환시 적들의 간격")]
     [SerializeField]
     float EnemyInterval; // 적 소환 시 사이의 간격
 
     [ReadOnly]
+    [Tooltip("가장 가까운 적")]
     [SerializeField]
     GameObject TargetEnemy; // 가장 가까운 목표 적
 
+    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
     float EnemyDownDuration;
 
@@ -103,44 +127,47 @@ public class GameManager : MonoBehaviour
     float StartSpawnCount;
 
 
-
-    bool isEnmeyDown;
-
-
     ////////////////////////////////////////
     //입력 관연 전역 변수들
     ////////////////////////////////////////
     [Header("Input System")]
 
+    [ReadOnly]
+    [SerializeField]
+    public bool IsCanTouch;
 
     [SerializeField]
-    AngleRange LeftAngle; // 좌측 인식 범위
+    public AngleRange LeftAngle; // 좌측 인식 범위
 
     [SerializeField]
-    AngleRange UpAngle; // 상측 인식 범위
+    public AngleRange UpAngle; // 상측 인식 범위
 
     [SerializeField]
-    AngleRange RightAngle; // 우측 인식 범위
+    public AngleRange RightAngle; // 우측 인식 범위
 
 
-
-    string InputDirection; // 스와이프후 인식 반향 저장
+    [HideInInspector]
+    public SwipeDirection InputDirection; // 스와이프후 인식 반향 저장
 
     [ReadOnly]
     [SerializeField]
-    public string answerDirection;
-
-    bool isTouch; // 터치하고 있는지 학인
-
-    Vector2 firstTouchPos; // 터치 시작시, 시작 위치값 저장
-
-    Vector2 endTouchPos; // 터치 종료시, 종료 위치값 저장
-
-    float? Inputangle; // 스와이프 값 저장
+    public SwipeDirection answerDirection; // Player이 입력해야 하는 정답을 저장
 
     [Header("Restart")]
     [SerializeField]
     GameObject RestartMessage;
+
+    void Awake()
+    {
+        // VSync 설정을 끄고 (0)
+        QualitySettings.vSyncCount = 0;
+
+        // 목표 프레임 속도를 60으로 설정
+        Application.targetFrameRate = 60;
+
+        // 또는 화면의 기본 재생 빈도로 설정 (예: 60Hz, 90Hz, 120Hz 등)
+        // Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+    }
 
     void Start()
     {
@@ -155,60 +182,35 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-
-        InputDirection = "None";
-        RestartMessage.SetActive(false);
-
         GameSetup();
+
+        IsCanTouch = true;
+
+        FindToTargetEnemy(); // 목표로 지정할 적 정하기
+        CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
+
+        RestartMessage.SetActive(false);
     }
 
-
+    // Update is called once per frame
     void Update()
     {
         if (!isDead)
         {
-            FindToTargetEnemy(); // 목표 적 정하기
+            FindToTargetEnemy(); // 목표로 지정할 적 정하기
+            CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
-            // 정답 정하기
-            float enemy_x = TargetEnemy.transform.position.x;
-            float Player_x = Player.transform.position.x;
-
-
-            if (enemy_x == Player_x)
+            // 정답과 입력갑이 일치한다면
+            if (answerDirection == InputDirection && InputDirection != SwipeDirection.None)
             {
-                answerDirection = "up";
+                Time.timeScale = 1f;
+                ProcessCorrectAnswer(); // 정답처리 실시
             }
 
-            if (enemy_x < Player_x)
-            {
-                answerDirection = "left";
-            }
-
-            if (enemy_x > Player_x)
-            {
-                answerDirection = "right";
-            }
-
-            // 입력하기
-            if (!PlayerisMove && !isEnmeyDown) // 플레이어가 움직이지 않는다면
-            {
-                InputSystem();
-            }
-
-            //만약 정답이면
-            if (answerDirection == InputDirection)
-            {
-                rightAnswer();
-                //StartCoroutine(PlayerMoveToTarget()); // 플레이어가 목표를 향해서 움직이기 시작
-            }
             // 만약 틀린다면
-            else if (answerDirection != InputDirection && InputDirection != "None")
+            else if (answerDirection != InputDirection && InputDirection != SwipeDirection.None)
             {
-                PlayerisMove = true; // 플레이어 움직임
-
-                StartCoroutine(PlayerMoveToTarget(InputDirection));
-
-                InputDirection = "None";
+                ProcessWrongAnswer(); // 오답처리 실시
             }
         }
 
@@ -218,100 +220,78 @@ public class GameManager : MonoBehaviour
             {
 
             }
-            else if (Input.GetTouch(0).phase == TouchPhase.Began)
+            else if (Input.GetTouch(0).phase == TouchPhase.Began && Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene("Prototype");
             }
         }
     }
 
-
-
-    void InputSystem()
-    {
-        Swipe(); // 스와이프 인식
-
-        // 스와이프 인식 후 각도에 따른 인식
-
-        // 좌측으로 인식할 시
-        if ((LeftAngle.Min < Inputangle && Inputangle < LeftAngle.Max) || Input.GetKeyDown(KeyCode.A))
-        {
-            Debug.Log("left");
-            InputDirection = "left";
-        }
-
-        // 우측으로 인식할 시
-        if ((RightAngle.Min < Inputangle && Inputangle < RightAngle.Max) || Input.GetKeyDown(KeyCode.D))
-        {
-            Debug.Log("right");
-            InputDirection = "right";
-        }
-
-        // 상측으로 인식할 시
-        if ((UpAngle.Min <= Inputangle && Inputangle <= UpAngle.Max) || Input.GetKeyDown(KeyCode.W))
-        {
-            Debug.Log("up");
-            InputDirection = "up";
-        }
-
-        Inputangle = null;
-
-    }
-
-
-
-    void Swipe()
-    {
-        // 터치를 안하고 있을때
-        if (Input.touchCount > 0 && !isTouch)
-        {
-            firstTouchPos = Input.GetTouch(0).position; // 첫번째 터치 위치 저장
-
-            isTouch = true; // 터치 시작 확인
-        }
-
-        // 터치를 하고 있을때
-        if (Input.touchCount > 0 && isTouch)
-        {
-            endTouchPos = Input.GetTouch(0).position; // 터치가 끝날때까지 마지막 터치 위치 저장
-        }
-
-        // 터치 종료시
-        if (Input.touchCount == 0 && isTouch)
-        {
-            Vector2 dif = endTouchPos - firstTouchPos; // 스와이프 방향백터 계산 (종료 위치값 - 시작 위치값)
-
-            float angle = Mathf.Atan2(dif.y, dif.x) * Mathf.Rad2Deg; // 방향 백터에 따른 스와이프 각도 계산
-
-            //Debug.Log(angle);
-
-            isTouch = false; //터치 종료 확인
-
-            Inputangle = angle; // 스와이프 각도 값 반환
-            Debug.Log(Inputangle);
-        }
-    }
-
-    public void enemySpawn()
-    {
-        Debug.Log("Enemy 소환");
-        int Line = Random.Range(0, 3);
-
-        Instantiate(Enemy, EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, Enemies.transform);
-    }
-
     void FindToTargetEnemy()
     {
-        GameObject returnEnemy = Enemies.transform.GetChild(0).gameObject;
-        for (int i = 1; i < Enemies.transform.childCount; i++)
+        GameObject returnEnemy = EnemyParents.transform.GetChild(0).gameObject;
+        for (int i = 1; i < EnemyParents.transform.childCount; i++)
         {
-            if (returnEnemy.transform.position.y > Enemies.transform.GetChild(i).transform.position.y)
+            if (returnEnemy.transform.position.y > EnemyParents.transform.GetChild(i).transform.position.y)
             {
-                returnEnemy = Enemies.transform.GetChild(i).gameObject;
+                returnEnemy = EnemyParents.transform.GetChild(i).gameObject;
             }
         }
 
         TargetEnemy = returnEnemy;
+    }
+
+    void CheckAnswer()
+    {
+        float enemy_x = TargetEnemy.transform.position.x;
+        float Player_x = Player.transform.position.x;
+
+
+        if (enemy_x == Player_x)
+        {
+            answerDirection = SwipeDirection.Up;
+        }
+
+        if (enemy_x < Player_x)
+        {
+            answerDirection = SwipeDirection.Left;
+        }
+
+        if (enemy_x > Player_x)
+        {
+            answerDirection = SwipeDirection.Right;
+        }
+    }
+
+    void ProcessCorrectAnswer()
+    {
+        Debug.Log("정답");
+        AddScore();
+        IsCanTouch = false;
+
+        if (TargetEnemy.GetComponent<EnemyController>().IsDown)
+        {
+            enemyRushToDown();
+            backgroundRushToDown();
+        }
+
+        Player.GetComponent<PlayerController>().moveToTarget(TargetEnemy, AttackDuration);
+
+        InputDirection = SwipeDirection.None;
+    }
+
+    void ProcessWrongAnswer()
+    {
+        isDead = true;
+        IsCanTouch = false;
+        RestartMessage.SetActive(true);
+    }
+
+
+    public void AttackSuccess()
+    {
+        CancelMove(hitEffectRoutine);
+        hitEffectRoutine = StartCoroutine(HitEffect());
     }
 
     void Dead()
@@ -320,13 +300,87 @@ public class GameManager : MonoBehaviour
         isDead = true;
     }
 
+    public void enemySpawn()
+    {
+        Debug.Log("Enemy 소환");
+        int Line = Random.Range(0, 3);
+
+        Instantiate(Enemy, EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, EnemyParents.transform);
+    }
+
+    void enemyMoveToDown()
+    {
+        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        {
+            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().MovetoDown(EnemyInterval, EnemyDownDuration);
+        }
+    }
+
+    void enemyRushToDown()
+    {
+        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        {
+            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(AttackDuration);
+        }
+    }
+
+    void backgroundMoveToDown()
+    {
+        for (int j = 0; j < BackgroundLayer.Length; j++)
+        {
+            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            {
+                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().MoveToDown(BackgroundDownDistance, BackgroundDownDuration);
+            }
+        }
+    }
+
+    void backgroundRushToDown()
+    {
+        for (int j = 0; j < BackgroundLayer.Length; j++)
+        {
+            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            {
+                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().rushToDown(AttackDuration);
+            }
+        }
+    }
+
+    IEnumerator HitEffect()
+    {
+        // 순간적인 효가를 위해 잠깐 움직임 정지
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime);
+
+        // 슬로우 모션을 표현하기 위힌 timescale 저장
+        Time.timeScale = hitSlowEffect.HitSlowScale;
+
+        Destroy(TargetEnemy); // 목표 적 제거
+
+        enemySpawn(); // 새로운 적 소환
+
+        FindToTargetEnemy(); // 목표로 지정할 적 정하기
+
+        CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
+
+        Player.GetComponent<PlayerController>().moveToDown(EnemyInterval, PlayerDownDuration);
+
+        enemyMoveToDown();
+
+        backgroundMoveToDown();
+
+        IsCanTouch = true;
+
+        yield return new WaitForSecondsRealtime(hitSlowEffect.HitSlowTime);
+
+        Time.timeScale = 1f;
+    }
+
     void AddScore()
     {
         Debug.Log("점수 추가");
         score++;
     }
-
-    // 다른 곳에서 점수 불러오기
     public int pullScore()
     {
         return score;
@@ -339,247 +393,20 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < StartSpawnCount; i++)
         {
             enemySpawn();
-            for (int j = 0; j < Enemies.transform.childCount; j++)
+            for (int j = 0; j < EnemyParents.transform.childCount; j++)
             {
-                Enemies.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
-            }
-        }
-
-    }
-    void rightAnswer()
-    {
-        Debug.Log("정답");
-        AddScore();
-        enemySpawn();
-
-        InputDirection = "None";
-
-        PlayerisMove = true; // 플레이어 움직임
-
-        
-
-
-        StartCoroutine(PlayerMoveToTarget());
-        //StartCoroutine(PlayerMove());
-        //StartCoroutine(EnemyMove());
-    }
-
-    ////////////////////////////////////////
-    // prototype 0.0.3 이후 사용 안할것 같음
-    ////////////////////////////////////////
-    /// 다시 쓰는구만
-    IEnumerator PlayerMoveToTarget()
-    {
-        PlayerMovePos = TargetEnemy.transform.position; // 플레이어가 움직여야할 위치값 저장
-
-        float distance = Vector2.Distance(Player.transform.position, PlayerMovePos); // 움직여야 할 거리 계산
-
-        AttackSpeed = distance / AttackDuration; // 공격시 이동 속도 계산
-
-        while (true)
-        {
-            yield return null;
-            Player.transform.position = Vector2.MoveTowards(Player.transform.position, PlayerMovePos, AttackSpeed * Time.deltaTime);
-            if ((Vector2)Player.transform.position == PlayerMovePos)
-            {
-                Destroy(TargetEnemy);
-                //enemySpawn();
-                StartCoroutine(EnemyMoveToDown());
-                StartCoroutine(PlayerMoveToDown());
-                yield break;
+                EnemyParents.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
+                EnemyParents.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * EnemyInterval;
             }
         }
     }
 
-    IEnumerator PlayerMove()
+    void CancelMove(Coroutine ct)
     {
-        PlayerMovePos = new Vector2(TargetEnemy.transform.position.x, Player.transform.position.y); // 플레이어가 움직여야할 위치값 저장
-
-        float distance = Vector2.Distance(Player.transform.position, PlayerMovePos); // 움직여야 할 거리 계산
-
-        AttackSpeed = distance / AttackDuration; // 공격시 이동 속도 계산
-        
-        while (true)
+        if (ct != null)
         {
-            yield return null;
-            Player.transform.position = Vector2.MoveTowards(Player.transform.position, PlayerMovePos, AttackSpeed * Time.deltaTime);
-            if ((Vector2)Player.transform.position == PlayerMovePos)
-            {
-                //Destroy(TargetEnemy);
-                yield break;
-            }
-        }
-    }
-
-    IEnumerator EnemyMove()
-    {
-        yield return null;
-        //Debug.Log("문재 부분?");
-        isEnmeyDown = true;
-        int EnemyCount = Enemies.transform.childCount;
-
-        Debug.Log(EnemyCount);
-        Vector2[] EnemyMovePos = new Vector2[EnemyCount];
-        float[] EnemyMoveSpeed = new float[EnemyCount];
-
-        for (int i = 0; i < EnemyCount; i++)
-        {
-            EnemyMovePos[i] = (Vector2)Enemies.transform.GetChild(i).transform.position + Vector2.down * EnemyInterval;
-            float distance = Vector2.Distance((Vector2)Enemies.transform.GetChild(i).transform.position, EnemyMovePos[i]); // 움직여야 할 거리 계산
-            EnemyMoveSpeed[i] = distance / EnemyDownDuration;
-        }
-
-        // 배경 내리기 시작
-        Background.GetComponent<BackgroundManager>().MovetoBackground(BackgroundDownDistance, BackgroundDownDuration);
-
-
-        while (true)
-        {
-            int Count = 0;
-
-            yield return null;
-            for (int i = 0; i < EnemyCount; i++)
-            {
-                Debug.Log("적 움직임");
-
-                Transform E = Enemies.transform.GetChild(i);
-                //Debug.Log("Enemy Number : " + i);
-
-                E.position = Vector2.MoveTowards(E.position, EnemyMovePos[i], EnemyMoveSpeed[i] * Time.deltaTime);
-                //Debug.Log("Enemy Target Pos : " + EnemyMovePos[i]);
-
-                if ((Vector2)E.transform.position == EnemyMovePos[i])
-                {
-                    Count++;
-                }
-            }
-
-            Debug.Log(EnemyCount);
-            Debug.Log(Count);
-
-            if (Count == EnemyCount)
-            {
-                Debug.Log("적 내려오기 중지");
-                isEnmeyDown = false;
-                PlayerisMove = false;
-                Destroy(TargetEnemy);
-                yield break;
-            }
-
-        }
-    }
-
-    IEnumerator PlayerMoveToTarget(string InputDirection)
-    {
-        switch (InputDirection)
-        {
-            case "up":
-                PlayerMovePos = new Vector2(Player.transform.position.x, TargetEnemy.transform.position.y);
-                break;
-            case "left":
-                PlayerMovePos = new Vector2(Player.transform.position.x - 2f, TargetEnemy.transform.position.y);
-                break;
-            case "right":
-                PlayerMovePos = new Vector2(Player.transform.position.x + 2f, TargetEnemy.transform.position.y);
-                break;
-        }
-
-        Debug.Log("오답");
-
-        float distance = Vector2.Distance(Player.transform.position, PlayerMovePos);
-
-        AttackSpeed = distance / AttackDuration;
-        while (true)
-        {
-            yield return null;
-            Player.transform.position = Vector2.MoveTowards(Player.transform.position, PlayerMovePos, AttackSpeed * Time.deltaTime);
-            if ((Vector2)Player.transform.position == PlayerMovePos)
-            {
-                Dead();
-                yield break;
-            }
-        }
-    }
-    ////////////////////////////////////////
-    // prototype 0.0.3 이후 사용 안할것 같음
-    ////////////////////////////////////////
-    /// 다시 쓰는구만
-    IEnumerator PlayerMoveToDown()
-    {
-        PlayerMovePos = Player.transform.position + Vector3.down * EnemyInterval;
-
-        float distance = Vector2.Distance(Player.transform.position, PlayerMovePos);
-
-        PlayerDownSpeed = distance / PlayerDownDuration;
-        while (true)
-        {
-            yield return null;
-            Player.transform.position = Vector2.MoveTowards(Player.transform.position, PlayerMovePos, PlayerDownSpeed * Time.deltaTime);
-            if ((Vector2)Player.transform.position == PlayerMovePos)
-            {
-                PlayerisMove = false;
-                yield break;
-            }
-        }
-    }
-
-
-    ////////////////////////////////////////
-    // prototype 0.0.3 이후 사용 안할것 같음
-    ////////////////////////////////////////
-    /// 다시 쓰는구만
-    IEnumerator EnemyMoveToDown()
-    {
-        yield return null;
-        //Debug.Log("문재 부분?");
-        isEnmeyDown = true;
-        int EnemyCount = Enemies.transform.childCount;
-
-        Debug.Log(EnemyCount);
-        Vector2[] EnemyMovePos = new Vector2[EnemyCount];
-        float[] EnemyMoveSpeed = new float[EnemyCount];
-
-        for (int i = 0; i < EnemyCount; i++)
-        {
-            EnemyMovePos[i] = (Vector2)Enemies.transform.GetChild(i).transform.position + Vector2.down * EnemyInterval;
-            float distance = Vector2.Distance((Vector2)Enemies.transform.GetChild(i).transform.position, EnemyMovePos[i]); // 움직여야 할 거리 계산
-            EnemyMoveSpeed[i] = distance / EnemyDownDuration;
-        }
-
-        // 배경 내리기
-        Background.GetComponent<BackgroundManager>().MovetoBackground(BackgroundDownDistance, BackgroundDownDuration);
-
-        while (true)
-        {
-            int Count = 0;
-
-            yield return null;
-            for (int i = 0; i < EnemyCount; i++)
-            {
-                Debug.Log("적 움직임");
-
-                Transform E = Enemies.transform.GetChild(i);
-                //Debug.Log("Enemy Number : " + i);
-
-                E.position = Vector2.MoveTowards(E.position, EnemyMovePos[i], EnemyMoveSpeed[i] * Time.deltaTime);
-                //Debug.Log("Enemy Target Pos : " + EnemyMovePos[i]);
-
-                if ((Vector2)E.transform.position == EnemyMovePos[i])
-                {
-                    Count++;
-                }
-            }
-
-            Debug.Log(EnemyCount);
-            Debug.Log(Count);
-
-            if (Count == EnemyCount)
-            {
-                Debug.Log("적 내려오기 중지");
-                isEnmeyDown = false;
-                yield break;
-            }
-
+            StopCoroutine(ct);
+            ct = null;
         }
     }
 }

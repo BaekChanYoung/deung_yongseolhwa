@@ -1,0 +1,342 @@
+
+캐릭터파츠분리.png
+size: 1747,1537
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+관절
+  rotate: false
+  xy: 1286, 606
+  size: 314, 119
+  orig: 314, 119
+  offset: 0, 0
+  index: -1
+뒷머리
+  rotate: false
+  xy: 2, 930
+  size: 613, 605
+  orig: 613, 605
+  offset: 0, 0
+  index: -1
+뒷면
+  rotate: true
+  xy: 383, 8
+  size: 401, 300
+  orig: 401, 300
+  offset: 0, 0
+  index: -1
+머리삔
+  rotate: true
+  xy: 1609, 79
+  size: 89, 88
+  orig: 89, 88
+  offset: 0, 0
+  index: -1
+몸통
+  rotate: false
+  xy: 1012, 606
+  size: 272, 348
+  orig: 272, 348
+  offset: 0, 0
+  index: -1
+물고기
+  rotate: true
+  xy: 1609, 7
+  size: 70, 82
+  orig: 70, 82
+  offset: 0, 0
+  index: -1
+얼굴
+  rotate: false
+  xy: 2, 453
+  size: 423, 475
+  orig: 423, 475
+  offset: 0, 0
+  index: -1
+오른쪽 끈
+  rotate: false
+  xy: 1689, 870
+  size: 31, 183
+  orig: 31, 183
+  offset: 0, 0
+  index: -1
+오른쪽귀
+  rotate: false
+  xy: 1337, 432
+  size: 198, 172
+  orig: 198, 172
+  offset: 0, 0
+  index: -1
+오른쪽눈
+  rotate: false
+  xy: 1585, 367
+  size: 91, 68
+  orig: 91, 68
+  offset: 0, 0
+  index: -1
+오른쪽눈썹
+  rotate: true
+  xy: 1686, 483
+  size: 82, 49
+  orig: 82, 49
+  offset: 0, 0
+  index: -1
+오른쪽다리아래
+  rotate: true
+  xy: 617, 611
+  size: 343, 393
+  orig: 343, 393
+  offset: 0, 0
+  index: -1
+오른쪽다리위
+  rotate: false
+  xy: 2, 55
+  size: 379, 396
+  orig: 379, 396
+  offset: 0, 0
+  index: -1
+오른쪽동공
+  rotate: false
+  xy: 383, 424
+  size: 20, 27
+  orig: 20, 27
+  offset: 0, 0
+  index: -1
+오른쪽발
+  rotate: false
+  xy: 1486, 167
+  size: 118, 181
+  orig: 118, 181
+  offset: 0, 0
+  index: -1
+오른쪽속눈썹
+  rotate: false
+  xy: 2, 2
+  size: 195, 51
+  orig: 195, 51
+  offset: 0, 0
+  index: -1
+오른쪽손
+  rotate: false
+  xy: 1606, 237
+  size: 105, 128
+  orig: 105, 128
+  offset: 0, 0
+  index: -1
+오른쪽손 복사
+  rotate: true
+  xy: 685, 36
+  size: 391, 309
+  orig: 401, 309
+  offset: 10, 0
+  index: -1
+오른쪽쌍커풀
+  rotate: true
+  xy: 1689, 748
+  size: 120, 25
+  orig: 120, 25
+  offset: 0, 0
+  index: -1
+오른쪽아랫속눈썹
+  rotate: false
+  xy: 383, 411
+  size: 26, 11
+  orig: 26, 11
+  offset: 0, 0
+  index: -1
+오른쪽앞머리
+  rotate: true
+  xy: 1002, 374
+  size: 230, 333
+  orig: 230, 333
+  offset: 0, 0
+  index: -1
+오른쪽어깨
+  rotate: true
+  xy: 1172, 55
+  size: 116, 169
+  orig: 116, 177
+  offset: 0, 0
+  index: -1
+오른쪽옆머리
+  rotate: true
+  xy: 617, 1348
+  size: 187, 675
+  orig: 187, 675
+  offset: 0, 0
+  index: -1
+오른쪽윗머리
+  rotate: false
+  xy: 1072, 1088
+  size: 220, 258
+  orig: 220, 258
+  offset: 0, 0
+  index: -1
+오른쪽장신구
+  rotate: false
+  xy: 1343, 22
+  size: 131, 157
+  orig: 131, 157
+  offset: 0, 0
+  index: -1
+왼쪽 끈
+  rotate: false
+  xy: 1606, 567
+  size: 139, 167
+  orig: 139, 167
+  offset: 0, 0
+  index: -1
+왼쪽귀
+  rotate: false
+  xy: 1325, 181
+  size: 159, 167
+  orig: 159, 167
+  offset: 0, 0
+  index: -1
+왼쪽눈
+  rotate: false
+  xy: 1606, 170
+  size: 71, 65
+  orig: 71, 65
+  offset: 0, 0
+  index: -1
+왼쪽눈썹
+  rotate: true
+  xy: 1679, 170
+  size: 65, 46
+  orig: 65, 46
+  offset: 0, 0
+  index: -1
+왼쪽동공
+  rotate: false
+  xy: 1119, 66
+  size: 19, 25
+  orig: 19, 25
+  offset: 0, 0
+  index: -1
+왼쪽발
+  rotate: false
+  xy: 1476, 13
+  size: 131, 152
+  orig: 154, 152
+  offset: 0, 0
+  index: -1
+왼쪽속눈썹
+  rotate: false
+  xy: 199, 7
+  size: 128, 46
+  orig: 128, 46
+  offset: 0, 0
+  index: -1
+왼쪽손
+  rotate: false
+  xy: 1072, 956
+  size: 186, 130
+  orig: 186, 130
+  offset: 0, 0
+  index: -1
+왼쪽쌍커풀
+  rotate: true
+  xy: 1731, 1455
+  size: 80, 13
+  orig: 80, 13
+  offset: 0, 0
+  index: -1
+왼쪽아랫다리
+  rotate: false
+  xy: 1286, 727
+  size: 275, 326
+  orig: 275, 326
+  offset: 0, 0
+  index: -1
+왼쪽아랫속눈썹
+  rotate: false
+  xy: 1537, 586
+  size: 53, 18
+  orig: 53, 18
+  offset: 0, 0
+  index: -1
+왼쪽앞머리
+  rotate: false
+  xy: 1563, 736
+  size: 124, 317
+  orig: 124, 317
+  offset: 0, 0
+  index: -1
+왼쪽옆머리
+  rotate: false
+  xy: 427, 411
+  size: 185, 517
+  orig: 185, 517
+  offset: 0, 0
+  index: -1
+왼쪽윗다리
+  rotate: true
+  xy: 1294, 1245
+  size: 290, 435
+  orig: 290, 435
+  offset: 0, 0
+  index: -1
+왼쪽윗머리
+  rotate: true
+  xy: 1294, 1055
+  size: 188, 427
+  orig: 188, 427
+  offset: 0, 0
+  index: -1
+왼쪽장신구
+  rotate: true
+  xy: 1537, 437
+  size: 128, 147
+  orig: 128, 147
+  offset: 0, 0
+  index: -1
+왼쪽팔위
+  rotate: true
+  xy: 1172, 173
+  size: 199, 151
+  orig: 321, 151
+  offset: 0, 0
+  index: -1
+왼쪽팔위 복사
+  rotate: false
+  xy: 617, 956
+  size: 453, 390
+  orig: 453, 390
+  offset: 0, 0
+  index: -1
+입
+  rotate: true
+  xy: 1260, 1008
+  size: 78, 24
+  orig: 78, 24
+  offset: 0, 0
+  index: -1
+장신구
+  rotate: true
+  xy: 1337, 350
+  size: 80, 246
+  orig: 80, 246
+  offset: 0, 0
+  index: -1
+중간앞머리
+  rotate: true
+  xy: 614, 429
+  size: 180, 386
+  orig: 180, 386
+  offset: 0, 0
+  index: -1
+항아리
+  rotate: false
+  xy: 996, 93
+  size: 174, 279
+  orig: 174, 279
+  offset: 0, 0
+  index: -1
+항아리장신구
+  rotate: true
+  xy: 996, 16
+  size: 75, 121
+  orig: 75, 121
+  offset: 0, 0
+  index: -1
