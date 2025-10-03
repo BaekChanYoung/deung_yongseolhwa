@@ -5,14 +5,15 @@ using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour, IAudioService
 {
-    //public static AudioManager Instance { get; private set; }
-
     [Header("Audio Mixer")]
     public AudioMixer mainMixer;
     [Header("Audio Sources")]
     public AudioSource MasterSource; // 마스터 볼륨 조절용
     public AudioSource musicSource; // BGM 전용(루프)
     public AudioSource sfxSource; // SFX 재생용(PlayOneShot 사용)
+    [Header("Settings")]
+    [Tooltip("오디오 기본 설정 (ScriptableObject)")]
+    public AudioSettings settings;
 
     // Exposed parameter names (AudioMixer에서 정확히 노출한 이름 사용)
     const string MASTER_PARAM = "MasterVolume";
@@ -21,17 +22,37 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void Awake()
     {
-        //if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
-        //else { Destroy(gameObject); return; }
+        // AudioSettings 기본값 사용
+        float defaultMaster = 1f;
+        float defaultMusic = 0.5f;
+        float defaultSfx = 0.7f;
 
-        // 초기 설정 불러오기
-        SetMasterVolume_Internal(PlayerPrefs.GetFloat("MasterVol", 1f));
-        SetMusicVolume_Internal(PlayerPrefs.GetFloat("MusicVol", 0.5f));
-        SetSfxVolume_Internal(PlayerPrefs.GetFloat("SfxVol", 0.7f));
+        // settings가 연결되어 있으면 그 값을 사용
+        if (settings != null)
+        {
+            defaultMaster = settings.defaultMaster;
+            defaultMusic = settings.defaultMusic;
+            defaultSfx = settings.defaultSfx;
+        }
+        else
+        {
+            Debug.LogWarning("AudioSettings가 연결되지 않았습니다. 기본값(1, 0.5, 0.7)을 사용합니다.");
+        }
+
+        // PlayerPrefs에서 불러오되, 없으면 AudioSettings 기본값 사용
+        SetMasterVolume_Internal(PlayerPrefs.GetFloat("MasterVol", defaultMaster));
+        SetMusicVolume_Internal(PlayerPrefs.GetFloat("MusicVol", defaultMusic));
+        SetSfxVolume_Internal(PlayerPrefs.GetFloat("SfxVol", defaultSfx));
     }
 
     void Start()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            PlayerPrefs.DeleteAll();
+            Debug.Log("PlayerPrefs 초기화됨!");
+        }
+
         if (musicSource != null && musicSource.clip != null)
         {
             musicSource.Play();
@@ -40,21 +61,36 @@ public class AudioManager : MonoBehaviour, IAudioService
 
 
     // IAudioService 구현 (public 메서드)
-    public void SetMasterVolume(float sliderValue) { PlayerPrefs.SetFloat("MasterVol", sliderValue); SetMasterVolume_Internal(sliderValue); }
+    public void SetMasterVolume(float sliderValue)
+    {
+        PlayerPrefs.SetFloat("MasterVol", sliderValue);
+        SetMasterVolume_Internal(sliderValue);
+    }
+
     void SetMasterVolume_Internal(float sliderValue)
     {
         float db = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(sliderValue));
         mainMixer.SetFloat(MASTER_PARAM, db);
     }
 
-    public void SetMusicVolume(float sliderValue) { PlayerPrefs.SetFloat("MusicVol", sliderValue); SetMusicVolume_Internal(sliderValue); }
+    public void SetMusicVolume(float sliderValue)
+    {
+        PlayerPrefs.SetFloat("MusicVol", sliderValue);
+        SetMusicVolume_Internal(sliderValue);
+    }
+
     void SetMusicVolume_Internal(float sliderValue)
     {
         float db = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(sliderValue));
         mainMixer.SetFloat(MUSIC_PARAM, db);
     }
 
-    public void SetSfxVolume(float sliderValue) { PlayerPrefs.SetFloat("SfxVol", sliderValue); SetSfxVolume_Internal(sliderValue); }
+    public void SetSfxVolume(float sliderValue)
+    {
+        PlayerPrefs.SetFloat("SfxVol", sliderValue);
+        SetSfxVolume_Internal(sliderValue);
+    }
+
     void SetSfxVolume_Internal(float sliderValue)
     {
         float db = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(sliderValue));
@@ -116,6 +152,7 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void OnDestroy()
     {
-        if (ServiceLocator.Resolve<IAudioService>() == this) ServiceLocator.Unregister<IAudioService>();
+        if (ServiceLocator.Resolve<IAudioService>() == this)
+            ServiceLocator.Unregister<IAudioService>();
     }
 }

@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Settings/Scenes/URP2DSceneTemplate.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Prototype/Scene/Start.unity
+    path: Assets/Scenes/Start.unity
     guid: 06a4aacd2355cdc4d91a2b72f5bcb730
+  - enabled: 1
+    path: Assets/Scenes/Timer.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}

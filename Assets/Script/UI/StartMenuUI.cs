@@ -39,6 +39,7 @@ public class StartMenuUI : MonoBehaviour
 
     void OnDestroy()
     {
+        if (MasterSlider != null && audio != null) MasterSlider.onValueChanged.RemoveListener(audio.SetMasterVolume);
         if (musicSlider != null && audio != null) musicSlider.onValueChanged.RemoveListener(audio.SetMusicVolume);
         if (sfxSlider != null && audio != null) sfxSlider.onValueChanged.RemoveListener(audio.SetSfxVolume);
     }
