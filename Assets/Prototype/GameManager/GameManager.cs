@@ -27,48 +27,57 @@ public struct HitSlowEffect
     public float HitSlowTime;
 }
 
-
-public class GameManager : MonoBehaviour
+[System.Serializable]
+public enum DownMovementMode
 {
+    moveToword,
+    SmoothDamp
+}
+
+[System.Serializable]
+public struct enemy
+{
+    [Tooltip("적 프리펩")]
+    [SerializeField]
+    public GameObject Prefab; // 적 프리펩
+
+    [Tooltip("적 소환시 부모지정")]
+    [SerializeField]
+    public GameObject EnemyParent; // 적 부모 오브젝트
+
+    [Tooltip("적 스폰시 기준 오브젝트")]
+    [SerializeField]
+    public GameObject EnemySpawnLines; // 적 스폰 위치들
+
     [ReadOnly]
-    public static GameManager instance;
+    [Tooltip("가장 가까운 적")]
     [SerializeField]
-    [Tooltip("게임의 점수")]
-    int score;
+    public GameObject TargetEnemy; // 가장 가까운 목표 적
 
-    [Header("Game Setting")]
-    [Tooltip("공격 히트 후 효과수치")]
     [SerializeField]
-    HitSlowEffect hitSlowEffect;
+    public DownMovementMode DownMode;
 
-    Coroutine hitEffectRoutine;
-
-    ////////////////////////////////////////
-    /// 배경화면 관련
-    ////////////////////////////////////////
-
-    [Header("Background")]
-
-    [Tooltip("배경 루프")]
+    [Tooltip("적 소환시 적들의 간격")]
     [SerializeField]
-    GameObject[] BackgroundLayer;
+    public float EnemyInterval; // 적 소환 시 사이의 간격
 
-    [Tooltip("배경이 내려가는 거리")]
+
+    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
-    float BackgroundDownDistance; // 배경 내려가는 거리
+    public float EnemyDownDuration;
 
-    [Tooltip("배경이 내려갈 시 걸리는 시간")]
     [SerializeField]
-    float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+    public float StartSpawnCount;
+}
 
-
-
-    ////////////////////////////////////////
-    /// 플레이어 관련
-    ////////////////////////////////////////
-    [Header("Player")]
+[System.Serializable]
+public struct Player
+{
     [SerializeField]
-    GameObject Player;
+    public GameObject playerObj;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
 
     [Tooltip("공격하는 걸리는 시간")]
     [SerializeField]
@@ -76,11 +85,11 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
-    float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
+    public float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
 
     [Tooltip("공격 이후 관성(미구현)")]
     [SerializeField]
-    float reboundPower;
+    public float reboundPower;
 
     // [Tooltip("")]
     // [ReadOnly]
@@ -91,40 +100,144 @@ public class GameManager : MonoBehaviour
     // 플레이어가 죽을시 true가 되는 변수
     [HideInInspector]
     public bool isDead;
-    
+}
+
+[System.Serializable]
+public struct Background
+{
+    [Tooltip("배경 루프")]
+    [SerializeField]
+    public GameObject[] BackgroundLayer;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+    [Tooltip("배경이 내려가는 거리")]
+    [SerializeField]
+    public float BackgroundDownDistance; // 배경 내려가는 거리
+
+    [Tooltip("배경이 내려갈 시 걸리는 시간")]
+    [SerializeField]
+    public float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+}
+
+
+public class GameManager : MonoBehaviour
+{
+    [ReadOnly]
+    public static GameManager instance;
+    [SerializeField]
+    [Tooltip("게임의 점수")]
+    int score;
+
+    [Header("Game Setting")]
+    [Space(5f)]
+
+    [Tooltip("공격 히트 후 효과수치")]
+    [SerializeField]
+    HitSlowEffect hitSlowEffect;
+
+    Coroutine hitEffectRoutine;
+
+    ////////////////////////////////////////
+    /// 배경화면 관련
+    ////////////////////////////////////////
+
+    [SerializeField]
+    public Background background;
+
+    // [Header("Background")]
+
+    // [Tooltip("배경 루프")]
+    // [SerializeField]
+    // GameObject[] BackgroundLayer;
+
+    // [SerializeField]
+    // DownMovementMode DownMode;
+
+    // [Tooltip("배경이 내려가는 거리")]
+    // [SerializeField]
+    // float BackgroundDownDistance; // 배경 내려가는 거리
+
+    // [Tooltip("배경이 내려갈 시 걸리는 시간")]
+    // [SerializeField]
+    // float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+
+    ////////////////////////////////////////
+    /// 플레이어 관련
+    ////////////////////////////////////////
+    ///
+    /// 
+    [SerializeField]
+    public Player player;
+    // [Header("Player")]
+    // [SerializeField]
+    // public GameObject Player;
+
+    // [SerializeField]
+    // DownMovementMode DownMode;
+
+    // [Tooltip("공격하는 걸리는 시간")]
+    // [SerializeField]
+    // public float AttackDuration; //공격하는데 걸리는 시간
+
+    // [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
+    // [SerializeField]
+    // float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
+
+    // [Tooltip("공격 이후 관성(미구현)")]
+    // [SerializeField]
+    // float reboundPower;
+
+    // // [Tooltip("")]
+    // // [ReadOnly]
+    // // [SerializeField]
+    // // Vector2 PlayerMovePos;
+
+
+    // // 플레이어가 죽을시 true가 되는 변수
+    // [HideInInspector]
+    // public bool isDead;
+
 
     ////////////////////////////////////////
     /// 적 관련
-    ////////////////////////////////////////
-    [Header("Enemy")]
+    // ////////////////////////////////////////
+    // [Header("Enemy")]
 
-    [Tooltip("적 프리펩")]
-    [SerializeField]
-    GameObject Enemy; // 적 프리펩
+    // [Tooltip("적 프리펩")]
+    // [SerializeField]
+    // GameObject Enemy; // 적 프리펩
 
-    [Tooltip("적 소환시 부모지정")]
-    [SerializeField]
-    GameObject EnemyParents; // 적 부모 오브젝트
+    // [Tooltip("적 소환시 부모지정")]
+    // [SerializeField]
+    // GameObject EnemyParent; // 적 부모 오브젝트
 
-    [Tooltip("적 스폰시 기준 오브젝트")]
-    [SerializeField]
-    GameObject EnemySpawnLines; // 적 스폰 위치들
+    // [Tooltip("적 스폰시 기준 오브젝트")]
+    // [SerializeField]
+    // GameObject EnemySpawnLines; // 적 스폰 위치들
 
-    [Tooltip("적 소환시 적들의 간격")]
-    [SerializeField]
-    float EnemyInterval; // 적 소환 시 사이의 간격
+    // [ReadOnly]
+    // [Tooltip("가장 가까운 적")]
+    // [SerializeField]
+    // GameObject TargetEnemy; // 가장 가까운 목표 적
 
-    [ReadOnly]
-    [Tooltip("가장 가까운 적")]
-    [SerializeField]
-    GameObject TargetEnemy; // 가장 가까운 목표 적
+    // DownMovementMode DownMode;
 
-    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
-    [SerializeField]
-    float EnemyDownDuration;
+    // [Tooltip("적 소환시 적들의 간격")]
+    // [SerializeField]
+    // float EnemyInterval; // 적 소환 시 사이의 간격
 
+
+    // [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
+    // [SerializeField]
+    // float EnemyDownDuration;
+
+    // [SerializeField]
+    // float StartSpawnCount;
+    [Space(10f)]
     [SerializeField]
-    float StartSpawnCount;
+    public enemy Enemy;
 
 
     ////////////////////////////////////////
@@ -195,7 +308,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isDead)
+        if (!player.isDead)
         {
             FindToTargetEnemy(); // 목표로 지정할 적 정하기
             CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
@@ -214,37 +327,39 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (isDead)
+        if (player.isDead)
         {
             if (Input.touchCount == 0)
             {
 
             }
-            else if (Input.GetTouch(0).phase == TouchPhase.Began && Input.GetKeyDown(KeyCode.Space))
+            else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene("Prototype");
             }
         }
     }
 
+    // 가장 가까운 적을 목표 적으로 지정
     void FindToTargetEnemy()
     {
-        GameObject returnEnemy = EnemyParents.transform.GetChild(0).gameObject;
-        for (int i = 1; i < EnemyParents.transform.childCount; i++)
+        GameObject returnEnemy = Enemy.EnemyParent.transform.GetChild(0).gameObject;
+        for (int i = 1; i < Enemy.EnemyParent.transform.childCount; i++)
         {
-            if (returnEnemy.transform.position.y > EnemyParents.transform.GetChild(i).transform.position.y)
+            if (returnEnemy.transform.position.y > Enemy.EnemyParent.transform.GetChild(i).transform.position.y)
             {
-                returnEnemy = EnemyParents.transform.GetChild(i).gameObject;
+                returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
             }
         }
 
-        TargetEnemy = returnEnemy;
+        Enemy.TargetEnemy = returnEnemy;
     }
 
+    // 정답을 학인하여 비교
     void CheckAnswer()
     {
-        float enemy_x = TargetEnemy.transform.position.x;
-        float Player_x = Player.transform.position.x;
+        float enemy_x = Enemy.TargetEnemy.transform.position.x;
+        float Player_x = player.playerObj.transform.position.x;
 
 
         if (enemy_x == Player_x)
@@ -263,26 +378,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 정답처리 진행
     void ProcessCorrectAnswer()
     {
         Debug.Log("정답");
         AddScore();
         IsCanTouch = false;
 
-        if (TargetEnemy.GetComponent<EnemyController>().IsDown)
+        if (Enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
         {
             enemyRushToDown();
             backgroundRushToDown();
         }
 
-        Player.GetComponent<PlayerController>().moveToTarget(TargetEnemy, AttackDuration);
+        player.playerObj.GetComponent<PlayerController>().moveToTarget(Enemy.TargetEnemy, player.AttackDuration);
 
         InputDirection = SwipeDirection.None;
     }
 
+    // 오답 처리 진행
     void ProcessWrongAnswer()
     {
-        isDead = true;
+        player.isDead = true;
         IsCanTouch = false;
         RestartMessage.SetActive(true);
     }
@@ -297,7 +414,7 @@ public class GameManager : MonoBehaviour
     void Dead()
     {
         RestartMessage.SetActive(true);
-        isDead = true;
+        player.isDead = true;
     }
 
     public void enemySpawn()
@@ -305,43 +422,43 @@ public class GameManager : MonoBehaviour
         Debug.Log("Enemy 소환");
         int Line = Random.Range(0, 3);
 
-        Instantiate(Enemy, EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, EnemyParents.transform);
+        Instantiate(Enemy.Prefab, Enemy.EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, Enemy.EnemyParent.transform);
     }
 
     void enemyMoveToDown()
     {
-        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        for (int i = 0; i < Enemy.EnemyParent.transform.childCount; i++)
         {
-            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().MovetoDown(EnemyInterval, EnemyDownDuration);
+            Enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().moveToDown(Enemy.EnemyInterval, Enemy.EnemyDownDuration, Enemy.DownMode);
         }
     }
 
     void enemyRushToDown()
     {
-        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        for (int i = 0; i < Enemy.EnemyParent.transform.childCount; i++)
         {
-            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(AttackDuration);
+            Enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(player.AttackDuration);
         }
     }
 
     void backgroundMoveToDown()
     {
-        for (int j = 0; j < BackgroundLayer.Length; j++)
+        for (int j = 0; j < background.BackgroundLayer.Length; j++)
         {
-            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            for (int i = 0; i < background.BackgroundLayer[j].transform.childCount; i++)
             {
-                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().MoveToDown(BackgroundDownDistance, BackgroundDownDuration);
+                background.BackgroundLayer[j].transform.GetChild(i).GetComponent<BackgroundController>().moveToDown(background.BackgroundDownDistance, background.BackgroundDownDuration, background.DownMode);
             }
         }
     }
 
     void backgroundRushToDown()
     {
-        for (int j = 0; j < BackgroundLayer.Length; j++)
+        for (int j = 0; j < background.BackgroundLayer.Length; j++)
         {
-            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            for (int i = 0; i < background.BackgroundLayer[j].transform.childCount; i++)
             {
-                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().rushToDown(AttackDuration);
+                background.BackgroundLayer[j].transform.GetChild(i).GetComponent<BackgroundController>().rushToDown(player.AttackDuration, background.DownMode);
             }
         }
     }
@@ -355,7 +472,7 @@ public class GameManager : MonoBehaviour
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
 
-        Destroy(TargetEnemy); // 목표 적 제거
+        Destroy(Enemy.TargetEnemy); // 목표 적 제거
 
         enemySpawn(); // 새로운 적 소환
 
@@ -363,7 +480,7 @@ public class GameManager : MonoBehaviour
 
         CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
-        Player.GetComponent<PlayerController>().moveToDown(EnemyInterval, PlayerDownDuration);
+        player.playerObj.GetComponent<PlayerController>().moveToDown(Enemy.EnemyInterval, player.PlayerDownDuration, player.DownMode);
 
         enemyMoveToDown();
 
@@ -388,15 +505,15 @@ public class GameManager : MonoBehaviour
 
     void GameSetup()
     {
-        EnemySpawnLines.transform.position = new Vector2(0f, Player.transform.position.y + (EnemyInterval * (StartSpawnCount + 1)));
+        Enemy.EnemySpawnLines.transform.position = new Vector2(0f, player.playerObj.transform.position.y + (Enemy.EnemyInterval * (Enemy.StartSpawnCount + 1)));
 
-        for (int i = 0; i < StartSpawnCount; i++)
+        for (int i = 0; i < Enemy.StartSpawnCount; i++)
         {
             enemySpawn();
-            for (int j = 0; j < EnemyParents.transform.childCount; j++)
+            for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
             {
-                EnemyParents.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
-                EnemyParents.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * EnemyInterval;
+                Enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * Enemy.EnemyInterval);
+                Enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * Enemy.EnemyInterval;
             }
         }
     }
