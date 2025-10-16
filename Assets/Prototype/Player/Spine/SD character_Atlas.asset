@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: hero-pro_Atlas
+  m_Name: SD character_Atlas
   m_EditorClassIdentifier: 
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: 386571beb21da334cac41ded10fbd14b, type: 3}
+  atlasFile: {fileID: 4900000, guid: 0ad2b49c65e56374f84e23af6c166352, type: 3}
   materials:
-  - {fileID: 2100000, guid: b9d03b975ebbaa447bd5c506d3d26289, type: 2}
+  - {fileID: 2100000, guid: dd9e61197877f8346b8764233bfda0fb, type: 2}

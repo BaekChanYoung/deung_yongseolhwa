@@ -52,6 +52,7 @@ MonoBehaviour:
   musicSource: {fileID: 2845360285456232091}
   sfxSource: {fileID: 1720219646390159904}
   settings: {fileID: 11400000, guid: ddf122f300fa0ff439a7ded6b970e6f5, type: 2}
+  resetPlayerPrefsOnStart: 1
 --- !u!1 &6689782309231783883
 GameObject:
   m_ObjectHideFlags: 0
