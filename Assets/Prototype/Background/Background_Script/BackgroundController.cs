@@ -1,12 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
-
-
-public class BackgroundController  : MonoBehaviour
+[System.Serializable]
+[Tooltip("배경을 저장하여 모아두는 곳")]
+public struct BackgroundCollection
 {
+    [SerializeField]
+    public BackgroundList Layer; 
+    
+    [SerializeField]
+    public GameObject[] Background; //이곳에 배경을 저장하여 다른곳에서 참조함
+}
+
+public enum BackgroundList
+{
+    Start,
+    Cliff,
+    Snow,
+    WaterFall
+}
+
+public class BackgroundController : MonoBehaviour
+{
+    [SerializeField]
+    BackgroundList selectLayer;
     //bool IsDown;
+    public BackgroundCollection[] BackgroundLayer;
 
     Vector3 TargetPos;
 
@@ -21,11 +42,14 @@ public class BackgroundController  : MonoBehaviour
         BoxCollider2D BackgroundCollider = GetComponent<BoxCollider2D>();
 
         height = BackgroundCollider.size.y;
+
+        BackgroundSelect(selectLayer);
     }
 
     void Start()
     {
         TargetPos = transform.position;
+        
     }
 
     void Update()
@@ -46,8 +70,8 @@ public class BackgroundController  : MonoBehaviour
     }
 
 
-    
-    
+
+
     public void rushToDown(float DownDuration, DownMovementMode DownMode = DownMovementMode.moveToword)
     {
         if (!(DownMode == DownMovementMode.moveToword))
@@ -123,10 +147,25 @@ public class BackgroundController  : MonoBehaviour
 
     void Reposition()
     {
+        selectLayer = GameManager.instance.background.selectLayer;
+
+        BackgroundSelect(selectLayer);
+
         float P = transform.parent.transform.childCount;
-        
+
         Vector3 offset = new Vector3(0, height * P, 0);
         transform.position += offset;
         TargetPos += offset;
+    }
+
+    void BackgroundSelect(BackgroundList Selectbackground)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+            transform.GetChild(i).gameObject.SetActive(false);
+
+        for (int i = 0; i < BackgroundLayer.Length; i++)
+            if (BackgroundLayer[i].Layer == Selectbackground)
+                for (int j = 0; j < BackgroundLayer[i].Background.Length; j++)
+                    BackgroundLayer[i].Background[j].SetActive(true);
     }
 }

@@ -20,13 +20,34 @@ public class InputSystem : MonoBehaviour
 
     [ReadOnly]
     [SerializeField]
+    bool OverResponsiveness = false; // 민감도 초과 확인
+
+    [ReadOnly]
+    [SerializeField]
     SwipeDirection InputDirection;
+
+    [SerializeField]
+    float TouchResponsiveness; // 스와이프 민감도
+    
+    [SerializeField]
+    Color TouchResponsivenessGizmo;
+
 
     //swipe 변수들
     Vector2 firstTouchPos;
 
     Vector2 endTouchPos;
 
+    [SerializeField]
+    bool justPlayerTouch;
+
+    [SerializeField]
+    Vector2 PlayerCenter;
+
+    [SerializeField]
+    float PlayerRadius; // 플레이어 반지름
+    [SerializeField]
+    Color PlayerRadiusGizmo;
 
     void Start()
     {
@@ -78,42 +99,77 @@ public class InputSystem : MonoBehaviour
 
     float? Swipe()
     {
+
+
         float? angle = null;
         // 터치를 시작했을때
-        if (Input.touchCount > 0 && !isTouch)
+        if (Input.touchCount > 0 && !isTouch && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            firstTouchPos = Input.GetTouch(0).position; // 첫번째 터치 위치 저장
+            Vector2 touchPos = Input.GetTouch(0).position;
 
-            isTouch = true; // 터치 시작 확인
-        }
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touchPos.x, touchPos.y, 0));
 
-        if (Input.touchCount > 0 && !isTouch)
-        {
-            firstTouchPos = Input.GetTouch(0).position; // 첫번째 터치 위치 저장
+            bool canTouchStart = !justPlayerTouch || PlayerRadius > Vector2.Distance((Vector2)transform.position + PlayerCenter, (Vector2)worldPos);
 
-            isTouch = true; // 터치 시작 확인
+            Debug.Log(touchPos);
+
+            Debug.Log(Vector2.Distance((Vector2)transform.position + PlayerCenter, worldPos));
+
+            if (canTouchStart)
+            {
+                firstTouchPos = Input.GetTouch(0).position; // 첫번째 터치 위치 저장
+
+                isTouch = true; // 터치 시작 확인
+
+                //OverResponsiveness = false;
+                
+                Debug.Log("터치 시작");
+            }
+
+            
         }
 
         // 터치를 하고 있을때
         if (Input.touchCount > 0 && isTouch)
         {
             endTouchPos = Input.GetTouch(0).position; // 터치가 끝날때까지 마지막 터치 위치 저장
+            float _TouchResponsiveness = TouchResponsiveness * 100;
+
+            if (TouchResponsiveness < Vector2.Distance(firstTouchPos, endTouchPos))
+                OverResponsiveness = true;
+            if (TouchResponsiveness > Vector2.Distance(firstTouchPos, endTouchPos))
+                OverResponsiveness = false;
+
+            //Debug.Log("터치중");
+            Debug.Log("터치 거리 : " + Vector2.Distance(firstTouchPos, endTouchPos));
         }
 
         // 터치 종료시
-        if (Input.touchCount == 0 && isTouch)
+        if (Input.touchCount == 0 && isTouch )
         {
-            Vector2 dif = endTouchPos - firstTouchPos; // 스와이프 방향백터 계산 (종료 위치값 - 시작 위치값)
+            if (OverResponsiveness)
+            {
+                Vector2 dif = endTouchPos - firstTouchPos; // 스와이프 방향백터 계산 (종료 위치값 - 시작 위치값)
 
-            angle = Mathf.Atan2(dif.y, dif.x) * Mathf.Rad2Deg; // 방향 백터에 따른 스와이프 각도 계산
-
-            //Debug.Log(angle);
-
+                angle = Mathf.Atan2(dif.y, dif.x) * Mathf.Rad2Deg; // 방향 백터에 따른 스와이프 각도 계산
+            }
+            
             isTouch = false; //터치 종료 확인
 
+            OverResponsiveness = false;
+
             // 스와이프 각도 값 반환
-            Debug.Log(angle);
+            //Debug.Log(angle);
         }
         return angle;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = PlayerRadiusGizmo;
+        Gizmos.DrawWireSphere((Vector2)transform.position + PlayerCenter, PlayerRadius);
+
+        Gizmos.color = TouchResponsivenessGizmo;
+        Gizmos.DrawWireSphere((Vector2)transform.position + PlayerCenter, TouchResponsiveness);
     }
 }

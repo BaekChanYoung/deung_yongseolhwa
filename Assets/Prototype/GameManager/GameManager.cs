@@ -103,9 +103,13 @@ public struct Player
 }
 
 [System.Serializable]
-public struct Background
+public class Background
 {
-    [Tooltip("배경 루프")]
+    [Tooltip("배경 선택")]
+    [SerializeField]
+    public BackgroundList selectLayer;
+
+    [Tooltip("루프할 배경")]
     [SerializeField]
     public GameObject[] BackgroundLayer;
 
@@ -121,6 +125,22 @@ public struct Background
     public float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
 }
 
+[System.Serializable]
+public struct Scoresetting
+{
+    [ReadOnly]
+    [SerializeField]
+    [Tooltip("게임의 점수")]
+    public int score;
+
+    [SerializeField]
+    public float difficultyScale;
+
+    [ReadOnly]
+    [SerializeField]
+    public float currentSpeedRate;
+}
+
 
 public class GameManager : MonoBehaviour
 {
@@ -128,7 +148,19 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     [SerializeField]
     [Tooltip("게임의 점수")]
-    int score;
+    Scoresetting scoreSetting;
+
+    [SerializeField]
+    GameObject Timer;
+
+    [SerializeField]
+    public float MaxTime;
+
+    [SerializeField]
+    public float startTime;
+
+    [SerializeField]
+    float AddSecond;
 
     [Header("Game Setting")]
     [Space(5f)]
@@ -142,99 +174,18 @@ public class GameManager : MonoBehaviour
     ////////////////////////////////////////
     /// 배경화면 관련
     ////////////////////////////////////////
-
     [SerializeField]
     public Background background;
-
-    // [Header("Background")]
-
-    // [Tooltip("배경 루프")]
-    // [SerializeField]
-    // GameObject[] BackgroundLayer;
-
-    // [SerializeField]
-    // DownMovementMode DownMode;
-
-    // [Tooltip("배경이 내려가는 거리")]
-    // [SerializeField]
-    // float BackgroundDownDistance; // 배경 내려가는 거리
-
-    // [Tooltip("배경이 내려갈 시 걸리는 시간")]
-    // [SerializeField]
-    // float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
 
     ////////////////////////////////////////
     /// 플레이어 관련
     ////////////////////////////////////////
-    ///
-    /// 
     [SerializeField]
     public Player player;
-    // [Header("Player")]
-    // [SerializeField]
-    // public GameObject Player;
-
-    // [SerializeField]
-    // DownMovementMode DownMode;
-
-    // [Tooltip("공격하는 걸리는 시간")]
-    // [SerializeField]
-    // public float AttackDuration; //공격하는데 걸리는 시간
-
-    // [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
-    // [SerializeField]
-    // float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
-
-    // [Tooltip("공격 이후 관성(미구현)")]
-    // [SerializeField]
-    // float reboundPower;
-
-    // // [Tooltip("")]
-    // // [ReadOnly]
-    // // [SerializeField]
-    // // Vector2 PlayerMovePos;
-
-
-    // // 플레이어가 죽을시 true가 되는 변수
-    // [HideInInspector]
-    // public bool isDead;
-
 
     ////////////////////////////////////////
     /// 적 관련
     // ////////////////////////////////////////
-    // [Header("Enemy")]
-
-    // [Tooltip("적 프리펩")]
-    // [SerializeField]
-    // GameObject Enemy; // 적 프리펩
-
-    // [Tooltip("적 소환시 부모지정")]
-    // [SerializeField]
-    // GameObject EnemyParent; // 적 부모 오브젝트
-
-    // [Tooltip("적 스폰시 기준 오브젝트")]
-    // [SerializeField]
-    // GameObject EnemySpawnLines; // 적 스폰 위치들
-
-    // [ReadOnly]
-    // [Tooltip("가장 가까운 적")]
-    // [SerializeField]
-    // GameObject TargetEnemy; // 가장 가까운 목표 적
-
-    // DownMovementMode DownMode;
-
-    // [Tooltip("적 소환시 적들의 간격")]
-    // [SerializeField]
-    // float EnemyInterval; // 적 소환 시 사이의 간격
-
-
-    // [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
-    // [SerializeField]
-    // float EnemyDownDuration;
-
-    // [SerializeField]
-    // float StartSpawnCount;
     [Space(10f)]
     [SerializeField]
     public enemy Enemy;
@@ -303,6 +254,10 @@ public class GameManager : MonoBehaviour
         CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
         RestartMessage.SetActive(false);
+
+        scoreSetting.currentSpeedRate = 1f;
+
+        //Timer.GetComponent<TimerBarController>().PauseTimer();
     }
 
     // Update is called once per frame
@@ -310,6 +265,12 @@ public class GameManager : MonoBehaviour
     {
         if (!player.isDead)
         {
+            if (!Timer.GetComponent<TimerBarController>().IsTimerActive() && scoreSetting.score > 0f)
+            {
+                Timer.GetComponent<TimerBarController>().ResumeTimer();
+            }
+            // startTimer
+
             FindToTargetEnemy(); // 목표로 지정할 적 정하기
             CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
@@ -325,6 +286,9 @@ public class GameManager : MonoBehaviour
             {
                 ProcessWrongAnswer(); // 오답처리 실시
             }
+
+            // if(Timer.GetComponent<TimerBarController>().GetRemainingTime() < 0f)
+            //     {}
         }
 
         if (player.isDead)
@@ -335,7 +299,7 @@ public class GameManager : MonoBehaviour
             }
             else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene("Prototype");
+                //SceneManager.LoadScene("Prototype");
             }
         }
     }
@@ -385,6 +349,8 @@ public class GameManager : MonoBehaviour
         AddScore();
         IsCanTouch = false;
 
+        scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
+
         if (Enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
         {
             enemyRushToDown();
@@ -393,15 +359,24 @@ public class GameManager : MonoBehaviour
 
         player.playerObj.GetComponent<PlayerController>().moveToTarget(Enemy.TargetEnemy, player.AttackDuration);
 
+        player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
+
         InputDirection = SwipeDirection.None;
     }
 
     // 오답 처리 진행
     void ProcessWrongAnswer()
     {
-        player.isDead = true;
-        IsCanTouch = false;
-        RestartMessage.SetActive(true);
+        // player.isDead = true;
+        // IsCanTouch = false;
+
+        //RestartMessage.SetActive(true);
+        Dead();
+    }
+
+    public void ReLoad()
+    {
+        SceneManager.LoadScene("Prototype");
     }
 
 
@@ -411,8 +386,15 @@ public class GameManager : MonoBehaviour
         hitEffectRoutine = StartCoroutine(HitEffect());
     }
 
-    void Dead()
+    public void Dead()
     {
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        player.isDead = true;
+        IsCanTouch = false;
+
+        Time.timeScale = 1f;
+
         RestartMessage.SetActive(true);
         player.isDead = true;
     }
@@ -467,6 +449,10 @@ public class GameManager : MonoBehaviour
     {
         // 순간적인 효가를 위해 잠깐 움직임 정지
         Time.timeScale = 0f;
+
+        Timer.GetComponent<TimerBarController>().AddTime(AddSecond);
+        Timer.GetComponent<TimerBarController>().TimerScale(scoreSetting.currentSpeedRate);
+
         yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime);
 
         // 슬로우 모션을 표현하기 위힌 timescale 저장
@@ -490,17 +476,19 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(hitSlowEffect.HitSlowTime);
 
-        Time.timeScale = 1f;
+        //scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
+
+        Time.timeScale = scoreSetting.currentSpeedRate;
     }
 
     void AddScore()
     {
         Debug.Log("점수 추가");
-        score++;
+        scoreSetting.score++;
     }
     public int pullScore()
     {
-        return score;
+        return scoreSetting.score;
     }
 
     void GameSetup()

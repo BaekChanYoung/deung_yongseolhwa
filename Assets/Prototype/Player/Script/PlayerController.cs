@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,6 +18,17 @@ public class PlayerController : MonoBehaviour
     Coroutine moveRoutine;
 
     Coroutine reboundRoutine;
+
+    public GameObject SpriteAnimation;
+
+    Animator SpriteAnimationController;
+
+    public bool isSlash;
+
+    void Start()
+    {
+        SpriteAnimationController = SpriteAnimation.GetComponent<Animator>();
+    }
 
     void CancelMove(Coroutine ct)
     {
@@ -168,13 +180,39 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator reboundMove(float reboundPower)
     {
-       while (true)
+        while (true)
         {
             transform.position = Vector2.MoveTowards(transform.position, (Vector2)transform.position + AttackDirection, reboundPower * Time.deltaTime);
 
             AttackDirection += Vector2.down * 0.98f * Time.deltaTime;
 
             yield return null;
+        }
+    }
+
+
+    public void PlayerAnimationCalculationProcessing(SwipeDirection Direction)
+    {
+        if (Direction == SwipeDirection.Up)
+        {
+            SpriteAnimationController.SetTrigger("Top_Attack");
+        }
+        else
+        {
+            SpriteAnimationController.SetTrigger("Right_Attack");
+            if (Direction == SwipeDirection.Right)
+                SpriteAnimation.transform.localScale = new Vector3(1f, 1f, 0f);
+            if (Direction == SwipeDirection.Left)
+                SpriteAnimation.transform.localScale = new Vector3(-1f, 1f, 0f);
+        }
+
+        if (isSlash)
+        {
+            SpriteAnimationController.SetTrigger("Slash_Attack");
+        }
+        else
+        {
+            SpriteAnimationController.SetTrigger("Stab_Attack");
         }
     }
 
