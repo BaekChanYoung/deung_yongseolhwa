@@ -44,15 +44,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df36ceefec6cdd4cb273357e1e44e2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
+  scoreSetting:
+    score: 0
+    MinScale: 0
+    MaxScale: 0
+    difficultyScale: 0.1
+    Alpha: 0
+    currentSpeedRate: 0
+  Timer: {fileID: 0}
+  MaxTime: 60
+  startTime: 10
+  AddSecond: 1
   hitSlowEffect:
     HitStopTime: 0
     HitSlowScale: 0
     HitSlowTime: 0
   background:
+    selectLayer: 1
     BackgroundLayer:
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 0}
     DownMode: 1
     BackgroundDownDistance: 7
@@ -70,7 +79,7 @@ MonoBehaviour:
     EnemySpawnLines: {fileID: 0}
     TargetEnemy: {fileID: 0}
     DownMode: 1
-    EnemyInterval: 7
+    EnemyInterval: 5
     EnemyDownDuration: 5
     StartSpawnCount: 4
   IsCanTouch: 0

@@ -27,6 +27,7 @@ public struct HitSlowEffect
     public float HitSlowTime;
 }
 
+// 내려가는 모드 목록
 [System.Serializable]
 public enum DownMovementMode
 {
@@ -35,7 +36,7 @@ public enum DownMovementMode
 }
 
 [System.Serializable]
-public struct enemy
+public struct Enemy
 {
     [Tooltip("적 프리펩")]
     [SerializeField]
@@ -66,8 +67,13 @@ public struct enemy
     [SerializeField]
     public float EnemyDownDuration;
 
+    [Tooltip("시작시 소환할 적 수(게임에 등장할 적의 수)")]
     [SerializeField]
     public float StartSpawnCount;
+
+    [SerializeField]
+    [ReadOnly]
+    public int LastSpawnPoint;
 }
 
 [System.Serializable]
@@ -126,7 +132,7 @@ public class Background
 }
 
 [System.Serializable]
-public struct Scoresetting
+public struct ScoreSetting
 {
     [ReadOnly]
     [SerializeField]
@@ -134,7 +140,17 @@ public struct Scoresetting
     public int score;
 
     [SerializeField]
+    public float MinScale;
+
+    [SerializeField]
+    public float MaxScale;
+
+    [SerializeField]
+    [Tooltip("스코어 스케일의 변화량")]
     public float difficultyScale;
+
+    [SerializeField]
+    public float Alpha;
 
     [ReadOnly]
     [SerializeField]
@@ -148,7 +164,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     [SerializeField]
     [Tooltip("게임의 점수")]
-    Scoresetting scoreSetting;
+    ScoreSetting scoreSetting;
 
     [SerializeField]
     GameObject Timer;
@@ -188,7 +204,7 @@ public class GameManager : MonoBehaviour
     // ////////////////////////////////////////
     [Space(10f)]
     [SerializeField]
-    public enemy Enemy;
+    public Enemy enemy;
 
 
     ////////////////////////////////////////
@@ -309,22 +325,22 @@ public class GameManager : MonoBehaviour
     // 가장 가까운 적을 목표 적으로 지정
     void FindToTargetEnemy()
     {
-        GameObject returnEnemy = Enemy.EnemyParent.transform.GetChild(0).gameObject;
-        for (int i = 1; i < Enemy.EnemyParent.transform.childCount; i++)
+        GameObject returnEnemy = enemy.EnemyParent.transform.GetChild(0).gameObject;
+        for (int i = 1; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            if (returnEnemy.transform.position.y > Enemy.EnemyParent.transform.GetChild(i).transform.position.y)
+            if (returnEnemy.transform.position.y > enemy.EnemyParent.transform.GetChild(i).transform.position.y)
             {
-                returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
+                returnEnemy = enemy.EnemyParent.transform.GetChild(i).gameObject;
             }
         }
 
-        Enemy.TargetEnemy = returnEnemy;
+        enemy.TargetEnemy = returnEnemy;
     }
 
     // 정답을 학인하여 비교
     void CheckAnswer()
     {
-        float enemy_x = Enemy.TargetEnemy.transform.position.x;
+        float enemy_x = enemy.TargetEnemy.transform.position.x;
         float Player_x = player.playerObj.transform.position.x;
 
 
@@ -351,15 +367,15 @@ public class GameManager : MonoBehaviour
         AddScore();
         IsCanTouch = false;
 
-        scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
+        scoreSetting.currentSpeedRate = ScaleToScore(scoreSetting.score);
 
-        if (Enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
+        if (enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
         {
             enemyRushToDown();
             backgroundRushToDown();
         }
 
-        player.playerObj.GetComponent<PlayerController>().moveToTarget(Enemy.TargetEnemy, player.AttackDuration);
+        player.playerObj.GetComponent<PlayerController>().moveToTarget(enemy.TargetEnemy, player.AttackDuration);
 
         player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
 
@@ -403,25 +419,43 @@ public class GameManager : MonoBehaviour
 
     public void enemySpawn()
     {
-        Debug.Log("Enemy 소환");
-        int Line = Random.Range(0, 3);
+        Debug.Log("enemy 소환");
 
-        Instantiate(Enemy.Prefab, Enemy.EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, Enemy.EnemyParent.transform);
+        int SpawnPoint = enemy.LastSpawnPoint;
+
+        switch(SpawnPoint)
+        {
+            case (0):
+                SpawnPoint += Random.Range(0, 2);
+
+                break;
+            case (1):
+                SpawnPoint = Random.Range(0, 3);
+                break;
+            case (2):
+                SpawnPoint -= Random.Range(0, 2);
+
+                break;
+        }
+
+        enemy.LastSpawnPoint = SpawnPoint;
+
+        Instantiate(enemy.Prefab, enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
     }
 
     void enemyMoveToDown()
     {
-        for (int i = 0; i < Enemy.EnemyParent.transform.childCount; i++)
+        for (int i = 0; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            Enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().moveToDown(Enemy.EnemyInterval, Enemy.EnemyDownDuration, Enemy.DownMode);
+            enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().moveToDown(enemy.EnemyInterval, enemy.EnemyDownDuration, enemy.DownMode);
         }
     }
 
     void enemyRushToDown()
     {
-        for (int i = 0; i < Enemy.EnemyParent.transform.childCount; i++)
+        for (int i = 0; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            Enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(player.AttackDuration);
+            enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(player.AttackDuration);
         }
     }
 
@@ -460,7 +494,7 @@ public class GameManager : MonoBehaviour
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
 
-        Destroy(Enemy.TargetEnemy); // 목표 적 제거
+        Destroy(enemy.TargetEnemy); // 목표 적 제거
 
         enemySpawn(); // 새로운 적 소환
 
@@ -468,7 +502,7 @@ public class GameManager : MonoBehaviour
 
         CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
-        player.playerObj.GetComponent<PlayerController>().moveToDown(Enemy.EnemyInterval, player.PlayerDownDuration, player.DownMode);
+        player.playerObj.GetComponent<PlayerController>().moveToDown(enemy.EnemyInterval, player.PlayerDownDuration, player.DownMode);
 
         enemyMoveToDown();
 
@@ -480,7 +514,9 @@ public class GameManager : MonoBehaviour
 
         //scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
 
-        Time.timeScale = scoreSetting.currentSpeedRate;
+        //Time.timeScale = scoreSetting.currentSpeedRate;
+        
+        Time.timeScale = 1;
     }
 
     void AddScore()
@@ -495,15 +531,15 @@ public class GameManager : MonoBehaviour
 
     void GameSetup()
     {
-        Enemy.EnemySpawnLines.transform.position = new Vector2(0f, player.playerObj.transform.position.y + (Enemy.EnemyInterval * (Enemy.StartSpawnCount + 1)));
+        enemy.EnemySpawnLines.transform.position = new Vector2(0f, player.playerObj.transform.position.y + (enemy.EnemyInterval * (enemy.StartSpawnCount + 1)));
 
-        for (int i = 0; i < Enemy.StartSpawnCount; i++)
+        for (int i = 0; i < enemy.StartSpawnCount; i++)
         {
             enemySpawn();
-            for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
+            for (int j = 0; j < enemy.EnemyParent.transform.childCount; j++)
             {
-                Enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * Enemy.EnemyInterval);
-                Enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * Enemy.EnemyInterval;
+                enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * enemy.EnemyInterval);
+                enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * enemy.EnemyInterval;
             }
         }
     }
@@ -515,5 +551,12 @@ public class GameManager : MonoBehaviour
             StopCoroutine(ct);
             ct = null;
         }
+        
+    }
+
+    float ScaleToScore(float score)
+    {
+        float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
+        return scale;
     }
 }

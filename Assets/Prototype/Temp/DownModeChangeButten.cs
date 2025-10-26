@@ -23,19 +23,19 @@ public class DownModeChangeButten : MonoBehaviour
             DownMode = DownMovementMode.moveToword;
 
         GameManager.instance.player.DownMode = DownMode;
-        GameManager.instance.Enemy.DownMode = DownMode;
+        GameManager.instance.enemy.DownMode = DownMode;
         GameManager.instance.background.DownMode = DownMode;
 
         if (DownMode == DownMovementMode.SmoothDamp)
         {
             GameManager.instance.player.PlayerDownDuration *= SmoothDownScale;
-            GameManager.instance.Enemy.EnemyDownDuration *= SmoothDownScale;
+            GameManager.instance.enemy.EnemyDownDuration *= SmoothDownScale;
             GameManager.instance.background.BackgroundDownDuration *= SmoothDownScale;
         }
         if (DownMode == DownMovementMode.moveToword)
         {
             GameManager.instance.player.PlayerDownDuration /= SmoothDownScale;
-            GameManager.instance.Enemy.EnemyDownDuration /= SmoothDownScale;
+            GameManager.instance.enemy.EnemyDownDuration /= SmoothDownScale;
             GameManager.instance.background.BackgroundDownDuration /= SmoothDownScale;
         }
     }
