@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Prototype/Enemy/Enemy Material.mat.meta
 guid: 775acfa0c766417478c7cd54238ddb7d
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000
+========
+guid: 22ef3a715d8fd0c4d952c95aee4a3df0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+>>>>>>>> Stashed changes:Assets/Prototype/Player/Ani/Attack/Slash_Right_Attack.anim.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 

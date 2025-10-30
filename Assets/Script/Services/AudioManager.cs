@@ -34,6 +34,27 @@ public class AudioManager : MonoBehaviour, IAudioService
     {
         // 중복 인스턴스 방지 로직 (Self-registration pattern)
         if (ServiceLocator.Resolve<IAudioService>() != null) // 이미 등록된 인스턴스가 있다면
+<<<<<<< Updated upstream
+=======
+        {
+            Destroy(gameObject); // 이 인스턴스는 파괴합니다.
+            return;
+        }
+
+        // ServiceLocator에 자기 자신을 등록
+        ServiceLocator.Register<IAudioService>(this);
+        Debug.Log("[AudioManager] ServiceLocator에 등록되었습니다.");
+
+        SetupAudioSources();
+
+        // AudioSettings 기본값 사용
+        float finalDefaultMaster = 1f;
+        float finalDefaultMusic = 0.75f;
+        float finalDefaultSfx = 0.8f;
+
+        // settings가 연결되어 있으면 그 값을 사용
+        if (settings != null)
+>>>>>>> Stashed changes
         {
             Destroy(gameObject); // 이 인스턴스는 파괴합니다.
             return;

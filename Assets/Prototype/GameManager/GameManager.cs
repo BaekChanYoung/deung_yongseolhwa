@@ -189,6 +189,156 @@ public struct Scoresetting
     public float currentSpeedRate;
 }
 
+[System.Serializable]
+public enum DownMovementMode
+{
+    moveToword,
+    SmoothDamp
+}
+
+[System.Serializable]
+public struct enemy
+{
+    [Tooltip("적 프리펩")]
+    [SerializeField]
+    public GameObject Prefab; // 적 프리펩
+
+    [Tooltip("적 소환시 부모지정")]
+    [SerializeField]
+    public GameObject EnemyParent; // 적 부모 오브젝트
+
+    [Tooltip("적 스폰시 기준 오브젝트")]
+    [SerializeField]
+    public GameObject EnemySpawnLines; // 적 스폰 위치들
+
+    [ReadOnly]
+    [Tooltip("가장 가까운 적")]
+    [SerializeField]
+<<<<<<< Updated upstream
+    [Tooltip("게임의 점수")]
+    Scoresetting scoreSetting;
+
+    [SerializeField]
+    GameObject Timer;
+
+    [SerializeField]
+    public float MaxTime;
+
+    [SerializeField]
+    public float startTime;
+
+    [SerializeField]
+    float AddSecond;
+
+    [Header("Game Setting")]
+    [Space(5f)]
+
+    [Tooltip("공격 히트 후 효과수치")]
+=======
+    public GameObject TargetEnemy; // 가장 가까운 목표 적
+
+>>>>>>> Stashed changes
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+<<<<<<< Updated upstream
+    Coroutine hitEffectRoutine;
+
+    ////////////////////////////////////////
+    /// 배경화면 관련
+    ////////////////////////////////////////
+    [SerializeField]
+    public Background background;
+
+    ////////////////////////////////////////
+    /// 플레이어 관련
+    ////////////////////////////////////////
+    [SerializeField]
+=======
+    [Tooltip("적 소환시 적들의 간격")]
+    [SerializeField]
+    public float EnemyInterval; // 적 소환 시 사이의 간격
+
+
+    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
+    [SerializeField]
+    public float EnemyDownDuration;
+
+    [SerializeField]
+    public float StartSpawnCount;
+}
+
+[System.Serializable]
+public struct Player
+{
+    [SerializeField]
+    public GameObject playerObj;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+    [Tooltip("공격하는 걸리는 시간")]
+    [SerializeField]
+    public float AttackDuration; //공격하는데 걸리는 시간
+
+    [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
+    [SerializeField]
+    public float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
+
+    [Tooltip("공격 이후 관성(미구현)")]
+    [SerializeField]
+    public float reboundPower;
+
+    // [Tooltip("")]
+    // [ReadOnly]
+    // [SerializeField]
+    // Vector2 PlayerMovePos;
+
+
+    // 플레이어가 죽을시 true가 되는 변수
+    [HideInInspector]
+    public bool isDead;
+}
+
+[System.Serializable]
+public class Background
+{
+    [Tooltip("배경 선택")]
+    [SerializeField]
+    public BackgroundList selectLayer;
+
+    [Tooltip("루프할 배경")]
+    [SerializeField]
+    public GameObject[] BackgroundLayer;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+    [Tooltip("배경이 내려가는 거리")]
+    [SerializeField]
+    public float BackgroundDownDistance; // 배경 내려가는 거리
+
+    [Tooltip("배경이 내려갈 시 걸리는 시간")]
+    [SerializeField]
+    public float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+}
+
+[System.Serializable]
+public struct Scoresetting
+{
+    [ReadOnly]
+    [SerializeField]
+    [Tooltip("게임의 점수")]
+    public int score;
+
+    [SerializeField]
+    public float difficultyScale;
+
+    [ReadOnly]
+    [SerializeField]
+    public float currentSpeedRate;
+}
+
 
 public class GameManager : MonoBehaviour
 {
@@ -229,6 +379,7 @@ public class GameManager : MonoBehaviour
     /// 플레이어 관련
     ////////////////////////////////////////
     [SerializeField]
+>>>>>>> Stashed changes
     public Player player;
 
     ////////////////////////////////////////
@@ -237,11 +388,14 @@ public class GameManager : MonoBehaviour
     [Space(10f)]
     [SerializeField]
     public enemy Enemy;
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
 
 
     bool isEnmeyDown;
+=======
+>>>>>>> Stashed changes
 
 
     ////////////////////////////////////////
@@ -294,6 +448,9 @@ public class GameManager : MonoBehaviour
         // 또는 화면의 기본 재생 빈도로 설정 (예: 60Hz, 90Hz, 120Hz 등)
         // Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         // 게임 매니저 중복 확인
         if (instance == null)
@@ -305,6 +462,27 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("씬에 두개 이상의 게임 매니저가 존재합니다!");
             Destroy(gameObject);
         }
+<<<<<<< Updated upstream
+=======
+    }
+
+    void Start()
+    {
+        
+
+        GameSetup();
+
+        IsCanTouch = true;
+
+        FindToTargetEnemy(); // 목표로 지정할 적 정하기
+        CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
+
+        RestartMessage.SetActive(false);
+
+        scoreSetting.currentSpeedRate = 1f;
+
+        //Timer.GetComponent<TimerBarController>().PauseTimer();
+>>>>>>> Stashed changes
     }
 
     void Start()
@@ -330,8 +508,11 @@ public class GameManager : MonoBehaviour
         if (!player.isDead)
         {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             FindToTargetEnemy(); // 목표 적 정하기
 =======
+=======
+>>>>>>> Stashed changes
             if (!Timer.GetComponent<TimerBarController>().IsTimerActive() && scoreSetting.score > 0f)
             {
                 Timer.GetComponent<TimerBarController>().ResumeTimer();
@@ -395,7 +576,11 @@ public class GameManager : MonoBehaviour
 
             }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             else if (Input.GetTouch(0).phase == TouchPhase.Began)
+=======
+            else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
+>>>>>>> Stashed changes
 =======
             else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
 >>>>>>> Stashed changes
@@ -405,6 +590,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
 
@@ -500,6 +686,17 @@ public class GameManager : MonoBehaviour
             {
                 returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
 >>>>>>> Stashed changes
+=======
+    // 가장 가까운 적을 목표 적으로 지정
+    void FindToTargetEnemy()
+    {
+        GameObject returnEnemy = Enemy.EnemyParent.transform.GetChild(0).gameObject;
+        for (int i = 1; i < Enemy.EnemyParent.transform.childCount; i++)
+        {
+            if (returnEnemy.transform.position.y > Enemy.EnemyParent.transform.GetChild(i).transform.position.y)
+            {
+                returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
+>>>>>>> Stashed changes
             }
         }
 
@@ -507,8 +704,11 @@ public class GameManager : MonoBehaviour
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     void Dead()
 =======
+=======
+>>>>>>> Stashed changes
     // 정답을 학인하여 비교
     void CheckAnswer()
     {
@@ -577,6 +777,9 @@ public class GameManager : MonoBehaviour
     }
 
     public void Dead()
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     {
         Timer.GetComponent<TimerBarController>().PauseTimer();
@@ -695,6 +898,7 @@ public class GameManager : MonoBehaviour
         {
             enemySpawn();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             for (int j = 0; j < Enemies.transform.childCount; j++)
             {
                 Enemies.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
@@ -743,6 +947,12 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(EnemyMoveToDown());
                 StartCoroutine(PlayerMoveToDown());
                 yield break;
+=======
+            for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
+            {
+                Enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * Enemy.EnemyInterval);
+                Enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * Enemy.EnemyInterval;
+>>>>>>> Stashed changes
 =======
             for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
             {
