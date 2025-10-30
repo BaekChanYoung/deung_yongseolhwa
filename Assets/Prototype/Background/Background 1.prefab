@@ -8,10 +8,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 1.prefab
   - component: {fileID: 7200013300599923421}
   - component: {fileID: 238805780211947768}
   - component: {fileID: -2849604397525888050}
   - component: {fileID: -4234836129612761617}
+=======
+  - component: {fileID: 3965282275740197934}
+  - component: {fileID: 5830861015883497255}
+>>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
   m_Layer: 0
   m_Name: Background 1
   m_TagString: Untagged
@@ -29,7 +34,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 1.prefab
   m_LocalScale: {x: 6, y: 10, z: 1}
+=======
+  m_LocalScale: {x: 1, y: 1, z: 1}
+>>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -72,11 +81,19 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 1.prefab
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 1, a: 1}
+=======
+  m_SortingLayerID: 753543023
+  m_SortingLayer: 1
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: 362b63aff26d60549948cf2f8bda040d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+>>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -86,6 +103,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 1.prefab
 --- !u!114 &-2849604397525888050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,3 +161,5 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+=======
+>>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab

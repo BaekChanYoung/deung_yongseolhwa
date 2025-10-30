@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface IAudioService
@@ -10,5 +8,5 @@ public interface IAudioService
     void PlaySfx(AudioClip clip, float vol = 1f);
     void DuckMusic(float duckTarget = 0.2f, float duckTime = 0.15f, float restoreTime = 0.4f);
     void TransitionToSnapshot(string snapshotName, float time);
+    void SetMusicVolumeInternal(float v);
 }
-

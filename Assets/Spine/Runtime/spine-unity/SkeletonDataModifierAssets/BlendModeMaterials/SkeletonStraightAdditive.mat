@@ -18,12 +18,17 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+<<<<<<< Updated upstream:Assets/Spine/Runtime/spine-unity/SkeletonDataModifierAssets/BlendModeMaterials/SkeletonStraightAdditive.mat
     - <noninit>:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
+=======
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 6f8b79cffbfcef44d96b9113d2584158, type: 3}
+>>>>>>> Stashed changes:Assets/Prototype/Player/Spine/SD character_캐릭터파츠분리.mat
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:

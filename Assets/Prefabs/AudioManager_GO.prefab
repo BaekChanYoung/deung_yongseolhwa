@@ -51,6 +51,10 @@ MonoBehaviour:
   MasterSource: {fileID: 2799670797038464705}
   musicSource: {fileID: 2845360285456232091}
   sfxSource: {fileID: 1720219646390159904}
+<<<<<<< Updated upstream:Assets/Prefabs/AudioManager_GO.prefab
+=======
+  settings: {fileID: 11400000, guid: ddf122f300fa0ff439a7ded6b970e6f5, type: 2}
+>>>>>>> Stashed changes:Assets/Prefabs/AudioManager.prefab
 --- !u!1 &6689782309231783883
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,7 +225,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4658604462766434377, guid: a36602cdc7931d7468c24e0de730cde2, type: 2}
-  m_audioClip: {fileID: 8300000, guid: a8afc53e7d906584bb58d76a62fe0815, type: 3}
+  m_audioClip: {fileID: 8300000, guid: e63543f08d6652940be1bb93e6e38260, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

@@ -9,7 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5958876057185407154}
+<<<<<<< Updated upstream
   - component: {fileID: 7761838300762887719}
+=======
+  - component: {fileID: 4575040630177658930}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: GameMaeager
   m_TagString: Untagged
@@ -32,7 +36,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< Updated upstream
 --- !u!114 &7761838300762887719
+=======
+--- !u!114 &4575040630177658930
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,6 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 0
+<<<<<<< Updated upstream
   Player: {fileID: 0}
   AttackDuration: 0.2
   PlayerDownDuration: 0.2
@@ -55,6 +64,37 @@ MonoBehaviour:
   TargetEnemy: {fileID: 0}
   EnemyDownDuration: 0.5
   StartSpawnCount: 2
+=======
+  hitSlowEffect:
+    HitStopTime: 0
+    HitSlowScale: 0
+    HitSlowTime: 0
+  background:
+    BackgroundLayer:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    DownMode: 1
+    BackgroundDownDistance: 7
+    BackgroundDownDuration: 5
+  player:
+    playerObj: {fileID: 0}
+    DownMode: 1
+    AttackDuration: 0.05
+    PlayerDownDuration: 5
+    reboundPower: 0
+    isDead: 0
+  Enemy:
+    Prefab: {fileID: 6650132074972378466, guid: a2cf2404628f3b645a8e15660be817dc, type: 3}
+    EnemyParent: {fileID: 0}
+    EnemySpawnLines: {fileID: 0}
+    TargetEnemy: {fileID: 0}
+    DownMode: 1
+    EnemyInterval: 7
+    EnemyDownDuration: 5
+    StartSpawnCount: 4
+  IsCanTouch: 0
+>>>>>>> Stashed changes
   LeftAngle:
     Max: 150
     Min: 110

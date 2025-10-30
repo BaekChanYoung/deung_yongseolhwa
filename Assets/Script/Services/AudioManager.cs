@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -19,10 +18,33 @@ public class AudioManager : MonoBehaviour, IAudioService
     const string MUSIC_PARAM = "MusicVolume";
     const string SFX_PARAM = "SFXVolume";
 
+<<<<<<< Updated upstream
     void Awake()
     {
         //if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         //else { Destroy(gameObject); return; }
+=======
+    private float cachedMasterVolume;
+    private float cachedMusicVolume;
+    private float cachedSfxVolume;
+
+    //private static bool _instanceExists = false; // AudioManager 자체의 중복 방지 플래그 (이전 대화에서 사용했다면)
+
+    void Awake()
+    {
+        // 중복 인스턴스 방지 로직 (Self-registration pattern)
+        if (ServiceLocator.Resolve<IAudioService>() != null) // 이미 등록된 인스턴스가 있다면
+        {
+            Destroy(gameObject); // 이 인스턴스는 파괴합니다.
+            return;
+        }
+
+        // ServiceLocator에 자기 자신을 등록
+        ServiceLocator.Register<IAudioService>(this);
+        Debug.Log("[AudioManager] ServiceLocator에 등록되었습니다.");
+
+        SetupAudioSources();
+>>>>>>> Stashed changes
 
         // 초기 설정 불러오기
         SetMasterVolume_Internal(PlayerPrefs.GetFloat("MasterVol", 1f));
@@ -59,6 +81,13 @@ public class AudioManager : MonoBehaviour, IAudioService
     {
         float db = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(sliderValue));
         mainMixer.SetFloat(SFX_PARAM, db);
+    }
+
+    public void SetMusicVolumeInternal(float sliderValue)
+    {
+        // PlayerPrefs 저장 없이 볼륨만 변경!
+        cachedMusicVolume = sliderValue; // 캐시는 업데이트
+        SetMusicVolume_Internal(sliderValue);
     }
 
     // SFX 재생 (PlayOneShot 사용)
