@@ -23,7 +23,13 @@ public class PlayerController : MonoBehaviour
 
     Animator SpriteAnimationController;
 
-    public bool isSlash;
+    enum PlayerAniClip
+    {
+        idle = 0,
+        slash,
+        tornado,
+        Length
+    }
 
     void Start()
     {
@@ -199,20 +205,25 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            SpriteAnimationController.SetTrigger("Right_Attack");
-            if (Direction == SwipeDirection.Right)
-                SpriteAnimation.transform.localScale = new Vector3(1f, 1f, 0f);
-            if (Direction == SwipeDirection.Left)
-                SpriteAnimation.transform.localScale = new Vector3(-1f, 1f, 0f);
-        }
+            int a = Random.Range(1, (int)PlayerAniClip.Length);
 
-        if (isSlash)
-        {
-            SpriteAnimationController.SetTrigger("Slash_Attack");
-        }
-        else
-        {
-            SpriteAnimationController.SetTrigger("Stab_Attack");
+            switch (a)
+            {
+                case (int)PlayerAniClip.slash:
+                    SpriteAnimationController.SetTrigger("Slash_Attack");
+                    if (Direction == SwipeDirection.Right)
+                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                    if (Direction == SwipeDirection.Left)
+                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                    break;
+                case (int)PlayerAniClip.tornado:
+                    SpriteAnimationController.SetTrigger("Tornado_Attack");
+                    if (Direction == SwipeDirection.Right)
+                    SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                    if (Direction == SwipeDirection.Left)
+                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                    break;
+            }
         }
     }
 

@@ -106,6 +106,9 @@ public struct Player
     // 플레이어가 죽을시 true가 되는 변수
     [HideInInspector]
     public bool isDead;
+
+    [SerializeField]
+    public AudioClip attackSound;
 }
 
 [System.Serializable]
@@ -136,25 +139,32 @@ public struct ScoreSetting
 {
     [ReadOnly]
     [SerializeField]
-    [Tooltip("게임의 점수")]
+    [Tooltip("게임 점수")]
     public int score;
-
+    
+    [Tooltip("점수비례 타이머 가속의 최소치(시작 수치)")]
     [SerializeField]
     public float MinScale;
 
+    [Tooltip("점수비례 타이머 가속의 최대치(최대 수치)")]
     [SerializeField]
     public float MaxScale;
 
     [SerializeField]
-    [Tooltip("스코어 스케일의 변화량")]
+    [Tooltip("스코어 스케일의 변화량\n(이 수치에 비례해서 최대치에 가까워짐)")]
     public float difficultyScale;
 
+    [Tooltip("알파값(건들지 마시오)\n이 수치에 따라서 그래프의 모양이 바뀜")]
     [SerializeField]
     public float Alpha;
 
+    [Tooltip("현제 가속")]
     [ReadOnly]
     [SerializeField]
     public float currentSpeedRate;
+
+    [Graph(height = 60, color = "#4DD0E1", autoY = true, compact = true, showGrid = false)]
+    public float[] scaleCurve;
 }
 
 
@@ -483,6 +493,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator HitEffect()
     {
+        ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound);
+
         // 순간적인 효가를 위해 잠깐 움직임 정지
         Time.timeScale = 0f;
 
@@ -558,5 +570,24 @@ public class GameManager : MonoBehaviour
     {
         float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
         return scale;
+    }
+
+
+    [ContextMenu("Rebuild Curve Now")]
+    public void RebuildCurve()
+    {
+        // // 방어 코드
+        // if (samples < 2) samples = 2;
+        // if (scoreMax <= scoreMin) scoreMax = scoreMin + 1f;
+
+        // if (scaleCurve == null || scaleCurve.Length != samples)
+        //     scaleCurve = new float[samples];
+
+        // for (int i = 0; i < samples; i++)
+        // {
+        //     float t = (samples == 1) ? 0f : i / (samples - 1f);            // 0~1
+        //     float s = Mathf.Lerp(scoreMin, scoreMax, t);                   // 점수로 매핑
+        //     scaleCurve[i] = ScaleToScore(s);
+        // }
     }
 }

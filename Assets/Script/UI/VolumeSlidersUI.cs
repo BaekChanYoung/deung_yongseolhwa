@@ -27,48 +27,48 @@ public class VolumeSlidersUI : MonoBehaviour
         audioService = ServiceLocator.Resolve<IAudioService>();
         if (audioService == null)
         {
-            Debug.LogWarning("IAudioService¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. Bootstrapper°¡ ¸ÕÀú ·ÎµåµÇ¾ú´ÂÁö È®ÀÎÇÏ¼¼¿ä.");
+            Debug.LogWarning("IAudioServiceë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. Bootstrapperê°€ ì •ìƒì ìœ¼ë¡œ ë¡œë“œë˜ì—ˆëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.");
             return;
         }
 
-        // »ç¿ëÇÒ ½½¶óÀÌ´õ ÃÖ¼Ò°ª
+        // ìŠ¬ë¼ì´ë” ìµœì†Œê°’
         float minVal = 0.25f;
         if (audioSettings != null)
         {
-            minVal = audioSettings.minSliderValue; // AudioSettings¿¡¼­ °ª ·Îµå
+            minVal = audioSettings.minSliderValue; // AudioSettingsì—ì„œ ê°’ ë¡œë“œ
         }
 
-        // ¸¶½ºÅÍ º¼·ı ¼³Á¤
+        // ë§ˆìŠ¤í„° ë³¼ë¥¨ ìŠ¬ë¼ì´ë” ì„¤ì •
         if (MasterSlider != null)
         {
-            MasterSlider.minValue = minVal; // <--- ÃÖ¼Ò°ª ¼³Á¤
-            MasterSlider.maxValue = 1.0f;   // <--- ÃÖ´ë°ª ¼³Á¤
+            MasterSlider.minValue = minVal; // <--- ìµœì†Œê°’ ì„¤ì •
+            MasterSlider.maxValue = 1.0f;   // <--- ìµœëŒ€ê°’ ì„¤ì •
 
-            // PlayerPrefs ·Îµå ¹× ÀÌº¥Æ® ¿¬°á (±âÁ¸ ·ÎÁ÷ À¯Áö)
+            // PlayerPrefs ë¡œë“œ í›„ ì´ë²¤íŠ¸ ë“±ë¡ (ë“±ë¡ ìˆœì„œ ì¤‘ìš”)
             float master = PlayerPrefs.GetFloat("MasterVol", 1.0f);
-            MasterSlider.SetValueWithoutNotify(Mathf.Max(master, minVal)); // ·ÎµåµÈ °ªÀÌ minValº¸´Ù ÀÛÀ¸¸é minVal·Î ¼³Á¤
+            MasterSlider.SetValueWithoutNotify(Mathf.Max(master, minVal)); // ë¡œë“œ ê°’ì´ minValë³´ë‹¤ ì‘ìœ¼ë©´ minValë¡œ ë³´ì •
             MasterSlider.onValueChanged.AddListener(audioService.SetMasterVolume);
         }
 
-        // À½¾Ç º¼·ı ¼³Á¤
+        // ë®¤ì§ ë³¼ë¥¨ ìŠ¬ë¼ì´ë” ì„¤ì •
         if (musicSlider != null)
         {
-            musicSlider.minValue = minVal; // <--- ÃÖ¼Ò°ª ¼³Á¤
-            musicSlider.maxValue = 1.0f;   // <--- ÃÖ´ë°ª ¼³Á¤
+            musicSlider.minValue = minVal; // <--- ìµœì†Œê°’ ì„¤ì •
+            musicSlider.maxValue = 1.0f;   // <--- ìµœëŒ€ê°’ ì„¤ì •
 
             float m = PlayerPrefs.GetFloat("MusicVol", 0.75f);
-            musicSlider.SetValueWithoutNotify(Mathf.Max(m, minVal));
+            musicSlider.SetValueWithoutNotify(Mathf.Max(m, minVal)); // ë³´ì •
             musicSlider.onValueChanged.AddListener(audioService.SetMusicVolume);
         }
 
-        // SFX º¼·ı ¼³Á¤
+        // SFX ë³¼ë¥¨ ìŠ¬ë¼ì´ë” ì„¤ì •
         if (sfxSlider != null)
         {
-            sfxSlider.minValue = minVal; // <--- ÃÖ¼Ò°ª ¼³Á¤
-            sfxSlider.maxValue = 1.0f;   // <--- ÃÖ´ë°ª ¼³Á¤
+            sfxSlider.minValue = minVal; // <--- ìµœì†Œê°’ ì„¤ì •
+            sfxSlider.maxValue = 1.0f;   // <--- ìµœëŒ€ê°’ ì„¤ì •
 
             float s = PlayerPrefs.GetFloat("SfxVol", 0.8f);
-            sfxSlider.SetValueWithoutNotify(Mathf.Max(s, minVal));
+            sfxSlider.SetValueWithoutNotify(Mathf.Max(s, minVal)); // ë³´ì •
             sfxSlider.onValueChanged.AddListener(audioService.SetSfxVolume);
         }
     }
@@ -84,32 +84,32 @@ public class VolumeSlidersUI : MonoBehaviour
     {
         if (contentCanvasGroup != null)
         {
-            // ³»¿ë¹° È°¼ºÈ­´Â Á·ÀÚºÀÀÌ ³¡³¯ ¶§
+            // í™œì„±í™”ì™€ ë™ì‹œì— íˆ¬ëª…ë„ 0ì—ì„œ ì‹œì‘
             contentCanvasGroup.alpha = 0f;
-            // ³»¿ë¹° ±×·ì ÀÚÃ¼´Â È°¼ºÈ­ (ÀÚ½Ä ¿ÀºêÁ§Æ®ÀÇ Raycast¸¦ À§ÇØ)
+            // CanvasGroup ì˜¤ë¸Œì íŠ¸ í™œì„±í™” (ìì‹ ì˜¤ë¸Œì íŠ¸ Raycast í¬í•¨)
             contentCanvasGroup.gameObject.SetActive(true);
 
-            StartCoroutine(FadeContent(1f)); // 1f (Alpha 1.0)À¸·Î ÆäÀÌµå ÀÎ
+            StartCoroutine(FadeContent(1f)); // Alpha 1.0ê¹Œì§€ í˜ì´ë“œ ì¸
         }
     }
 
-    // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ®¿¡¼­ È£ÃâµÉ ÇÔ¼ö: ÆäÀÌµå ¾Æ¿ô ½ÃÀÛ
+    // ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ ë“±ì—ì„œ í˜¸ì¶œ: í˜ì´ë“œ ì•„ì›ƒ ì‹œì‘
     public void StartContentFadeOut()
     {
         if (contentCanvasGroup != null)
         {
-            StartCoroutine(FadeContent(0f)); // 0f (Alpha 0.0)À¸·Î ÆäÀÌµå ¾Æ¿ô
+            StartCoroutine(FadeContent(0f)); // Alpha 0.0ê¹Œì§€ í˜ì´ë“œ ì•„ì›ƒ
         }
     }
 
-    // ÄÚ·çÆ¾: Alpha °ªÀ» ¸ñÇ¥Ä¡±îÁö ºÎµå·´°Ô º¯°æ
+    // ì½”ë£¨í‹´: Alphaë¥¼ ëª©í‘œê°’ìœ¼ë¡œ ë³´ê°„í•˜ë©° í˜ì´ë“œ ì²˜ë¦¬
     IEnumerator FadeContent(float targetAlpha)
     {
         float startAlpha = contentCanvasGroup.alpha;
         float time = 0f;
 
-        // ¸¶½ºÅÍ, BGM, SFX ±×·ìÀ» ¼øÂ÷ÀûÀ¸·Î È°¼ºÈ­ÇÏ·Á¸é ÀÌ ·ÎÁ÷À» ¿©±â¿¡ ÅëÇÕÇØ¾ß ÇÕ´Ï´Ù.
-        // ¿©±â¼­´Â ContentGroup ÀüÃ¼ÀÇ Alpha¸¦ Á¶ÀıÇÏ´Â ÀÏ¹İÀûÀÎ ÆäÀÌµå¸¸ »ç¿ëÇÕ´Ï´Ù.
+        // ë§ˆìŠ¤í„°/BGM/SFX ê·¸ë£¹ì„ ê°œë³„ì ìœ¼ë¡œ ì¼œê³  ë„ë ¤ë©´ ì´ ë¶€ë¶„ì—ì„œ ì¶”ê°€ë¡œ ì²˜ë¦¬í•˜ì„¸ìš”.
+        // ì—¬ê¸°ì„œëŠ” ContentGroup ì „ì²´ì˜ Alphaë§Œ ì¡°ì ˆí•˜ëŠ” ì¼ë°˜ì ì¸ í˜ì´ë“œë¥¼ êµ¬í˜„í•©ë‹ˆë‹¤.
 
         while (time < fadeDuration)
         {
@@ -120,14 +120,14 @@ public class VolumeSlidersUI : MonoBehaviour
 
         contentCanvasGroup.alpha = targetAlpha;
 
-        // ÆäÀÌµå ¾Æ¿ô(´İ±â)ÀÌ ¿Ï·áµÈ °æ¿ì¿¡¸¸ ºñÈ°¼ºÈ­ (2¹ø Ç×¸ñ ÇØ°á)
+        // í˜ì´ë“œ ì•„ì›ƒ(ë‹«í˜) ì™„ë£Œ ì‹œ ë¹„í™œì„±í™” (ì´ì¤‘ ì…ë ¥ ë°©ì§€)
         if (targetAlpha <= 0.01f)
         {
             contentCanvasGroup.gameObject.SetActive(false);
         }
     }
 
-    //// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ®¿¡¼­ È£ÃâµÉ ÇÔ¼ö
+    //// ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ì—ì„œ í˜¸ì¶œí•  ìˆ˜ ìˆëŠ” UI í‘œì‹œ í•¨ìˆ˜ (í•„ìš” ì‹œ ì‚¬ìš©)
 
     //public void ShowSetting_Bg()
     //{
