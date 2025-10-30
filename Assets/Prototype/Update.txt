@@ -21,6 +21,10 @@ spine 적용불가 문제 해결
 player에게 임시 spine 적용
 DownMode 기능 추가 (movetoward, smoothDamp)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+(임시기능) 모드 변경 버튼 추가
+>>>>>>> Stashed changes
+=======
 (임시기능) 모드 변경 버튼 추가
 >>>>>>> Stashed changes
 =======

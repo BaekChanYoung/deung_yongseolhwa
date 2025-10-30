@@ -11,7 +11,11 @@ GameObject:
   - component: {fileID: 5958876057185407154}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   - component: {fileID: 7761838300762887719}
+=======
+  - component: {fileID: 4575040630177658930}
+>>>>>>> Stashed changes
 =======
   - component: {fileID: 4575040630177658930}
 >>>>>>> Stashed changes
@@ -42,7 +46,11 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 --- !u!114 &7761838300762887719
+=======
+--- !u!114 &4575040630177658930
+>>>>>>> Stashed changes
 =======
 --- !u!114 &4575040630177658930
 >>>>>>> Stashed changes
@@ -63,6 +71,7 @@ MonoBehaviour:
   score: 0
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   Player: {fileID: 0}
   AttackDuration: 0.2
   PlayerDownDuration: 0.2
@@ -74,6 +83,8 @@ MonoBehaviour:
   EnemyDownDuration: 0.5
   StartSpawnCount: 2
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   hitSlowEffect:

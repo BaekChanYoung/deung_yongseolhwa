@@ -17,6 +17,7 @@ public class AngleRange
 
 
 [System.Serializable]
+<<<<<<< Updated upstream
 public enum DownMovementMode
 {
 <<<<<<< Updated upstream
@@ -163,13 +164,68 @@ public class Background
 
     [SerializeField]
     public DownMovementMode DownMode;
-
-    [Tooltip("배경이 내려가는 거리")]
+=======
+public struct HitSlowEffect
+{
+    [Tooltip("공격이 히트 시 정지효과를 주는 시간")]
     [SerializeField]
+    public float HitStopTime;
+
+    [Tooltip("공격이 히트 시 슬로우 효과를 주는 강도")]
+    [SerializeField]
+    public float HitSlowScale;
+
+
+    [Tooltip("공격이 히트 시 슬로우 효과를 주는 시간")]
+    public float HitSlowTime;
+}
+
+[System.Serializable]
+public enum DownMovementMode
+{
+    moveToword,
+    SmoothDamp
+}
+
+[System.Serializable]
+public struct enemy
+{
+    [Tooltip("적 프리펩")]
+    [SerializeField]
+    public GameObject Prefab; // 적 프리펩
+
+    [Tooltip("적 소환시 부모지정")]
+    [SerializeField]
+    public GameObject EnemyParent; // 적 부모 오브젝트
+
+    [Tooltip("적 스폰시 기준 오브젝트")]
+    [SerializeField]
+    public GameObject EnemySpawnLines; // 적 스폰 위치들
+
+    [ReadOnly]
+    [Tooltip("가장 가까운 적")]
+    [SerializeField]
+    public GameObject TargetEnemy; // 가장 가까운 목표 적
+
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+    [Tooltip("적 소환시 적들의 간격")]
+    [SerializeField]
+    public float EnemyInterval; // 적 소환 시 사이의 간격
+>>>>>>> Stashed changes
+
+
+    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
+    [SerializeField]
+<<<<<<< Updated upstream
     public float BackgroundDownDistance; // 배경 내려가는 거리
+=======
+    public float EnemyDownDuration;
+>>>>>>> Stashed changes
 
-    [Tooltip("배경이 내려갈 시 걸리는 시간")]
     [SerializeField]
+<<<<<<< Updated upstream
     public float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
 }
 
@@ -272,6 +328,15 @@ public struct enemy
 public struct Player
 {
     [SerializeField]
+=======
+    public float StartSpawnCount;
+}
+
+[System.Serializable]
+public struct Player
+{
+    [SerializeField]
+>>>>>>> Stashed changes
     public GameObject playerObj;
 
     [SerializeField]
@@ -379,6 +444,9 @@ public class GameManager : MonoBehaviour
     /// 플레이어 관련
     ////////////////////////////////////////
     [SerializeField]
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     public Player player;
 
@@ -389,11 +457,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public enemy Enemy;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
 
 
     bool isEnmeyDown;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -449,6 +520,9 @@ public class GameManager : MonoBehaviour
         // Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -463,7 +537,10 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     }
 
     void Start()
@@ -482,6 +559,9 @@ public class GameManager : MonoBehaviour
         scoreSetting.currentSpeedRate = 1f;
 
         //Timer.GetComponent<TimerBarController>().PauseTimer();
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
 
@@ -509,8 +589,11 @@ public class GameManager : MonoBehaviour
         {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             FindToTargetEnemy(); // 목표 적 정하기
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
             if (!Timer.GetComponent<TimerBarController>().IsTimerActive() && scoreSetting.score > 0f)
@@ -577,7 +660,11 @@ public class GameManager : MonoBehaviour
             }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             else if (Input.GetTouch(0).phase == TouchPhase.Began)
+=======
+            else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
+>>>>>>> Stashed changes
 =======
             else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
 >>>>>>> Stashed changes
@@ -590,6 +677,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
@@ -697,6 +785,17 @@ public class GameManager : MonoBehaviour
             {
                 returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
 >>>>>>> Stashed changes
+=======
+    // 가장 가까운 적을 목표 적으로 지정
+    void FindToTargetEnemy()
+    {
+        GameObject returnEnemy = Enemy.EnemyParent.transform.GetChild(0).gameObject;
+        for (int i = 1; i < Enemy.EnemyParent.transform.childCount; i++)
+        {
+            if (returnEnemy.transform.position.y > Enemy.EnemyParent.transform.GetChild(i).transform.position.y)
+            {
+                returnEnemy = Enemy.EnemyParent.transform.GetChild(i).gameObject;
+>>>>>>> Stashed changes
             }
         }
 
@@ -705,8 +804,11 @@ public class GameManager : MonoBehaviour
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     void Dead()
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     // 정답을 학인하여 비교
@@ -778,6 +880,9 @@ public class GameManager : MonoBehaviour
 
     public void Dead()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -899,6 +1004,7 @@ public class GameManager : MonoBehaviour
             enemySpawn();
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             for (int j = 0; j < Enemies.transform.childCount; j++)
             {
                 Enemies.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
@@ -947,6 +1053,12 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(EnemyMoveToDown());
                 StartCoroutine(PlayerMoveToDown());
                 yield break;
+=======
+            for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
+            {
+                Enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * Enemy.EnemyInterval);
+                Enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * Enemy.EnemyInterval;
+>>>>>>> Stashed changes
 =======
             for (int j = 0; j < Enemy.EnemyParent.transform.childCount; j++)
             {

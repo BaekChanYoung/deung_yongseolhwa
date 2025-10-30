@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Prototype/Background/BackgroundManager.cs.meta
 guid: 75ff53776cf0aeb44846a8753a544270
+========
+guid: a64f2766d7a62f94f8840e4d422822ca
+>>>>>>>> Stashed changes:Assets/Prototype/Background/BackgroundController.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

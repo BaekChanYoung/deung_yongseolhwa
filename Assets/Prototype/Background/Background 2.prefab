@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
   - component: {fileID: 322310040134896981}
   - component: {fileID: 2452245010961558980}
   - component: {fileID: 1960038896967164626}
@@ -17,6 +18,10 @@ GameObject:
   - component: {fileID: 3965282275740197934}
   - component: {fileID: 5830861015883497255}
 >>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
+=======
+  - component: {fileID: 3402468889872492955}
+  - component: {fileID: 3213623540627204607}
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
   m_Layer: 0
   m_Name: Background 2
   m_TagString: Untagged
@@ -34,9 +39,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
   m_LocalPosition: {x: -0.02, y: -9.94, z: 0}
   m_LocalScale: {x: 6, y: 10, z: 1}
 =======
+=======
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
 >>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
@@ -83,8 +91,13 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
   m_SortingLayerID: 0
   m_SortingLayer: 0
+=======
+  m_SortingLayerID: 445923099
+  m_SortingLayer: 6
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0.49019608, b: 1, a: 1}
@@ -104,6 +117,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 2.prefab
 --- !u!114 &1960038896967164626
 MonoBehaviour:
@@ -164,3 +178,5 @@ BoxCollider2D:
   m_EdgeRadius: 0
 =======
 >>>>>>> Stashed changes:Assets/Prototype/Background/WaterFall.prefab
+=======
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab

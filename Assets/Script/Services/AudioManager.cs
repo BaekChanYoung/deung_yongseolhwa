@@ -35,7 +35,10 @@ public class AudioManager : MonoBehaviour, IAudioService
         // 중복 인스턴스 방지 로직 (Self-registration pattern)
         if (ServiceLocator.Resolve<IAudioService>() != null) // 이미 등록된 인스턴스가 있다면
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
         {
             Destroy(gameObject); // 이 인스턴스는 파괴합니다.
             return;
