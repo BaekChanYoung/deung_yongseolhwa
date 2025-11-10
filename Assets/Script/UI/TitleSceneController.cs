@@ -23,6 +23,10 @@ public class TitleSceneController : MonoBehaviour
     [Tooltip("애니메이션 강도 (모바일: 0.3~0.5 권장)")]
     public float intensity = 0.4f;
 
+    [Range(5f, 20f)]
+    [Tooltip("위아래 움직임 범위")]
+    public float moveRange = 10f;
+
     [Header("Audio")]
     [Tooltip("버튼 클릭 효과음")]
     public AudioClip clickSfx;
@@ -73,14 +77,14 @@ public class TitleSceneController : MonoBehaviour
         Debug.Log("[TitleScene] 초기화 완료 (모바일 최적화)");
     }
 
-    void Update()
+    /*void Update()
     {
         // 아무 키나 누르면 시작 (선택사항)
         if (Input.anyKeyDown && !Input.GetMouseButtonDown(0))
         {
             OnStartButtonClicked();
         }
-    }
+    }*/
 
     void OnStartButtonClicked()
     {
@@ -117,7 +121,7 @@ public class TitleSceneController : MonoBehaviour
             float time = Time.time * animationSpeed;
 
             // 위아래 움직임
-            float yOffset = Mathf.Sin(time) * intensity * 10f;
+            float yOffset = Mathf.Sin(time) * intensity * moveRange;
 
             // 알파 변화
             float normalizedY = Mathf.Sin(time);

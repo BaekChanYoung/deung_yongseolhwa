@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5589335515246923041}
-  - component: {fileID: 539292998383238283}
+  - component: {fileID: 1183093258248001523}
   - component: {fileID: 2977459116584673988}
   m_Layer: 0
   m_Name: Background Layer
@@ -38,7 +38,7 @@ Transform:
   - {fileID: 126562779118793489}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &539292998383238283
+--- !u!114 &1183093258248001523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2870919867376999949}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a64f2766d7a62f94f8840e4d422822ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 8caf5076be911f14d8290f688e55d2fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectLayer: 0
@@ -130,11 +130,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3213623540627204607, guid: 1b817a31719a23d47be4ea8b5e0454f6, type: 3}
       propertyPath: m_SortingLayer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3213623540627204607, guid: 1b817a31719a23d47be4ea8b5e0454f6, type: 3}
       propertyPath: m_SortingLayerID
-      value: 1949939277
+      value: 1802907139
       objectReference: {fileID: 0}
     - target: {fileID: 3402468889872492955, guid: 1b817a31719a23d47be4ea8b5e0454f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -243,14 +243,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5830861015883497255, guid: 483bc8f61f4639e489b124dea059f8f5, type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5830861015883497255, guid: 483bc8f61f4639e489b124dea059f8f5, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1629281371
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -349,14 +341,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5589335515246923041}
     m_Modifications:
-    - target: {fileID: 2004211162626515004, guid: 6befded848c80af47b8fc79e4fbb9709, type: 3}
-      propertyPath: m_SortingLayer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004211162626515004, guid: 6befded848c80af47b8fc79e4fbb9709, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 511305017
-      objectReference: {fileID: 0}
     - target: {fileID: 5679013519462352706, guid: 6befded848c80af47b8fc79e4fbb9709, type: 3}
       propertyPath: m_Name
       value: Snow_Back
@@ -463,14 +447,6 @@ PrefabInstance:
     - target: {fileID: 257617664445140270, guid: 710e45569173590448f5b703cea58800, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7274895853788310464, guid: 710e45569173590448f5b703cea58800, type: 3}
-      propertyPath: m_SortingLayer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7274895853788310464, guid: 710e45569173590448f5b703cea58800, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1949939277
       objectReference: {fileID: 0}
     - target: {fileID: 7999024241593850316, guid: 710e45569173590448f5b703cea58800, type: 3}
       propertyPath: m_Name

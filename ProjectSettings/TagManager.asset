@@ -42,17 +42,17 @@ TagManager:
     uniqueID: 0
     locked: 0
   - name: Water
-    uniqueID: 1629281371
+    uniqueID: 984378711
     locked: 0
   - name: Background_1
-    uniqueID: 511305017
+    uniqueID: 3308844769
     locked: 0
   - name: Background_2
-    uniqueID: 1949939277
+    uniqueID: 3396601937
     locked: 0
   - name: Enemy
-    uniqueID: 3503385917
+    uniqueID: 3344588723
     locked: 0
   - name: Player
-    uniqueID: 929507133
+    uniqueID: 818292453
     locked: 0

@@ -9,19 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5958876057185407154}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - component: {fileID: 7761838300762887719}
-=======
   - component: {fileID: 4575040630177658930}
->>>>>>> Stashed changes
-=======
-  - component: {fileID: 4575040630177658930}
->>>>>>> Stashed changes
-=======
-  - component: {fileID: 4575040630177658930}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: GameMaeager
   m_TagString: Untagged
@@ -44,19 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
---- !u!114 &7761838300762887719
-=======
 --- !u!114 &4575040630177658930
->>>>>>> Stashed changes
-=======
---- !u!114 &4575040630177658930
->>>>>>> Stashed changes
-=======
---- !u!114 &4575040630177658930
->>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,37 +41,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1329720344299829089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d280725c79b5e784fa74557d28e6d71e, type: 3}
+  m_Script: {fileID: 11500000, guid: 9897357bc807c4e45bc4a5b061ad3498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  Player: {fileID: 0}
-  AttackDuration: 0.2
-  PlayerDownDuration: 0.2
-  PlayerMovePos: {x: 0, y: 0}
-  Enemy: {fileID: 6650132074972378466, guid: a2cf2404628f3b645a8e15660be817dc, type: 3}
-  Enemies: {fileID: 0}
-  EnemySpawnLines: {fileID: 0}
-  TargetEnemy: {fileID: 0}
-  EnemyDownDuration: 0.5
-  StartSpawnCount: 2
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  scoreSetting:
+    score: 0
+    MinScale: 1
+    MaxScale: 5
+    difficultyScale: 0.01
+    Alpha: 1
+    currentSpeedRate: 0
+  Timer: {fileID: 0}
+  MaxTime: 60
+  startTime: 10
+  AddSecond: 1
   hitSlowEffect:
     HitStopTime: 0
     HitSlowScale: 0
     HitSlowTime: 0
   background:
-    BackgroundLayer:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    selectLayer: 1
+    BackgroundLayer: []
     DownMode: 1
     BackgroundDownDistance: 7
     BackgroundDownDuration: 5
@@ -106,7 +72,7 @@ MonoBehaviour:
     PlayerDownDuration: 5
     reboundPower: 0
     isDead: 0
-  Enemy:
+  enemy:
     Prefab: {fileID: 6650132074972378466, guid: a2cf2404628f3b645a8e15660be817dc, type: 3}
     EnemyParent: {fileID: 0}
     EnemySpawnLines: {fileID: 0}
@@ -114,9 +80,9 @@ MonoBehaviour:
     DownMode: 1
     EnemyInterval: 7
     EnemyDownDuration: 5
-    StartSpawnCount: 4
+    StartSpawnCount: 3
+    LastSpawnPoint: 0
   IsCanTouch: 0
->>>>>>> Stashed changes
   LeftAngle:
     Max: 150
     Min: 110
@@ -126,5 +92,6 @@ MonoBehaviour:
   RightAngle:
     Max: 70
     Min: 30
-  answerDirection: 
+  InputDirection: 0
+  answerDirection: 0
   RestartMessage: {fileID: 0}

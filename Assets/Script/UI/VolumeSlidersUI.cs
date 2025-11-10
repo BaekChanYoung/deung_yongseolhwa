@@ -119,7 +119,7 @@ public class VolumeSlidersUI : MonoBehaviour
 
         contentCanvasGroup.alpha = targetAlpha;
 
-        // 페이드 아웃(닫기)이 완료된 경우에만 비활성화 (2번 항목 해결)
+        // 페이드 아웃(닫기)이 완료된 경우에만 비활성화
         if (targetAlpha <= 0.01f)
         {
             contentCanvasGroup.gameObject.SetActive(false);

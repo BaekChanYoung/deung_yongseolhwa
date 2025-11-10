@@ -35,7 +35,11 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     filterMode: 0
+=======
+    filterMode: 1
+>>>>>>> Stashed changes
 =======
     filterMode: 1
 >>>>>>> Stashed changes
@@ -77,7 +81,11 @@ TextureImporter:
     resizeAlgorithm: 0
     textureFormat: -1
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     textureCompression: 0
+=======
+    textureCompression: 1
+>>>>>>> Stashed changes
 =======
     textureCompression: 1
 >>>>>>> Stashed changes

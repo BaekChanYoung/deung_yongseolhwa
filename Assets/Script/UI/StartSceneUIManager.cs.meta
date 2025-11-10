@@ -3,7 +3,14 @@ guid: a924ff4038b5adb4daf0a2d8262c1039
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - settingsPanel: {instanceID: 0}
+  - settingsButton: {instanceID: 0}
+  - closeSettingsButton: {instanceID: 0}
+  - NextSceneButton: {instanceID: 0}
+  - settingsPanelAnimator: {instanceID: 0}
+  - startGameEvent: {fileID: 11400000, guid: 7781452f421480b4994ad85ac1c5147a, type: 2}
+  - volumeSlidersUI: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

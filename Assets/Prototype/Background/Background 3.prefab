@@ -17,6 +17,9 @@ GameObject:
   - component: {fileID: 3402468889872492955}
   - component: {fileID: 3213623540627204607}
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
+=======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
 =======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
@@ -38,9 +41,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
   m_LocalPosition: {x: -6.74, y: 7.5, z: 0}
   m_LocalScale: {x: 6, y: 10, z: 1}
 =======
+=======
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
 =======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -95,6 +101,9 @@ SpriteRenderer:
   m_SortingLayerID: 445923099
   m_SortingLayer: 6
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
+=======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
 =======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
@@ -110,6 +119,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+<<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
 <<<<<<< Updated upstream:Assets/Prototype/Background/Background 3.prefab
 --- !u!114 &6996173820712229328
@@ -169,6 +179,8 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+=======
+>>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
 =======
 >>>>>>> Stashed changes:Assets/Prototype/Background/Cliff.prefab
 =======

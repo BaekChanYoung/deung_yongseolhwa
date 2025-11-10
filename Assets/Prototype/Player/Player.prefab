@@ -8,26 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - component: {fileID: 584827140918788549}
-  - component: {fileID: 7109573920048563008}
-=======
   - component: {fileID: 2541894500420778643}
   - component: {fileID: 2903030985796600574}
   - component: {fileID: 8067732945484540625}
->>>>>>> Stashed changes
-=======
-  - component: {fileID: 2541894500420778643}
-  - component: {fileID: 2903030985796600574}
-  - component: {fileID: 8067732945484540625}
->>>>>>> Stashed changes
-=======
-  - component: {fileID: 2541894500420778643}
-  - component: {fileID: 2903030985796600574}
-  - component: {fileID: 8067732945484540625}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: SpriteAnimation
   m_TagString: Untagged
@@ -44,19 +27,7 @@ Transform:
   m_GameObject: {fileID: 2027410432225336973}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  m_LocalPosition: {x: -2.1655211, y: -1.2933391, z: 0}
-=======
   m_LocalPosition: {x: 0, y: -3, z: 0}
->>>>>>> Stashed changes
-=======
-  m_LocalPosition: {x: 0, y: -3, z: 0}
->>>>>>> Stashed changes
-=======
-  m_LocalPosition: {x: 0, y: -3, z: 0}
->>>>>>> Stashed changes
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100,31 +71,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
-=======
-  m_SortingLayerID: 1203584839
+  m_SortingLayerID: 818292453
   m_SortingLayer: 5
   m_SortingOrder: 0
-=======
-  m_SortingLayerID: 1203584839
-  m_SortingLayer: 5
-  m_SortingOrder: 0
->>>>>>> Stashed changes
-=======
-  m_SortingLayerID: 1203584839
-  m_SortingLayer: 5
-  m_SortingOrder: 0
->>>>>>> Stashed changes
   m_Sprite: {fileID: 1070136483, guid: 881a2ee17f0df744ba7c4cbf8d936ada, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
->>>>>>> Stashed changes
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -134,14 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 --- !u!95 &8067732945484540625
 Animator:
   serializedVersion: 5
@@ -211,12 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTouch: 0
-  OverResponsiveness: 0
   InputDirection: 0
-  TouchResponsiveness: 200
-  justPlayerTouch: 1
-  PlayerCenter: {x: 0, y: 0}
-  PlayerRadius: 2
 --- !u!114 &1784017885336274187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,7 +251,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1203584839
+  m_SortingLayerID: 818292453
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
@@ -354,10 +292,3 @@ MonoBehaviour:
   _animationName: animation
   loop: 1
   timeScale: 1
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

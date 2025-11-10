@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Prototype/Temp/DownModeChangeButten.cs.meta
 guid: a9b783d15f19fc34a821fded343e2302
+========
+guid: a64f2766d7a62f94f8840e4d422822ca
+>>>>>>>> Stashed changes:Assets/Prototype/Temp/BackgroundController.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

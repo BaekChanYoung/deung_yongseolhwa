@@ -6,10 +6,12 @@ public class Bootstrapper : MonoBehaviour
     public AudioManager audioManagerPrefab; // Inspector에서 AudioManager 프리팹을 연결합니다.
     public SceneService sceneServicePrefab;
     public SceneTransitionUI transitionUIPrefab;
+    public SceneMusicManager sceneMusicManagerPrefab;
 
     // 이 플래그는 게임 전체에서 AudioManager가 한 번만 초기화되도록 보장합니다.
     private static bool _isAudioManagerInitialized = false;
     private static bool _isSceneServiceInitialized = false;
+    private static bool _isSceneMusicManagerInitialized = false;
 
     void Awake()
     {
@@ -44,6 +46,7 @@ public class Bootstrapper : MonoBehaviour
             // 이미 AudioManager가 초기화되어 있다면, 이 Bootstrapper는 할 일이 없으므로 스스로를 파괴합니다.
             // (만약 다른 초기화 로직이 있다면 Destroy를 하지 않고 유지할 수 있습니다.)
             Destroy(gameObject);
+            return;
         }
 
         // ========== SceneTransitionUI 초기화 (새로 추가!) ==========
@@ -76,6 +79,22 @@ public class Bootstrapper : MonoBehaviour
             else
             {
                 Debug.LogError("[Bootstrapper] SceneService Prefab이 연결되지 않았습니다!");
+            }
+        }
+
+        // ========== SceneMusicManager 초기화 새로 추가! ==========
+        if (!_isSceneMusicManagerInitialized)
+        {
+            if (sceneMusicManagerPrefab != null)
+            {
+                SceneMusicManager musicManagerInstance = Instantiate(sceneMusicManagerPrefab);
+                DontDestroyOnLoad(musicManagerInstance.gameObject);
+                _isSceneMusicManagerInitialized = true;
+                Debug.Log("[Bootstrapper] SceneMusicManager 인스턴스 생성 및 DontDestroyOnLoad 적용 완료.");
+            }
+            else
+            {
+                Debug.LogWarning("[Bootstrapper] SceneMusicManager Prefab이 연결되지 않았습니다. 씬별 BGM 기능이 비활성화됩니다.");
             }
         }
 

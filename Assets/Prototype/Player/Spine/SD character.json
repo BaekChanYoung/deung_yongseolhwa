@@ -1,12 +1,12 @@
 {
 "skeleton": {
 	"hash": "K8bbYBeqWHpzvcyjT00IIomI8dU",
-	"spine": "3.8.33-bata",
+	"spine": "3.8.33",
 	"x": -424.38,
 	"y": -760.58,
 	"width": 843.7,
 	"height": 1649.49,
-	"images": "./images/",
+    "images": "./",
 	"audio": "C:/Users/roul4/OneDrive/Desktop/SD 캐릭터"
 },
 "bones": [

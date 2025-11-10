@@ -26,8 +26,8 @@ public class SceneService : MonoBehaviour, ISceneService
 
     private bool isLoading = false;
     private IAudioService audioService;
-    private string targetSceneName;
-    private float savedMusicVolume = 0.75f;
+    //private string targetSceneName;
+    //private float savedMusicVolume = 0.5f;
 
     public bool IsLoading => isLoading;
 
@@ -66,17 +66,23 @@ public class SceneService : MonoBehaviour, ISceneService
             return;
         }
 
+        if (Time.timeScale != 1f)
+        {
+            Debug.LogWarning($"[SceneService] Time.timeScale이 {Time.timeScale}였습니다. 1로 복구합니다.");
+            Time.timeScale = 1f;
+        }
+
         Debug.Log("========================================");
         Debug.Log($"[SceneService] 씬 전환 요청!");
         Debug.Log($"  현재 씬: {GetCurrentSceneName()}");
         Debug.Log($"  목표 씬: {targetScene}");
         Debug.Log("========================================");
 
-        targetSceneName = targetScene;
-        StartCoroutine(LoadSceneWithLoadingCoroutine(onComplete));
+        //targetSceneName = targetScene;
+        StartCoroutine(LoadSceneWithLoadingCoroutine(targetScene, onComplete));
     }
 
-    IEnumerator LoadSceneWithLoadingCoroutine(Action onComplete)
+    IEnumerator LoadSceneWithLoadingCoroutine(string targetSceneName, Action onComplete)
     {
         isLoading = true;
 
@@ -85,18 +91,7 @@ public class SceneService : MonoBehaviour, ISceneService
 
         // ========== 1단계: 현재 씬에서 Fade Out + BGM 페이드 아웃 ==========
 
-        // 현재 BGM 볼륨 저장
-        savedMusicVolume = PlayerPrefs.GetFloat("MusicVol", 0.75f);
-        Debug.Log($"[SceneService] BGM 볼륨 저장: {savedMusicVolume:F2}");
-
         PlayTransitionSfx();
-
-        // BGM 볼륨을 0으로 페이드 아웃
-        if (audioService != null)
-        {
-            Debug.Log("[SceneService] BGM 페이드 아웃 시작 (0.0)");
-            yield return StartCoroutine(FadeMusicOut(fadeDuration));
-        }
 
         // 화면 페이드 아웃
         if (transitionUI != null)
@@ -120,7 +115,7 @@ public class SceneService : MonoBehaviour, ISceneService
 
         // ========== 3단계: 목표 씬 비동기 로드 ==========
 
-        float startTime = Time.time;
+        float startTime = Time.realtimeSinceStartup;
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
         asyncLoad.allowSceneActivation = false;
@@ -135,7 +130,7 @@ public class SceneService : MonoBehaviour, ISceneService
                 transitionUI.SetLoadingProgress(progress);
             }
 
-            float elapsedTime = Time.time - startTime;
+            float elapsedTime = Time.realtimeSinceStartup - startTime;
             bool minTimeReached = elapsedTime >= minLoadingTime;
 
             if (asyncLoad.progress >= 0.9f && minTimeReached)
@@ -167,16 +162,6 @@ public class SceneService : MonoBehaviour, ISceneService
 
         Debug.Log("[SceneService] Fade In 완료");
 
-        // ========== BGM 볼륨 복구 (최종 씬에서만!) ==========
-        if (audioService != null)
-        {
-            Debug.Log($"[SceneService] 최종 씬({targetSceneName}) - BGM 볼륨 복구 시작: 0.0 → {savedMusicVolume:F2}");
-            yield return StartCoroutine(RestoreMusicVolumeCoroutine(savedMusicVolume, fadeDuration));
-        }
-        // ================================================
-
-        // ========== 완료 ==========
-
         isLoading = false;
 
         if (onComplete != null)
@@ -185,61 +170,6 @@ public class SceneService : MonoBehaviour, ISceneService
         Debug.Log($"[SceneService] ========================================");
         Debug.Log($"[SceneService] 씬 전환 완전 완료: {targetSceneName}");
         Debug.Log($"[SceneService] ========================================");
-    }
-
-    IEnumerator FadeMusicOut(float duration)
-    {
-        if (audioService == null) yield break;
-
-        Debug.Log($"[SceneService] FadeMusicOut 시작: {savedMusicVolume:F2} → 0.0");
-
-        float elapsed = 0f;
-        float startVolume = savedMusicVolume;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float t = elapsed / duration;
-            float currentVolume = Mathf.Lerp(startVolume, 0f, t);
-
-            // Internal 메서드 사용 (PlayerPrefs 저장 안 함)
-            audioService.SetMusicVolumeInternal(currentVolume);
-
-            yield return null;
-        }
-
-        // 최종적으로 0으로 설정
-        audioService.SetMusicVolumeInternal(0f);
-        Debug.Log($"[SceneService] FadeMusicOut 완료: 0.0");
-    }
-
-    /// <summary>
-    /// BGM 볼륨을 부드럽게 복구
-    /// </summary>
-    IEnumerator RestoreMusicVolumeCoroutine(float targetVolume, float duration)
-    {
-        if (audioService == null) yield break;
-
-        Debug.Log($"[SceneService] BGM 볼륨 복구 코루틴 시작: 0.0 → {targetVolume:F2}");
-
-        float elapsed = 0f;
-        float startVolume = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float t = elapsed / duration;
-            float currentVolume = Mathf.Lerp(startVolume, targetVolume, t);
-
-            // Internal 메서드 사용 (PlayerPrefs 저장 안 함)
-            audioService.SetMusicVolumeInternal(currentVolume);
-
-            yield return null;
-        }
-
-        // 최종 볼륨 설정 (PlayerPrefs에 저장)
-        audioService.SetMusicVolume(targetVolume);
-        Debug.Log($"[SceneService] BGM 볼륨 복구 완료: {targetVolume:F2}");
     }
 
     public string GetCurrentSceneName()

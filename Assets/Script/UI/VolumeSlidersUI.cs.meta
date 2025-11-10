@@ -1,9 +1,13 @@
 fileFormatVersion: 2
-guid: 17274822804d36e4d8dae65daff75078
+guid: 18c94ea5aefe9be469952192698e639f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MasterSlider: {instanceID: 0}
+  - musicSlider: {instanceID: 0}
+  - sfxSlider: {instanceID: 0}
+  - audioSettings: {fileID: 11400000, guid: ddf122f300fa0ff439a7ded6b970e6f5, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

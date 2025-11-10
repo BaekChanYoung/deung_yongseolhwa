@@ -25,11 +25,33 @@ public class SceneTransitionUI : MonoBehaviour
     [Tooltip("로딩 퍼센트 텍스트 (0%)")]
     public Text percentText;
 
+    [Header("Loading Icon")]
+    [Tooltip("로딩 아이콘 (회전 애니메이션)")]
+    public RectTransform loadingIcon;
+
+    [Tooltip("회전 속도")]
+    public float rotationSpeed = 180f;
+
+    [Header("Loading Tips")]
+    [Tooltip("팁 텍스트 UI")]
+    public Text tipText;
+
+    [Tooltip("팁 텍스트 배열")]
+    public string[] loadingTips = new string[]
+    {
+        "Tip: 마스터 볼륨으로 전체 소리를 조절할 수 있습니다.",
+        "Tip: 옵션에서 배경음과 효과음을 따로 조절하세요.",
+        "Tip: ESC 키로 옵션 창을 열고 닫을 수 있습니다.",
+        "Tip: 설정은 자동으로 저장됩니다."
+    };
+
     [Header("Animation")]
     [Tooltip("로딩 텍스트 애니메이션 (점 깜빡임)")]
     public bool animateLoadingText = true;
 
     private Coroutine textAnimationCoroutine;
+    private bool isLoadingIconRotating = false;
+    private bool isLoadingUIVisible = false;
 
     void Awake()
     {
@@ -54,6 +76,14 @@ public class SceneTransitionUI : MonoBehaviour
         HideLoadingUI();
 
         Debug.Log("[SceneTransitionUI] 초기화 완료");
+    }
+
+    void Update()
+    {
+        if (isLoadingIconRotating && loadingIcon != null)
+        {
+            loadingIcon.Rotate(0f, 0f, -rotationSpeed * Time.unscaledDeltaTime);
+        }
     }
 
     /// <summary>
@@ -119,7 +149,11 @@ public class SceneTransitionUI : MonoBehaviour
     /// </summary>
     public void SetLoadingProgress(float progress)
     {
-        ShowLoadingUI();
+        if (!isLoadingUIVisible)
+        {
+            ShowLoadingUI();
+            isLoadingUIVisible = true;
+        }
 
         if (loadingSlider != null)
         {
@@ -153,6 +187,21 @@ public class SceneTransitionUI : MonoBehaviour
 
         if (percentText != null)
             percentText.gameObject.SetActive(true);
+
+        if (loadingIcon != null)
+        {
+            loadingIcon.gameObject.SetActive(true);
+            isLoadingIconRotating = true;
+        }
+
+        if (tipText != null && loadingTips.Length > 0)
+        {
+            int randomIndex = Random.Range(0, loadingTips.Length);
+            tipText.text = loadingTips[randomIndex];
+            tipText.gameObject.SetActive(true);
+
+            Debug.Log($"[SceneTransitionUI] 팁 표시: {loadingTips[randomIndex]}");
+        }
     }
 
     /// <summary>
@@ -160,6 +209,10 @@ public class SceneTransitionUI : MonoBehaviour
     /// </summary>
     void HideLoadingUI()
     {
+        Debug.Log("[SceneTransitionUI] 로딩 UI 숨김");
+
+        isLoadingUIVisible = false;
+
         if (loadingText != null)
             loadingText.gameObject.SetActive(false);
 
@@ -174,6 +227,17 @@ public class SceneTransitionUI : MonoBehaviour
         {
             StopCoroutine(textAnimationCoroutine);
             textAnimationCoroutine = null;
+        }
+
+        if (loadingIcon != null)
+        {
+            loadingIcon.gameObject.SetActive(false);
+            isLoadingIconRotating = false;
+        }
+
+        if (tipText != null)
+        {
+            tipText.gameObject.SetActive(false);
         }
     }
 
