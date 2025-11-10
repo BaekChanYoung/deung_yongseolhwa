@@ -18,7 +18,8 @@ public enum BackgroundList
     Start,
     Cliff,
     Snow,
-    WaterFall
+    WaterFall,
+    Paradise
 }
 
 public class BackgroundController : MonoBehaviour
@@ -164,7 +165,10 @@ public class BackgroundController : MonoBehaviour
 
         for (int i = 0; i < BackgroundLayer.Length; i++)
             if (BackgroundLayer[i].Layer == Selectbackground)
+            {
+                Debug.Log("배경선텍" + Selectbackground);
                 for (int j = 0; j < BackgroundLayer[i].Background.Length; j++)
                     BackgroundLayer[i].Background[j].SetActive(true);
+            }
     }
 }

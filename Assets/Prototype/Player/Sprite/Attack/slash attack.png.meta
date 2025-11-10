@@ -139,10 +139,10 @@ TextureImporter:
       name: slash_side_attack_0
       rect:
         serializedVersion: 2
-        x: 82
-        y: 1369
-        width: 962
-        height: 717
+        x: 9
+        y: 1366
+        width: 1070
+        height: 800
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -160,10 +160,10 @@ TextureImporter:
       name: slash_side_attack_1
       rect:
         serializedVersion: 2
-        x: 1097
-        y: 1362
-        width: 690
-        height: 704
+        x: 1095
+        y: 1344
+        width: 940
+        height: 800
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +181,10 @@ TextureImporter:
       name: slash_top_attack_0
       rect:
         serializedVersion: 2
-        x: 332
-        y: 100
-        width: 609
-        height: 844
+        x: 110
+        y: 96
+        width: 846
+        height: 1077
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,9 +202,9 @@ TextureImporter:
       name: slash_top_attack_1
       rect:
         serializedVersion: 2
-        x: 1198
-        y: 98
-        width: 627
+        x: 977
+        y: 96
+        width: 846
         height: 1077
       alignment: 0
       pivot: {x: 0.5, y: 0.5}

@@ -14,6 +14,7 @@ public enum SwipeDirection
 
 public class InputSystem : MonoBehaviour
 {
+    
     [ReadOnly]
     [SerializeField]
     bool isTouch; // 터치를 하는가?
@@ -37,11 +38,19 @@ public class InputSystem : MonoBehaviour
     {
         if (GameManager.instance.IsCanTouch)
         {
-            GameManager.instance.InputDirection = Inputsystem();
+            switch (GameManager.instance.inputMode)
+            {
+                case InputMode.AnswerCheckMode:
+                    GameManager.instance.InputDirection = answerCheckMode();
+                    break;
+                case InputMode.AngleCheckMode:
+                    //GameManager.instance.InputDirection = angleCheckMode();
+                    break;
+            } 
         }
     }
 
-    SwipeDirection Inputsystem()
+    SwipeDirection answerCheckMode()
     {
         float? Inputangle = Swipe(); // 스와이프 인식
 
@@ -115,5 +124,43 @@ public class InputSystem : MonoBehaviour
             Debug.Log(angle);
         }
         return angle;
+    }
+
+    SwipeDirection angleCheckMode()
+    {
+        float? Inputangle = Swipe(); // 스와이프 인식
+
+        Vector3 enemypos = GameManager.instance.enemy.TargetEnemy.transform.position;
+
+        Vector3 prefectAngle = enemypos - transform.position;
+
+        float angle = Mathf.Atan2(prefectAngle.y, prefectAngle.x) * Mathf.Rad2Deg;
+
+        if (Inputangle > angle - GameManager.instance.errorAngleRange && Inputangle < angle + GameManager.instance.errorAngleRange)
+        {
+            return GameManager.instance.answerDirection;
+        }
+        else
+        {
+            switch (GameManager.instance.answerDirection)
+            {
+                case SwipeDirection.Left:
+                    return SwipeDirection.Up;
+
+                case SwipeDirection.Up:
+                    if (Inputangle > 90f)
+                    {
+                        return SwipeDirection.Left;
+                    }
+                    else
+                    {
+                        return SwipeDirection.Right;
+                    }
+                case SwipeDirection.Right:
+                    return SwipeDirection.Up;
+            }
+        }
+
+        return 0;
     }
 }

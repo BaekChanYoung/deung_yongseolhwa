@@ -74,6 +74,9 @@ public struct Enemy
     [SerializeField]
     [ReadOnly]
     public int LastSpawnPoint;
+
+    [HideInInspector]
+    public int repeatCount;
 }
 
 [System.Serializable]
@@ -141,7 +144,7 @@ public struct ScoreSetting
     [SerializeField]
     [Tooltip("게임 점수")]
     public int score;
-    
+
     [Tooltip("점수비례 타이머 가속의 최소치(시작 수치)")]
     [SerializeField]
     public float MinScale;
@@ -162,11 +165,14 @@ public struct ScoreSetting
     [ReadOnly]
     [SerializeField]
     public float currentSpeedRate;
-
-    [Graph(height = 60, color = "#4DD0E1", autoY = true, compact = true, showGrid = false)]
-    public float[] scaleCurve;
 }
 
+[System.Serializable]
+public enum InputMode
+{
+    AnswerCheckMode,
+    AngleCheckMode
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -176,6 +182,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("게임의 점수")]
     ScoreSetting scoreSetting;
 
+    // Timer UI 오브젝트
     [SerializeField]
     GameObject Timer;
 
@@ -196,6 +203,8 @@ public class GameManager : MonoBehaviour
     HitSlowEffect hitSlowEffect;
 
     Coroutine hitEffectRoutine;
+
+    
 
     ////////////////////////////////////////
     /// 배경화면 관련
@@ -222,6 +231,9 @@ public class GameManager : MonoBehaviour
     ////////////////////////////////////////
     [Header("Input System")]
 
+    [SerializeField]
+    public InputMode inputMode;
+
     [ReadOnly]
     [SerializeField]
     public bool IsCanTouch;
@@ -235,6 +247,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public AngleRange RightAngle; // 우측 인식 범위
 
+    [SerializeField]
+    public float errorAngleRange;
 
     [HideInInspector]
     public SwipeDirection InputDirection; // 스와이프후 인식 반향 저장
@@ -247,8 +261,21 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject RestartMessage;
 
+    [ReadOnly]
+    [SerializeField]
+    bool isStart = false;
+
+    //
+    private ISceneService sceneService;
+    //
+
+    [SerializeField]
+    GameObject temp;
+
     void Awake()
     {
+        sceneService = ServiceLocator.Resolve<ISceneService>();
+
         // VSync 설정을 끄고 (0)
         QualitySettings.vSyncCount = 0;
 
@@ -272,8 +299,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
-
         GameSetup();
 
         IsCanTouch = true;
@@ -293,9 +318,10 @@ public class GameManager : MonoBehaviour
     {
         if (!player.isDead)
         {
-            if (!Timer.GetComponent<TimerBarController>().IsTimerActive() && scoreSetting.score > 0f)
+            if (!isStart)
             {
                 Timer.GetComponent<TimerBarController>().ResumeTimer();
+                isStart = true;
             }
             // startTimer
 
@@ -391,8 +417,9 @@ public class GameManager : MonoBehaviour
 
         InputDirection = SwipeDirection.None;
     }
-
-    // 오답 처리 진행
+    //////////////////////////////////////////////////////////////
+    /// 오답 처리 진행
+    //////////////////////////////////////////////////////////////
     void ProcessWrongAnswer()
     {
         // player.isDead = true;
@@ -427,29 +454,69 @@ public class GameManager : MonoBehaviour
         player.isDead = true;
     }
 
+    //////////////////////////////////////////////////////////////
+    /// 적 소환 메서드
+    //////////////////////////////////////////////////////////////
     public void enemySpawn()
     {
         Debug.Log("enemy 소환");
 
         int SpawnPoint = enemy.LastSpawnPoint;
 
-        switch(SpawnPoint)
+        int changeCheck = 0;
+
+        switch (SpawnPoint)
         {
             case (0):
-                SpawnPoint += Random.Range(0, 2);
+                changeCheck = Random.Range(0, 2 + enemy.repeatCount);
 
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 0;
+                    enemy.repeatCount++;
+                }
+                else
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount = 0;
+                }
                 break;
             case (1):
-                SpawnPoint = Random.Range(0, 3);
+                changeCheck = Random.Range(0, 3 + enemy.repeatCount);
+
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount += 2;
+                }
+                else
+                {
+                    if (changeCheck % 2 == 0)
+                        SpawnPoint = 0;
+                    else
+                        SpawnPoint = 2;
+                }
                 break;
             case (2):
-                SpawnPoint -= Random.Range(0, 2);
+                changeCheck = Random.Range(0, 2 + enemy.repeatCount);
 
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 2;
+                    enemy.repeatCount++;
+                }
+                else
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount = 0;
+                }
                 break;
         }
 
+        // 마지막 스폰 위치 저장
         enemy.LastSpawnPoint = SpawnPoint;
 
+        // 적 소환
         Instantiate(enemy.Prefab, enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
     }
 
@@ -493,15 +560,22 @@ public class GameManager : MonoBehaviour
 
     IEnumerator HitEffect()
     {
+        player.playerObj.GetComponent<PlayerController>().AttackIsHit(true);
+
         ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound);
 
-        // 순간적인 효가를 위해 잠깐 움직임 정지
+        // 순간적인 효과를 위해 잠깐 움직임 정지
         Time.timeScale = 0f;
 
         Timer.GetComponent<TimerBarController>().AddTime(AddSecond);
         Timer.GetComponent<TimerBarController>().TimerScale(scoreSetting.currentSpeedRate);
 
-        yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime);
+        // 타이머 잠시 멈춤
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime); // HitStopTime 시간동안 잠시 정지
+
+
 
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
@@ -522,12 +596,15 @@ public class GameManager : MonoBehaviour
 
         IsCanTouch = true;
 
+        // 타이머 제계
+        Timer.GetComponent<TimerBarController>().ResumeTimer();
+
         yield return new WaitForSecondsRealtime(hitSlowEffect.HitSlowTime);
 
         //scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
 
         //Time.timeScale = scoreSetting.currentSpeedRate;
-        
+
         Time.timeScale = 1;
     }
 
@@ -536,6 +613,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("점수 추가");
         scoreSetting.score++;
     }
+    //////////////////////////////////////////////////////////////
+    /// 점수 반환
+    //////////////////////////////////////////////////////////////
     public int pullScore()
     {
         return scoreSetting.score;
@@ -543,8 +623,10 @@ public class GameManager : MonoBehaviour
 
     void GameSetup()
     {
+        //적 스폰 라인 위치 계산 후 배치
         enemy.EnemySpawnLines.transform.position = new Vector2(0f, player.playerObj.transform.position.y + (enemy.EnemyInterval * (enemy.StartSpawnCount + 1)));
 
+        // 적 소환
         for (int i = 0; i < enemy.StartSpawnCount; i++)
         {
             enemySpawn();
@@ -554,6 +636,9 @@ public class GameManager : MonoBehaviour
                 enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * enemy.EnemyInterval;
             }
         }
+
+        // 적 중복 소환시 카운팅하는 변수 초기화
+        enemy.repeatCount = 0;
     }
 
     void CancelMove(Coroutine ct)
@@ -563,7 +648,7 @@ public class GameManager : MonoBehaviour
             StopCoroutine(ct);
             ct = null;
         }
-        
+
     }
 
     float ScaleToScore(float score)
@@ -572,22 +657,8 @@ public class GameManager : MonoBehaviour
         return scale;
     }
 
-
-    [ContextMenu("Rebuild Curve Now")]
-    public void RebuildCurve()
+    public void TotheStart()
     {
-        // // 방어 코드
-        // if (samples < 2) samples = 2;
-        // if (scoreMax <= scoreMin) scoreMax = scoreMin + 1f;
-
-        // if (scaleCurve == null || scaleCurve.Length != samples)
-        //     scaleCurve = new float[samples];
-
-        // for (int i = 0; i < samples; i++)
-        // {
-        //     float t = (samples == 1) ? 0f : i / (samples - 1f);            // 0~1
-        //     float s = Mathf.Lerp(scoreMin, scoreMax, t);                   // 점수로 매핑
-        //     scaleCurve[i] = ScaleToScore(s);
-        // }
+        sceneService.LoadSceneWithLoading(SceneNames.START);
     }
 }

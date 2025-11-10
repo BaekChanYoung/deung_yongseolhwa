@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject SpriteAnimation;
 
-    Animator SpriteAnimationController;
+    public Animator SpriteAnimationController;
 
     enum PlayerAniClip
     {
@@ -199,32 +199,43 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerAnimationCalculationProcessing(SwipeDirection Direction)
     {
+
+
         if (Direction == SwipeDirection.Up)
         {
             SpriteAnimationController.SetTrigger("Top_Attack");
         }
         else
         {
-            int a = Random.Range(1, (int)PlayerAniClip.Length);
-
-            switch (a)
-            {
-                case (int)PlayerAniClip.slash:
-                    SpriteAnimationController.SetTrigger("Slash_Attack");
-                    if (Direction == SwipeDirection.Right)
-                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                    if (Direction == SwipeDirection.Left)
-                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-                    break;
-                case (int)PlayerAniClip.tornado:
-                    SpriteAnimationController.SetTrigger("Tornado_Attack");
-                    if (Direction == SwipeDirection.Right)
-                    SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                    if (Direction == SwipeDirection.Left)
-                        SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-                    break;
-            }
+            SpriteAnimationController.SetTrigger("Right_Attack");
+            //int Attack = Random.Range(1, (int)PlayerAniClip.Length);
+            if (Direction == SwipeDirection.Right)
+                SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            if (Direction == SwipeDirection.Left)
+                SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
+
+        int Attack = Random.Range(1, (int)PlayerAniClip.Length);
+        
+        switch (Attack)
+        {       
+            case (int)PlayerAniClip.tornado:
+                SpriteAnimationController.SetTrigger("Tornado_Attack");
+                break;
+                
+            case (int)PlayerAniClip.slash:
+                SpriteAnimationController.SetTrigger("Slash_Attack");
+                break;
+
+        }
+    }
+
+    public void AttackIsHit(bool IsHit)
+    {
+        if (!IsHit)
+            return;
+        else
+            SpriteAnimationController.SetTrigger("Hit_Attack");
     }
 
 }

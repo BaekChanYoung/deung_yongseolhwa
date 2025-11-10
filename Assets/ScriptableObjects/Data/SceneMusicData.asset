@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbeb31013d30bf34db7acf910e9c34c6, type: 3}
+  m_Name: SceneMusicData
+  m_EditorClassIdentifier: 
+  sceneMusicList:
+  - sceneName: Title
+    musicClip: {fileID: 8300000, guid: 7bca6563e37ae2446ab39c3a0bc2d72d, type: 3}
+    volume: 1
+    fadeInDuration: 1.5
+    loop: 1
+  - sceneName: Start
+    musicClip: {fileID: 8300000, guid: a8afc53e7d906584bb58d76a62fe0815, type: 3}
+    volume: 1
+    fadeInDuration: 0
+    loop: 1
+  - sceneName: Loading
+    musicClip: {fileID: 0}
+    volume: 1
+    fadeInDuration: 0.5
+    loop: 1
+  - sceneName: Prototype
+    musicClip: {fileID: 8300000, guid: fd5090370700cc844bab3b35f53bf83b, type: 3}
+    volume: 1
+    fadeInDuration: 2
+    loop: 1
