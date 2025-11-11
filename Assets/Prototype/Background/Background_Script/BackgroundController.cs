@@ -17,9 +17,11 @@ public enum BackgroundList
 {
     Start,
     Cliff,
+    CliffToSnow,
     Snow,
-    WaterFall,
-    Paradise
+    SnowToParadise,
+    Paradise,
+    WaterFall
 }
 
 public class BackgroundController : MonoBehaviour

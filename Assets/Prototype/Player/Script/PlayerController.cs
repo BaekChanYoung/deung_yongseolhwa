@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     public Animator SpriteAnimationController;
 
+    
+
     enum PlayerAniClip
     {
         idle = 0,
@@ -74,13 +76,39 @@ public class PlayerController : MonoBehaviour
 
         CancelMove(moveRoutine);
 
-        moveRoutine = StartCoroutine(FollowObject(Pos, moveSpeed));
+        moveRoutine = StartCoroutine(FollowObject1(Pos, moveSpeed));
 
         CancelMove(reboundRoutine);
     }
 
+    public void moveToPos(Vector2 targetPos, float arrivalTime)
+    {
+        float distance;
+        float moveSpeed;
+        if (!IsDown)
+        {
+            distance = Vector2.Distance(transform.position, targetPos); // 공격시 이동 거리 계산
 
-    IEnumerator FollowObject(Vector3 targetPos, float moveSpeed)
+            moveSpeed = distance / arrivalTime; // 거리와 이동 수행 시간을 기준로 이동 속도 계산
+        }
+        else
+        {
+            IsDown = false;
+            //Pos = target.GetComponent<EnemyController>().TargtPos;
+
+            distance = Vector2.Distance(transform.position, targetPos); // 공격시 이동 거리 계산
+
+            moveSpeed = distance / arrivalTime; // 거리와 이동 수행 시간을 기준로 이동 속도 계산
+        }
+
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(FollowObject2(targetPos, moveSpeed));
+
+        CancelMove(reboundRoutine);
+    }
+
+    IEnumerator FollowObject1(Vector3 targetPos, float moveSpeed)
     {
         //float StartTime = Time.time;
         while (true)
@@ -92,6 +120,26 @@ public class PlayerController : MonoBehaviour
                 //IsAttack = false;
                 //Debug.Log(Time.time - StartTime);
                 GameManager.instance.AttackSuccess();
+
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+    IEnumerator FollowObject2(Vector3 targetPos, float moveSpeed)
+    {
+        //float StartTime = Time.time;
+        while (true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+
+            if (transform.position == targetPos)
+            {
+                //IsAttack = false;
+                //Debug.Log(Time.time - StartTime);
+                //GameManager.instance.AttackSuccess();
+                Dead();
 
                 yield break;
             }
@@ -196,11 +244,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void PlayerAnimationCalculationProcessing(SwipeDirection Direction)
     {
-
-
         if (Direction == SwipeDirection.Up)
         {
             SpriteAnimationController.SetTrigger("Top_Attack");
@@ -226,7 +271,6 @@ public class PlayerController : MonoBehaviour
             case (int)PlayerAniClip.slash:
                 SpriteAnimationController.SetTrigger("Slash_Attack");
                 break;
-
         }
     }
 
@@ -238,4 +282,57 @@ public class PlayerController : MonoBehaviour
             SpriteAnimationController.SetTrigger("Hit_Attack");
     }
 
+    public void Dead()
+    {
+        //Debug.Log("start Dead1");
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(DeadMove());
+        //Debug.Log("start Dead3");
+        CancelMove(reboundRoutine);
+    }
+
+    IEnumerator DeadMove()
+    {
+        //Debug.Log("start Dead2");
+        yield return new WaitForSecondsRealtime(1f);
+
+        //SpriteAnimationController.SetTrigger("Dead");
+
+        //yield return new WaitForSecondsRealtime(0.5f);
+
+        //GameManager.instance.Dead();
+
+        deadDrop();
+
+        yield break;
+    }
+
+    void deadDrop()
+    {
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(deadDropMove());
+
+        CancelMove(reboundRoutine);
+    }
+
+    IEnumerator deadDropMove()
+    {
+        float timer = 0;
+        Vector2 Pos = (Vector2)transform.position + Vector2.down * 100;
+        while(true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, Pos, 50 * Time.deltaTime);
+
+            if (timer > GameManager.instance.openTime)
+            {
+                GameManager.instance.Dead();
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
 }

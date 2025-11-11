@@ -86,6 +86,9 @@ public struct Player
     public GameObject playerObj;
 
     [SerializeField]
+    public EffectManager PlayerEffect;
+
+    [SerializeField]
     public DownMovementMode DownMode;
 
     [Tooltip("공격하는 걸리는 시간")]
@@ -113,6 +116,12 @@ public struct Player
     [SerializeField]
     public AudioClip attackSound;
 }
+[System.Serializable]
+public class ChangePoint
+{
+    public BackgroundList changeBackground;
+    public float Point;
+}
 
 [System.Serializable]
 public class Background
@@ -120,6 +129,9 @@ public class Background
     [Tooltip("배경 선택")]
     [SerializeField]
     public BackgroundList selectLayer;
+
+    [SerializeField]
+    public ChangePoint[] changePoint;
 
     [Tooltip("루프할 배경")]
     [SerializeField]
@@ -261,6 +273,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject RestartMessage;
 
+    [SerializeField]
+    public float openTime;
+
     [ReadOnly]
     [SerializeField]
     bool isStart = false;
@@ -343,6 +358,8 @@ public class GameManager : MonoBehaviour
 
             // if(Timer.GetComponent<TimerBarController>().GetRemainingTime() < 0f)
             //     {}
+
+            CheckBackground();
         }
 
         if (player.isDead)
@@ -416,17 +433,56 @@ public class GameManager : MonoBehaviour
         player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
 
         InputDirection = SwipeDirection.None;
+
+        player.PlayerEffect.LockTarget(enemy.TargetEnemy.transform.position);
     }
     //////////////////////////////////////////////////////////////
     /// 오답 처리 진행
     //////////////////////////////////////////////////////////////
     void ProcessWrongAnswer()
     {
-        // player.isDead = true;
-        // IsCanTouch = false;
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        player.isDead = true;
+        IsCanTouch = false;
+
+        Time.timeScale = 1f;
 
         //RestartMessage.SetActive(true);
-        Dead();
+        player.isDead = true;
+
+        scoreSetting.currentSpeedRate = ScaleToScore(scoreSetting.score);
+
+        if (enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
+        {
+            enemyRushToDown();
+            backgroundRushToDown();
+        }
+
+
+
+        float x = player.playerObj.transform.position.x;
+
+        switch (InputDirection)
+        {
+            case SwipeDirection.Left:
+                x += -3f;
+                break;
+            case SwipeDirection.Up:
+                x += 0;
+                break;
+            case SwipeDirection.Right:
+                x += 3f;
+                break;
+        }
+
+        Vector2 TP = new Vector2(x, enemy.TargetEnemy.transform.position.y);
+
+        player.playerObj.GetComponent<PlayerController>().moveToPos(TP, player.AttackDuration);
+
+        player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
+
+        //Dead();
     }
 
     public void ReLoad()
@@ -560,6 +616,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator HitEffect()
     {
+        Vector3 enemypos = enemy.TargetEnemy.transform.position;
+
+        player.PlayerEffect.SpawnSlashFX();
+
         player.playerObj.GetComponent<PlayerController>().AttackIsHit(true);
 
         ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound);
@@ -660,5 +720,17 @@ public class GameManager : MonoBehaviour
     public void TotheStart()
     {
         sceneService.LoadSceneWithLoading(SceneNames.START);
+    }
+
+    void CheckBackground()
+    {
+        for (int i = 0; i < background.changePoint.Length; i++)
+        {
+            if (scoreSetting.score >= background.changePoint[i].Point)
+            {
+                Debug.Log("배경변경 : " + background.changePoint[i].changeBackground);
+                background.selectLayer = background.changePoint[i].changeBackground;
+            }
+        }
     }
 }
