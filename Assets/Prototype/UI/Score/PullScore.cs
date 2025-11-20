@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class PullScore : MonoBehaviour
 {
     [ReadOnly]
-    public int score;
+    [SerializeField]
+    int score;
 
     void Start()
     {

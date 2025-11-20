@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -114,7 +113,7 @@ public struct Player
     public bool isDead;
 
     [SerializeField]
-    public AudioClip attackSound;
+    public AudioClip[] attackSound;
 }
 [System.Serializable]
 public class ChangePoint
@@ -212,7 +211,7 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("공격 히트 후 효과수치")]
     [SerializeField]
-    HitSlowEffect hitSlowEffect;
+    public HitSlowEffect hitSlowEffect;
 
     Coroutine hitEffectRoutine;
 
@@ -282,10 +281,11 @@ public class GameManager : MonoBehaviour
 
     //
     private ISceneService sceneService;
-    //
+    
 
-    [SerializeField]
-    GameObject temp;
+    PlayerDate playerdate;
+
+    string json;
 
     void Awake()
     {
@@ -426,6 +426,7 @@ public class GameManager : MonoBehaviour
         {
             enemyRushToDown();
             backgroundRushToDown();
+            effectRushToDown();
         }
 
         player.playerObj.GetComponent<PlayerController>().moveToTarget(enemy.TargetEnemy, player.AttackDuration);
@@ -434,7 +435,9 @@ public class GameManager : MonoBehaviour
 
         InputDirection = SwipeDirection.None;
 
-        player.PlayerEffect.LockTarget(enemy.TargetEnemy.transform.position);
+        player.PlayerEffect.targetAngle();
+
+        player.PlayerEffect.windFX();
     }
     //////////////////////////////////////////////////////////////
     /// 오답 처리 진행
@@ -457,9 +460,8 @@ public class GameManager : MonoBehaviour
         {
             enemyRushToDown();
             backgroundRushToDown();
+            effectRushToDown();
         }
-
-
 
         float x = player.playerObj.transform.position.x;
 
@@ -493,7 +495,7 @@ public class GameManager : MonoBehaviour
 
     public void AttackSuccess()
     {
-        CancelMove(hitEffectRoutine);
+        CancelMove();
         hitEffectRoutine = StartCoroutine(HitEffect());
     }
 
@@ -515,11 +517,11 @@ public class GameManager : MonoBehaviour
     //////////////////////////////////////////////////////////////
     public void enemySpawn()
     {
-        Debug.Log("enemy 소환");
+        //Debug.Log("enemy 소환");
 
         int SpawnPoint = enemy.LastSpawnPoint;
 
-        int changeCheck = 0;
+        int changeCheck;
 
         switch (SpawnPoint)
         {
@@ -614,16 +616,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void effectMoveToDown()
+    {
+        for (int i = 0; i < player.PlayerEffect.gameObject.transform.childCount; i++)
+        {
+            player.PlayerEffect.gameObject.transform.GetChild(i).GetComponent<EffectMovementController>().moveToDown(enemy.EnemyInterval, enemy.EnemyDownDuration, enemy.DownMode);
+        }
+    }
+
+    void effectRushToDown()
+    {
+        for (int i = 0; i < player.PlayerEffect.gameObject.transform.childCount; i++)
+        {
+            player.PlayerEffect.gameObject.transform.GetChild(i).GetComponent<EffectMovementController>().rushToDown(player.AttackDuration);
+        }
+    }
+
     IEnumerator HitEffect()
     {
         Vector3 enemypos = enemy.TargetEnemy.transform.position;
 
-        player.PlayerEffect.SpawnSlashFX();
+        player.PlayerEffect.AttackSlashFX();
 
         player.playerObj.GetComponent<PlayerController>().AttackIsHit(true);
 
-        ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound);
-
+        for (int i = 0; i < player.attackSound.Length; i++)
+        {
+            ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound[i]);
+        } 
+        
         // 순간적인 효과를 위해 잠깐 움직임 정지
         Time.timeScale = 0f;
 
@@ -640,7 +661,7 @@ public class GameManager : MonoBehaviour
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
 
-        Destroy(enemy.TargetEnemy); // 목표 적 제거
+        enemy.TargetEnemy.GetComponent<EnemyController>().Dead(); // 목표 적 제거
 
         enemySpawn(); // 새로운 적 소환
 
@@ -653,6 +674,8 @@ public class GameManager : MonoBehaviour
         enemyMoveToDown();
 
         backgroundMoveToDown();
+
+        effectMoveToDown();
 
         IsCanTouch = true;
 
@@ -701,12 +724,12 @@ public class GameManager : MonoBehaviour
         enemy.repeatCount = 0;
     }
 
-    void CancelMove(Coroutine ct)
+    void CancelMove()
     {
-        if (ct != null)
+        if (hitEffectRoutine != null)
         {
-            StopCoroutine(ct);
-            ct = null;
+            StopCoroutine(hitEffectRoutine);
+            hitEffectRoutine = null;
         }
 
     }
@@ -732,5 +755,23 @@ public class GameManager : MonoBehaviour
                 background.selectLayer = background.changePoint[i].changeBackground;
             }
         }
+    }
+
+    void InputMaxScore(int score)
+    {
+        if(score > playerdate.MaxScore)
+            playerdate.MaxScore = score;
+    }
+
+    void SaveJson()
+    {
+        json = JsonUtility.ToJson(playerdate);
+        File.WriteAllText(Application.dataPath + "/PlayerDate.json", json);
+    }
+
+    void LoadJson()
+    {
+        json = File.ReadAllText(Application.dataPath + "/PlayerDate.json");
+        playerdate = JsonUtility.FromJson<PlayerDate>(json);
     }
 }

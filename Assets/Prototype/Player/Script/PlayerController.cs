@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
         CancelMove(moveRoutine);
 
-        moveRoutine = StartCoroutine(FollowObject1(Pos, moveSpeed));
+        moveRoutine = StartCoroutine(FollowObject(Pos, moveSpeed));
 
         CancelMove(reboundRoutine);
     }
@@ -103,12 +103,12 @@ public class PlayerController : MonoBehaviour
 
         CancelMove(moveRoutine);
 
-        moveRoutine = StartCoroutine(FollowObject2(targetPos, moveSpeed));
+        moveRoutine = StartCoroutine(FollowPos(targetPos, moveSpeed));
 
         CancelMove(reboundRoutine);
     }
 
-    IEnumerator FollowObject1(Vector3 targetPos, float moveSpeed)
+    IEnumerator FollowObject(Vector3 targetPos, float moveSpeed)
     {
         //float StartTime = Time.time;
         while (true)
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
     }
-    IEnumerator FollowObject2(Vector3 targetPos, float moveSpeed)
+    IEnumerator FollowPos(Vector3 targetPos, float moveSpeed)
     {
         //float StartTime = Time.time;
         while (true)

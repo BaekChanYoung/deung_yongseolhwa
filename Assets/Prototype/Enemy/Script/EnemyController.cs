@@ -12,11 +12,15 @@ public class EnemyController : MonoBehaviour
 
     Coroutine moveRoutine;
 
+    Animator Ani;
 
+    [SerializeField]
+    GameObject deadFX;
 
     void Awake()
     {
         TargtPos = transform.position;
+        Ani = GetComponent<Animator>();
     }
 
     void CancelMove(Coroutine ct)
@@ -105,6 +109,27 @@ public class EnemyController : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void Dead()
+    {
+        Debug.Log("적 죽음 실행");
+        StartCoroutine(deadEffect());
+    }
+
+    IEnumerator deadEffect()
+    {
+        Debug.Log("적 죽음 코루틴 실행");
+
+        Ani.SetTrigger("Hit");
+
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitStopTime);
+        
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitSlowTime);
+
+        Instantiate(deadFX, transform.position, Quaternion.identity);
+
+        Destroy(gameObject);
     }
     
 

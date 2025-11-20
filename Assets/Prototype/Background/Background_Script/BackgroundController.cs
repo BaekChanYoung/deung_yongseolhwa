@@ -76,6 +76,7 @@ public class BackgroundController : MonoBehaviour
 
     public void rushToDown(float DownDuration, DownMovementMode DownMode = DownMovementMode.moveToword)
     {
+        //Debug.Log("DownDuration : " + DownDuration + ", DownMode : " + DownMode);
         if (!(DownMode == DownMovementMode.moveToword))
         {
             float distance = Vector2.Distance((Vector2)transform.position, TargetPos);
@@ -86,12 +87,16 @@ public class BackgroundController : MonoBehaviour
             CancelMove(DownRoutine);
 
             DownRoutine = StartCoroutine(DownMove(distance, DownSpeed));
+
+            //Debug.Log("distance : " + distance + ", DownMode : " + DownSpeed);
         }
     }
 
     public void moveToDown(float Movedistance, float DownDuration, DownMovementMode DownMode = DownMovementMode.moveToword)
     {
+        //Debug.Log("name : " + gameObject.name);
 
+        //Debug.Log(" Movedistance : " +  Movedistance + ", DownDuration : " + DownDuration + ", DownMode : " + DownMode);
         TargetPos += Vector3.down * Movedistance;
 
         float distance = Vector2.Distance((Vector2)transform.position, TargetPos);
@@ -109,6 +114,8 @@ public class BackgroundController : MonoBehaviour
         {
             DownRoutine = StartCoroutine(DownMove(distance, DownDuration, DownMode));
         }
+
+        //Debug.Log(" distance : " +  distance + ", DownDuration : " + DownDuration + ", DownMode : " + DownMode);
     }
 
     IEnumerator DownMove(float distance, float DownSpeed, DownMovementMode DownMode = DownMovementMode.moveToword)
