@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// Spine ±â¹Ý ´ëÈ­ ½Ã½ºÅÛ ¸Å´ÏÀú
-/// Skip: ´ëÈ­ Á¾·á ÈÄ ´ÙÀ½ ¾À ÀÌµ¿
+/// Spine ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½
+/// Skip: ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½
 /// </summary>
 public class DialogueManager : MonoBehaviour
 {
@@ -24,9 +24,9 @@ public class DialogueManager : MonoBehaviour
     public Button skipButton;
 
     [Header("Scene Transition")]
-    [Tooltip("´ëÈ­ Á¾·á ÈÄ ÀÌµ¿ÇÒ ¾À ÀÌ¸§ (ºñ¾îÀÖÀ¸¸é SceneService »ç¿ë)")]
+    [Tooltip("ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SceneService ï¿½ï¿½ï¿½)")]
     public string nextSceneName = "";
-    [Tooltip("SceneService »ç¿ë ¿©ºÎ")]
+    [Tooltip("SceneService ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public bool useSceneService = true;
 
     private List<DialogueData> dialogues;
@@ -39,7 +39,7 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        // SceneService °¡Á®¿À±â
+        // SceneService ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (useSceneService)
         {
             sceneService = ServiceLocator.Resolve<ISceneService>();
@@ -53,18 +53,18 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(false);
         }
 
-        // Skip ¹öÆ° ¼³Á¤
+        // Skip ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
         SetupSkipButton();
     }
 
     /// <summary>
-    /// Skip ¹öÆ° ÃÊ±â ¼³Á¤
+    /// Skip ï¿½ï¿½Æ° ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void SetupSkipButton()
     {
         if (skipButton != null)
         {
-            // ¹öÆ° Å¬¸¯ ÀÌº¥Æ® ¿¬°á
+            // ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
             skipButton.onClick.AddListener(OnSkipButtonClicked);
             Debug.Log("[DialogueManager] Skip button setup complete");
         }
@@ -78,14 +78,14 @@ public class DialogueManager : MonoBehaviour
     {
         if (!isDialogueActive) return;
 
-        // ========== UI À§¿¡¼­ Å¬¸¯ ½Ã ¹«½Ã ==========
+        // ========== UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ==========
         if (IsPointerOverUI())
         {
-            return; // UI ¹öÆ° Å¬¸¯Àº ¿©±â¼­ Ã³¸® ¾È ÇÔ
+            return; // UI ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ Ã³ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
         }
         // ==========================================
 
-        // ¸¶¿ì½º Å¬¸¯ÀÌ³ª ½ºÆäÀÌ½º¹Ù·Î ´ÙÀ½ ´ëÈ­ ÁøÇà
+        // ï¿½ï¿½ï¿½ì½º Å¬ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             HandleDialogueProgress();
@@ -93,7 +93,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸¶¿ì½º°¡ UI À§¿¡ ÀÖ´ÂÁö È®ÀÎ
+    /// ï¿½ï¿½ï¿½ì½ºï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
     /// </summary>
     public bool IsPointerOverUI()
     {
@@ -102,18 +102,18 @@ public class DialogueManager : MonoBehaviour
             return false;
         }
 
-        // ¸ð¹ÙÀÏ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½
         if (Input.touchCount > 0)
         {
             return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
         }
 
-        // PC (¸¶¿ì½º)
+        // PC (ï¿½ï¿½ï¿½ì½º)
         return EventSystem.current.IsPointerOverGameObject();
     }
 
     /// <summary>
-    /// Skip ¹öÆ° Å¬¸¯ ½Ã: ´ëÈ­ ÀüÃ¼ ½ºÅµÇÏ°í ´ÙÀ½ ¾ÀÀ¸·Î
+    /// Skip ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½: ï¿½ï¿½È­ ï¿½ï¿½Ã¼ ï¿½ï¿½Åµï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void OnSkipButtonClicked()
     {
@@ -122,18 +122,18 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ëÈ­ ÁøÇà Ã³¸® (Å¸ÀÌÇÎ ½ºÅµ or ´ÙÀ½ ´ëÈ­)
+    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ (Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ or ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­)
     /// </summary>
     public void HandleDialogueProgress()
     {
         if (typingEffect != null && typingEffect.IsTyping)
         {
-            // Å¸ÀÌÇÎ ÁßÀÌ¸é Áï½Ã ¿Ï·á
+            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½
             typingEffect.SkipTyping();
         }
         else
         {
-            // Å¸ÀÌÇÎ ¿Ï·á¸é ´ÙÀ½ ´ëÈ­
+            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­
             ShowNextDialogue();
         }
     }
@@ -143,12 +143,12 @@ public class DialogueManager : MonoBehaviour
         dialogues = loadedDialogues;
         Debug.Log($"[DialogueManager] Loaded {dialogues.Count} dialogues");
 
-        // ÀÚµ¿À¸·Î ´ëÈ­ ½ÃÀÛ
+        // ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
         StartDialogue();
     }
 
     /// <summary>
-    /// ´ëÈ­ ½ÃÀÛ
+    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void StartDialogue()
     {
@@ -166,7 +166,7 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(true);
         }
 
-        // Skip ¹öÆ° È°¼ºÈ­
+        // Skip ï¿½ï¿½Æ° È°ï¿½ï¿½È­
         if (skipButton != null)
         {
             skipButton.gameObject.SetActive(true);
@@ -176,7 +176,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇöÀç ´ëÈ­ Ç¥½Ã
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ Ç¥ï¿½ï¿½
     /// </summary>
     public void ShowCurrentDialogue()
     {
@@ -188,7 +188,7 @@ public class DialogueManager : MonoBehaviour
 
         DialogueData currentData = dialogues[currentDialogueIndex];
 
-        // CharacterNameÀÌ empty¸é ÀÌ¸§ ¼û±è
+        // CharacterNameï¿½ï¿½ emptyï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (characterNameText != null)
         {
             if (currentData.characterName.ToLower() == "empty")
@@ -201,12 +201,12 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // DialogueText°¡ empty¸é Å¸ÀÌÇÎ ½ºÅµ
+        // DialogueTextï¿½ï¿½ emptyï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ
         if (typingEffect != null)
         {
             if (currentData.dialogueText.ToLower() == "empty")
             {
-                typingEffect.StartTyping(""); // ºó ÅØ½ºÆ®
+                typingEffect.StartTyping(""); // ï¿½ï¿½ ï¿½Ø½ï¿½Æ®
             }
             else
             {
@@ -214,12 +214,12 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // Spine Ä³¸¯ÅÍ ½ºÅÄµå Ç¥½Ã ¹× ¾Ö´Ï¸ÞÀÌ¼Ç ¼³Á¤
+        // Spine Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Äµï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
         UpdateSpineCharacterStand(currentData);
     }
 
     /// <summary>
-    /// Spine Ä³¸¯ÅÍ ½ºÅÄµå ¾÷µ¥ÀÌÆ®
+    /// Spine Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Äµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     /// </summary>
     public void UpdateSpineCharacterStand(DialogueData data)
     {
@@ -229,7 +229,7 @@ public class DialogueManager : MonoBehaviour
 
         if (position == "empty")
         {
-            // ¿ÞÂÊ/¿À¸¥ÂÊ ±¸ºÐ ¾øÀÌ µÑ ´Ù È®ÀÎ
+            // ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ È®ï¿½ï¿½
             if (!string.IsNullOrEmpty(currentLeftCharacter))
             {
                 if (leftCharacter != null)
@@ -282,16 +282,16 @@ public class DialogueManager : MonoBehaviour
             case "left":
                 if (leftCharacter != null)
                 {
-                    // °°Àº Ä³¸¯ÅÍ°¡ ÀÌ¹Ì Ç¥½Ã ÁßÀÌ¸é ÆäÀÌµå ÀÎ ½ºÅµ
+                    // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ì¹ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½Åµ
                     if (currentLeftCharacter == characterName)
                     {
-                        // Ç¥Á¤¸¸ º¯°æ
+                        // Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         Debug.Log($"[DialogueManager] Left character '{characterName}' already shown, changing expression only");
                         leftCharacter.SetExpression(expression);
                     }
                     else
                     {
-                        // »õ Ä³¸¯ÅÍ µîÀå
+                        // ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         Debug.Log($"[DialogueManager] Showing new left character: {characterName}");
                         leftCharacter.Show(position);
                         leftCharacter.SetExpression(expression);
@@ -303,16 +303,16 @@ public class DialogueManager : MonoBehaviour
             case "right":
                 if (rightCharacter != null)
                 {
-                    // °°Àº Ä³¸¯ÅÍ°¡ ÀÌ¹Ì Ç¥½Ã ÁßÀÌ¸é ÆäÀÌµå ÀÎ ½ºÅµ
+                    // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ì¹ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½Åµ
                     if (currentRightCharacter == characterName)
                     {
-                        // Ç¥Á¤¸¸ º¯°æ
+                        // Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         Debug.Log($"[DialogueManager] Right character '{characterName}' already shown, changing expression only");
                         rightCharacter.SetExpression(expression);
                     }
                     else
                     {
-                        // »õ Ä³¸¯ÅÍ µîÀå
+                        // ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         Debug.Log($"[DialogueManager] Showing new right character: {characterName}");
                         rightCharacter.Show(position);
                         rightCharacter.SetExpression(expression);
@@ -324,7 +324,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ÙÀ½ ´ëÈ­·Î ÁøÇà
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void ShowNextDialogue()
     {
@@ -333,35 +333,35 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ëÈ­ Á¾·á ÈÄ ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
+    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
     /// </summary>
     public void EndDialogueAndMoveToNextScene()
     {
         Debug.Log("[DialogueManager] All dialogues complete. Moving to next scene...");
 
-        // ´ëÈ­ Á¾·á
+        // ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
         EndDialogue();
 
-        // ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
         MoveToNextScene();
     }
 
     /// <summary>
-    /// Skip ¹öÆ°À¸·Î ´ëÈ­ ½ºÅµÇÏ°í ´ÙÀ½ ¾ÀÀ¸·Î
+    /// Skip ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½Åµï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void SkipDialogueAndMoveToNextScene()
     {
         Debug.Log("[DialogueManager] Skipping all dialogues...");
 
-        // ´ëÈ­ Á¾·á
+        // ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
         EndDialogue();
 
-        // ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
         MoveToNextScene();
     }
 
     /// <summary>
-    /// ´ëÈ­ Á¾·á (UI Á¤¸®)
+    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ (UI ï¿½ï¿½ï¿½ï¿½)
     /// </summary>
     public void EndDialogue()
     {
@@ -372,7 +372,7 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(false);
         }
 
-        // Skip ¹öÆ° ºñÈ°¼ºÈ­
+        // Skip ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
         if (skipButton != null)
         {
             skipButton.gameObject.SetActive(false);
@@ -392,28 +392,28 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
+    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
     /// </summary>
     public void MoveToNextScene()
     {
-        // SceneService »ç¿ë
+        // SceneService ï¿½ï¿½ï¿½
         if (useSceneService && sceneService != null)
         {
             Debug.Log("[DialogueManager] Using SceneService to load next scene");
 
-            // SceneServiceÀÇ LoadNextScene() ¶Ç´Â Æ¯Á¤ ¾À ·Îµå
-            // ¿¹: sceneService.LoadScene("NextSceneName");
+            // SceneServiceï¿½ï¿½ LoadNextScene() ï¿½Ç´ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½
+            // ï¿½ï¿½: sceneService.LoadScene("NextSceneName");
 
-            // ¸¸¾à SceneService¿¡ LoadNextScene() °°Àº ¸Þ¼­µå°¡ ÀÖ´Ù¸é:
+            // ï¿½ï¿½ï¿½ï¿½ SceneServiceï¿½ï¿½ LoadNextScene() ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å°¡ ï¿½Ö´Ù¸ï¿½:
             // sceneService.LoadNextScene();
 
-            // ¶Ç´Â Æ¯Á¤ ¾À ÀÌ¸§À¸·Î ·Îµå:
+            // ï¿½Ç´ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½:
             if (!string.IsNullOrEmpty(nextSceneName))
             {
                 Debug.Log($"[DialogueManager] Loading scene: {nextSceneName}");
                 // sceneService.LoadSceneWithLoading(nextSceneName);
 
-                // SceneService°¡ ¾ø´Ù¸é Á÷Á¢ ·Îµå:
+                // SceneServiceï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½:
                 sceneService.LoadSceneWithLoading(nextSceneName);
             }
             else
@@ -421,7 +421,7 @@ public class DialogueManager : MonoBehaviour
                 Debug.LogWarning("[DialogueManager] Next scene name is not set!");
             }
         }
-        // SceneService ¾øÀÌ Á÷Á¢ ¾À ·Îµå
+        // SceneService ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½
         else if (!string.IsNullOrEmpty(nextSceneName))
         {
             Debug.Log($"[DialogueManager] Loading scene directly: {nextSceneName}");
@@ -434,7 +434,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¿ÜºÎ¿¡¼­ ´ÙÀ½ ¾À ÀÌ¸§ ¼³Á¤
+    /// ï¿½ÜºÎ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void SetNextScene(string sceneName)
     {

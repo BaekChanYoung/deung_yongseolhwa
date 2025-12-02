@@ -5,5 +5,5 @@ using UnityEngine;
 [SerializeField]
 public class PlayerDate
 {
-    public float MaxScore;
+    public int MaxScore;
 }

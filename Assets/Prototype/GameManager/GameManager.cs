@@ -273,7 +273,7 @@ public class GameManager : MonoBehaviour
     GameObject RestartMessage;
 
     [SerializeField]
-    public float openTime;
+    public float DeadFallTime;
 
     [ReadOnly]
     [SerializeField]
@@ -282,9 +282,14 @@ public class GameManager : MonoBehaviour
     //
     private ISceneService sceneService;
     
+    // 카메라
+    [SerializeField]
+    GameObject gameCamera;
+    CameraMovement cameraMovement;
 
+
+    //유저 데이터
     PlayerDate playerdate;
-
     string json;
 
     void Awake()
@@ -310,6 +315,8 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("씬에 두개 이상의 게임 매니저가 존재합니다!");
             Destroy(gameObject);
         }
+
+        playerdate = new PlayerDate();
     }
 
     void Start()
@@ -326,6 +333,8 @@ public class GameManager : MonoBehaviour
         scoreSetting.currentSpeedRate = 1f;
 
         //Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        cameraMovement = gameCamera.GetComponent<CameraMovement>();
     }
 
     // Update is called once per frame
@@ -510,6 +519,9 @@ public class GameManager : MonoBehaviour
 
         RestartMessage.SetActive(true);
         player.isDead = true;
+
+        InputMaxScore(scoreSetting.score);
+        SaveJson();
     }
 
     //////////////////////////////////////////////////////////////
@@ -634,7 +646,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator HitEffect()
     {
-        Vector3 enemypos = enemy.TargetEnemy.transform.position;
+        cameraMovement.ShakeMove();
 
         player.PlayerEffect.AttackSlashFX();
 
@@ -655,8 +667,6 @@ public class GameManager : MonoBehaviour
         Timer.GetComponent<TimerBarController>().PauseTimer();
 
         yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime); // HitStopTime 시간동안 잠시 정지
-
-
 
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
@@ -702,6 +712,11 @@ public class GameManager : MonoBehaviour
     public int pullScore()
     {
         return scoreSetting.score;
+    }
+
+    public int PullMaxScore()
+    {
+        return playerdate.MaxScore;
     }
 
     void GameSetup()
@@ -759,8 +774,12 @@ public class GameManager : MonoBehaviour
 
     void InputMaxScore(int score)
     {
+        LoadJson();
         if(score > playerdate.MaxScore)
+        {
             playerdate.MaxScore = score;
+            Debug.Log("최고점수 달성 : " + playerdate.MaxScore);
+        }
     }
 
     void SaveJson()
@@ -771,7 +790,41 @@ public class GameManager : MonoBehaviour
 
     void LoadJson()
     {
+        if(!File.Exists(Application.dataPath + "/PlayerDate.json"))
+        {
+            CreatJsonFile();
+        }
+
         json = File.ReadAllText(Application.dataPath + "/PlayerDate.json");
+        
+        if(json == null)
+        {
+            Debug.Log("파일이 없음, 생성시작");
+            CreatJsonFile();
+        }
         playerdate = JsonUtility.FromJson<PlayerDate>(json);
+    }
+
+    void CreatJsonFile()
+    {
+        playerdate.MaxScore = 0;
+        SaveJson();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+
+        float h = Mathf.Sin((90f - (errorAngleRange/2)) * Mathf.Deg2Rad);
+
+        float w = Mathf.Cos((90f - (errorAngleRange/2)) * Mathf.Deg2Rad);
+
+        Vector2 errorAngle1 = new Vector2(w,h).normalized;
+        Vector2 errorAngle2 = new Vector2(-w,h).normalized;
+
+        Vector2 pos = player.playerObj.transform.position;
+
+        Gizmos.DrawLine(pos, pos + (errorAngle1 * enemy.EnemyInterval));
+        Gizmos.DrawLine(pos,  pos + (errorAngle2 * enemy.EnemyInterval));
     }
 }

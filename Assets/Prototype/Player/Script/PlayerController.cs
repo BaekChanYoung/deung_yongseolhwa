@@ -325,7 +325,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, Pos, 50 * Time.deltaTime);
 
-            if (timer > GameManager.instance.openTime)
+            if (timer > GameManager.instance.DeadFallTime)
             {
                 GameManager.instance.Dead();
                 yield break;

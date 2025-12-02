@@ -1,17 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
+
+[System.Serializable]
+[SerializeField]
+struct effectDate
+{
+    public ParticleSystem effect;
+    public Vector3 Offset;
+}
 
 public class EffectManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject[] attackEffect;
+    effectDate[] attackEffect;
     
     [SerializeField]
-    ParticleSystem[] windEffect;
+    effectDate[] windEffect;
 
     [SerializeField]
     public Transform spawnPos;
@@ -30,7 +33,7 @@ public class EffectManager : MonoBehaviour
 
         for(int i = 0; i < attackEffect.Length; i++)
         {
-            Instantiate(attackEffect[i], spawnPos.position, e, parent);
+            Instantiate(attackEffect[i].effect, spawnPos.position + attackEffect[i].Offset, e, parent);
         }
     }
 
@@ -38,9 +41,9 @@ public class EffectManager : MonoBehaviour
     {
         Quaternion e = Quaternion.Euler(0f, 0f, angle);
 
-        for(int i = 0; i < attackEffect.Length; i++)
+        for(int i = 0; i < windEffect.Length; i++)
         {
-            Instantiate(windEffect[i], spawnPos.position, e, parent);
+            Instantiate(windEffect[i].effect, spawnPos.position + windEffect[i].Offset, e, parent);
         }
     }
 

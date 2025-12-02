@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -56,7 +57,7 @@ public class InputSystem : MonoBehaviour
                     GameManager.instance.InputDirection = answerCheckMode();
                     break;
                 case InputMode.AngleCheckMode:
-                    //GameManager.instance.InputDirection = angleCheckMode();
+                    GameManager.instance.InputDirection = angleCheckMode();
                     break;
             } 
         }
@@ -66,35 +67,32 @@ public class InputSystem : MonoBehaviour
     {
         float? Inputangle = Swipe(); // 스와이프 인식
 
-        // 스와이프 인식 후 각도에 따른 인식
+        SwipeDirection input = SwipeDirection.None;
 
-        if (Inputangle == null)
-        {
-            InputDirection = SwipeDirection.None;
-        }
+        // 스와이프 인식 후 각도에 따른 인식
 
         // 좌측으로 인식할 시
         if ((GameManager.instance.LeftAngle.Min < Inputangle && Inputangle < GameManager.instance.LeftAngle.Max) || Input.GetKeyDown(KeyCode.A))
         {
             //Debug.Log("left");
-            InputDirection = SwipeDirection.Left;
+            input = SwipeDirection.Left;
         }
 
         // 우측으로 인식할 시
         if ((GameManager.instance.RightAngle.Min < Inputangle && Inputangle < GameManager.instance.RightAngle.Max) || Input.GetKeyDown(KeyCode.D))
         {
             //Debug.Log("right");
-            InputDirection = SwipeDirection.Right;
+            input = SwipeDirection.Right;
         }
 
         // 상측으로 인식할 시
         if ((GameManager.instance.UpAngle.Min <= Inputangle && Inputangle <= GameManager.instance.UpAngle.Max) || Input.GetKeyDown(KeyCode.W))
         {
             //Debug.Log("up");
-            InputDirection = SwipeDirection.Up;
+            input = SwipeDirection.Up;
         }
 
-        return InputDirection;
+        return input;
     }
 
     float? Swipe()
@@ -154,6 +152,13 @@ public class InputSystem : MonoBehaviour
     {
         float? Inputangle = Swipe(); // 스와이프 인식
 
+        if(Inputangle == null)
+        {
+            return SwipeDirection.None;
+        }
+
+        SwipeDirection input = SwipeDirection.None;
+
         Vector3 enemypos = GameManager.instance.enemy.TargetEnemy.transform.position;
 
         Vector3 prefectAngle = enemypos - transform.position;
@@ -162,9 +167,9 @@ public class InputSystem : MonoBehaviour
 
         if (Inputangle > angle - GameManager.instance.errorAngleRange && Inputangle < angle + GameManager.instance.errorAngleRange)
         {
-            return GameManager.instance.answerDirection;
+            input = GameManager.instance.answerDirection;
         }
-        else
+        else if(input == SwipeDirection.None)
         {
             switch (GameManager.instance.answerDirection)
             {
@@ -185,7 +190,7 @@ public class InputSystem : MonoBehaviour
             }
         }
 
-        return 0;
+        return input;
     }
 
     void OnDrawGizmosSelected()
