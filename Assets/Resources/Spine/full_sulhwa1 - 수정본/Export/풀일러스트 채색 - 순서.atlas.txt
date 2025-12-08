@@ -1,0 +1,396 @@
+
+풀일러스트 채색 - 순서.png
+size: 7000,6914
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Left_hair
+  rotate: 180
+  xy: 6327, 5376
+  size: 671, 1344
+  orig: 786, 1369
+  offset: 44, 25
+  index: -1
+Leg20482
+  rotate: 180
+  xy: 3711, 4
+  size: 3286, 3571
+  orig: 3286, 3711
+  offset: 0, 0
+  index: -1
+Leg20484
+  rotate: false
+  xy: 2, 85
+  size: 3452, 1890
+  orig: 6217, 5537
+  offset: 2019, 2418
+  index: -1
+Right_hair_down
+  rotate: false
+  xy: 6730, 6448
+  size: 197, 465
+  orig: 1023, 1652
+  offset: 826, 38
+  index: -1
+access-neck
+  rotate: false
+  xy: 5534, 5450
+  size: 458, 421
+  orig: 458, 552
+  offset: 0, 131
+  index: -1
+arm-right
+  rotate: false
+  xy: 3254, 1369
+  size: 890, 605
+  orig: 890, 605
+  offset: 0, 0
+  index: -1
+arm_R
+  rotate: false
+  xy: 5993, 4100
+  size: 1005, 1279
+  orig: 1040, 1398
+  offset: 0, 0
+  index: -1
+back_hair_2
+  rotate: 180
+  xy: 2838, 1531
+  size: 454, 444
+  orig: 701, 647
+  offset: 226, 203
+  index: -1
+blue hair
+  rotate: true
+  xy: 5882, 3481
+  size: 170, 793
+  orig: 187, 793
+  offset: 17, 0
+  index: -1
+body back
+  rotate: false
+  xy: 3309, 14
+  size: 465, 968
+  orig: 506, 968
+  offset: 0, 0
+  index: -1
+body-clothes-L
+  rotate: false
+  xy: 4506, 2864
+  size: 1371, 1683
+  orig: 2960, 2199
+  offset: 1561, 73
+  index: -1
+body-clothes-R
+  rotate: false
+  xy: 4506, 4393
+  size: 1639, 2519
+  orig: 3502, 3356
+  offset: 1833, 0
+  index: -1
+ear-L
+  rotate: false
+  xy: 2880, 52
+  size: 575, 448
+  orig: 586, 585
+  offset: 11, 72
+  index: -1
+ear-L-in
+  rotate: false
+  xy: 6162, 5432
+  size: 253, 265
+  orig: 253, 266
+  offset: 0, 1
+  index: -1
+ear-R
+  rotate: false
+  xy: 4506, 4174
+  size: 533, 488
+  orig: 653, 509
+  offset: 117, 11
+  index: -1
+ear-R-in
+  rotate: false
+  xy: 4927, 6625
+  size: 356, 287
+  orig: 356, 287
+  offset: 0, 0
+  index: -1
+eye brow-R
+  rotate: false
+  xy: 5716, 6845
+  size: 143, 68
+  orig: 415, 308
+  offset: 0, 0
+  index: -1
+eye brows
+  rotate: false
+  xy: 6439, 6748
+  size: 125, 165
+  orig: 415, 308
+  offset: 290, 143
+  index: -1
+eyebrow_lash_L
+  rotate: false
+  xy: 6357, 6646
+  size: 169, 152
+  orig: 169, 154
+  offset: 0, 2
+  index: -1
+eyebrow_under_L
+  rotate: false
+  xy: 6612, 6821
+  size: 118, 92
+  orig: 131, 106
+  offset: 1, 11
+  index: -1
+eyebrow_under_R
+  rotate: false
+  xy: 6538, 6736
+  size: 173, 101
+  orig: 183, 110
+  offset: 6, 9
+  index: -1
+eyebrow_upper_L
+  rotate: false
+  xy: 5572, 6756
+  size: 257, 156
+  orig: 274, 172
+  offset: 17, 16
+  index: -1
+eyebrow_upper_R
+  rotate: false
+  xy: 5698, 5397
+  size: 306, 232
+  orig: 307, 237
+  offset: 0, 0
+  index: -1
+eyes_L
+  rotate: false
+  xy: 5285, 6786
+  size: 99, 127
+  orig: 99, 131
+  offset: 0, 4
+  index: -1
+eyes_R
+  rotate: false
+  xy: 4506, 6772
+  size: 129, 140
+  orig: 129, 140
+  offset: 0, 0
+  index: -1
+eyes_white_L
+  rotate: false
+  xy: 6532, 6816
+  size: 146, 96
+  orig: 146, 96
+  offset: 0, 0
+  index: -1
+eyes_white_R
+  rotate: false
+  xy: 6271, 6779
+  size: 197, 133
+  orig: 197, 133
+  offset: 0, 0
+  index: -1
+face front
+  rotate: false
+  xy: 5591, 5655
+  size: 1041, 1257
+  orig: 1147, 1257
+  offset: 106, 0
+  index: -1
+front_hair_1
+  rotate: false
+  xy: 4506, 6109
+  size: 477, 805
+  orig: 554, 1057
+  offset: 31, 250
+  index: -1
+front_hair_left
+  rotate: 180
+  xy: 4511, 2456
+  size: 688, 617
+  orig: 1459, 1670
+  offset: 373, 924
+  index: -1
+front_hair_one
+  rotate: false
+  xy: 5708, 3431
+  size: 430, 386
+  orig: 550, 395
+  offset: 120, 9
+  index: -1
+front_hair_two
+  rotate: false
+  xy: 3636, 915
+  size: 426, 621
+  orig: 461, 665
+  offset: 0, 37
+  index: -1
+hand-left
+  rotate: false
+  xy: 6446, 103
+  size: 552, 1371
+  orig: 552, 1371
+  offset: 0, 0
+  index: -1
+hand-right
+  rotate: 270
+  xy: 5677, 67
+  size: 1076, 766
+  orig: 1141, 766
+  offset: 42, 0
+  index: -1
+hand-shoulder-L
+  rotate: true
+  xy: 6125, 3625
+  size: 510, 873
+  orig: 558, 873
+  offset: 0, 0
+  index: -1
+nose
+  rotate: false
+  xy: 4612, 6891
+  size: 23, 21
+  orig: 23, 21
+  offset: 0, 0
+  index: -1
+rip
+  rotate: false
+  xy: 6833, 6827
+  size: 143, 85
+  orig: 143, 85
+  offset: 0, 0
+  index: -1
+shadow left
+  rotate: false
+  xy: 5747, 3856
+  size: 545, 553
+  orig: 637, 815
+  offset: 92, 262
+  index: -1
+shadow middle
+  rotate: 270
+  xy: 2, 43
+  size: 499, 811
+  orig: 499, 811
+  offset: 0, 0
+  index: -1
+sword
+  rotate: false
+  xy: 2, 1976
+  size: 4502, 4936
+  orig: 4502, 4936
+  offset: 0, 0
+  index: -1
+tail up
+  rotate: false
+  xy: 5087, 3008
+  size: 746, 936
+  orig: 777, 964
+  offset: 31, 0
+  index: -1
+칼 손잡이
+  rotate: false
+  xy: 6720, 1520
+  size: 278, 387
+  orig: 278, 387
+  offset: 0, 0
+  index: -1
+
+풀일러스트 채색 - 순서2.png
+size: 6916,6248
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Leg20481
+  rotate: false
+  xy: 2, 3
+  size: 3871, 6244
+  orig: 4298, 6409
+  offset: 0, 0
+  index: -1
+Leg20483
+  rotate: false
+  xy: 3561, 795
+  size: 2513, 5452
+  orig: 3784, 6219
+  offset: 0, 536
+  index: -1
+Right_hair
+  rotate: false
+  xy: 5793, 4731
+  size: 1018, 1211
+  orig: 1133, 1670
+  offset: 115, 439
+  index: -1
+Side_hair
+  rotate: false
+  xy: 3455, 3914
+  size: 518, 1080
+  orig: 1380, 1561
+  offset: 340, 0
+  index: -1
+access-L
+  rotate: false
+  xy: 2, 3545
+  size: 762, 805
+  orig: 923, 955
+  offset: 34, 0
+  index: -1
+access-R
+  rotate: false
+  xy: 427, 3195
+  size: 630, 1264
+  orig: 765, 1338
+  offset: 5, 0
+  index: -1
+access-belt
+  rotate: true
+  xy: 2, 4005
+  size: 1282, 1355
+  orig: 1282, 1466
+  offset: 0, 0
+  index: -1
+back_hair
+  rotate: true
+  xy: 5573, 3686
+  size: 1273, 1341
+  orig: 1986, 1940
+  offset: 558, 363
+  index: -1
+body-chest
+  rotate: false
+  xy: 4593, 4634
+  size: 1581, 1612
+  orig: 1682, 1612
+  offset: 0, 0
+  index: -1
+hand-shoulder-R
+  rotate: false
+  xy: 2822, 5812
+  size: 439, 434
+  orig: 439, 434
+  offset: 0, 0
+  index: -1
+tail down
+  rotate: true
+  xy: 2, 536
+  size: 1156, 1992
+  orig: 4019, 6305
+  offset: 2862, 3598
+  index: -1
+
+풀일러스트 채색 - 순서3.png
+size: 4355,4539
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+sword-white
+  rotate: false
+  xy: 2, 3
+  size: 4351, 4535
+  orig: 4502, 4936
+  offset: 151, 202
+  index: -1

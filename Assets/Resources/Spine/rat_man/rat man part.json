@@ -1,0 +1,101 @@
+{ "skeleton": { "images": "C:/Users/roul4/OneDrive/Desktop/스파인 완성/rat_man/images/" },
+"PhotoshopToSpine": { "scale": 1, "padding": 1, "trim": true },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "tail", "bone": "root", "attachment": "tail" },
+	{ "name": "back_hair", "bone": "root", "attachment": "back_hair" },
+	{ "name": "inside", "bone": "root", "attachment": "inside" },
+	{ "name": "body", "bone": "root", "attachment": "body" },
+	{ "name": "foot-R", "bone": "root", "attachment": "foot-R" },
+	{ "name": "foot-L", "bone": "root", "attachment": "foot-L" },
+	{ "name": "Inside2", "bone": "root", "attachment": "Inside2" },
+	{ "name": "pants", "bone": "root", "attachment": "pants" },
+	{ "name": "Right_hair", "bone": "root", "attachment": "Right_hair" },
+	{ "name": "face", "bone": "root", "attachment": "face" },
+	{ "name": "belt", "bone": "root", "attachment": "belt" },
+	{ "name": "outter-R", "bone": "root", "attachment": "outter-R" },
+	{ "name": "Arm-R", "bone": "root", "attachment": "Arm-R" },
+	{ "name": "outter-L", "bone": "root", "attachment": "outter-L" },
+	{ "name": "Arm-L", "bone": "root", "attachment": "Arm-L" },
+	{ "name": "Left_hair2", "bone": "root", "attachment": "Left_hair2" },
+	{ "name": "Left_hair1", "bone": "root", "attachment": "Left_hair1" },
+	{ "name": "front_hair2", "bone": "root", "attachment": "front_hair2" },
+	{ "name": "front_hair1", "bone": "root", "attachment": "front_hair1" },
+	{ "name": "ear-R", "bone": "root", "attachment": "ear-R" },
+	{ "name": "ear_L", "bone": "root", "attachment": "ear_L" },
+	{ "name": "access", "bone": "root", "attachment": "access" }
+],
+"skins": {
+	"default": {
+		"tail": {
+			"tail": { "x": 1439.5, "y": -1811, "width": 657, "height": 522 }
+		},
+		"back_hair": {
+			"back_hair": { "x": 801.5, "y": -369.5, "width": 441, "height": 411 }
+		},
+		"inside": {
+			"inside": { "x": 584.5, "y": -1148.5, "width": 125, "height": 315 }
+		},
+		"body": {
+			"body": { "x": 741.5, "y": -888.5, "width": 455, "height": 677 }
+		},
+		"foot-R": {
+			"foot-R": { "x": 652, "y": -2807.5, "width": 316, "height": 185 }
+		},
+		"foot-L": {
+			"foot-L": { "x": 1372.5, "y": -2856, "width": 165, "height": 260 }
+		},
+		"Inside2": {
+			"Inside2": { "x": 540, "y": -1708.5, "width": 194, "height": 421 }
+		},
+		"pants": {
+			"pants": { "x": 900.5, "y": -1968, "width": 1081, "height": 1770 }
+		},
+		"Right_hair": {
+			"Right_hair": { "x": 719.5, "y": -404, "width": 161, "height": 314 }
+		},
+		"face": {
+			"face": { "x": 801, "y": -476, "width": 220, "height": 290 }
+		},
+		"belt": {
+			"belt": { "x": 764.5, "y": -1296, "width": 475, "height": 528 }
+		},
+		"outter-R": {
+			"outter-R": { "x": 556.5, "y": -1287.5, "width": 373, "height": 1275 }
+		},
+		"Arm-R": {
+			"Arm-R": { "x": 468.5, "y": -1197.5, "width": 219, "height": 389 }
+		},
+		"outter-L": {
+			"outter-L": { "x": 962, "y": -1272, "width": 540, "height": 1290 }
+		},
+		"Arm-L": {
+			"Arm-L": { "x": 1013, "y": -1315.5, "width": 338, "height": 515 }
+		},
+		"Left_hair2": {
+			"Left_hair2": { "x": 862.5, "y": -363.5, "width": 425, "height": 399 }
+		},
+		"Left_hair1": {
+			"Left_hair1": { "x": 849.5, "y": -399, "width": 155, "height": 278 }
+		},
+		"front_hair2": {
+			"front_hair2": { "x": 867.5, "y": -405.5, "width": 409, "height": 315 }
+		},
+		"front_hair1": {
+			"front_hair1": { "x": 803.5, "y": -437.5, "width": 87, "height": 251 }
+		},
+		"ear-R": {
+			"ear-R": { "x": 973.5, "y": -252.5, "width": 219, "height": 191 }
+		},
+		"ear_L": {
+			"ear_L": { "x": 654.5, "y": -250.5, "width": 165, "height": 181 }
+		},
+		"access": {
+			"access": { "x": 829.5, "y": -1601.5, "width": 263, "height": 243 }
+		}
+	}
+},
+"animations": { "animation": {} }
+}

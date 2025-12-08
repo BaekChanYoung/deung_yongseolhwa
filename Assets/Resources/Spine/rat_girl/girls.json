@@ -1,0 +1,109 @@
+{ "skeleton": { "images": "C:/Users/roul4/OneDrive/Desktop/mouth human girl/images/" },
+"PhotoshopToSpine": { "scale": 1, "padding": 1, "trim": true },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "hand_R", "bone": "root", "attachment": "hand_R" },
+	{ "name": "신발", "bone": "root", "attachment": "신발" },
+	{ "name": "inside_R", "bone": "root", "attachment": "inside_R" },
+	{ "name": "inside_L", "bone": "root", "attachment": "inside_L" },
+	{ "name": "pants", "bone": "root", "attachment": "pants" },
+	{ "name": "tail", "bone": "root", "attachment": "tail" },
+	{ "name": "under_hair", "bone": "root", "attachment": "under_hair" },
+	{ "name": "back_hair", "bone": "root", "attachment": "back_hair" },
+	{ "name": "should_R", "bone": "root", "attachment": "should_R" },
+	{ "name": "arm_R", "bone": "root", "attachment": "arm_R" },
+	{ "name": "body", "bone": "root", "attachment": "body" },
+	{ "name": "outer_L", "bone": "root", "attachment": "outer_L" },
+	{ "name": "arm_L", "bone": "root", "attachment": "arm_L" },
+	{ "name": "hand_L", "bone": "root", "attachment": "hand_L" },
+	{ "name": "face", "bone": "root", "attachment": "face" },
+	{ "name": "belt", "bone": "root", "attachment": "belt" },
+	{ "name": "belt-1", "bone": "root", "attachment": "belt-1" },
+	{ "name": "ear_R", "bone": "root", "attachment": "ear_R" },
+	{ "name": "front_hair_2", "bone": "root", "attachment": "front_hair_2" },
+	{ "name": "front_hair_1", "bone": "root", "attachment": "front_hair_1" },
+	{ "name": "front_hair", "bone": "root", "attachment": "front_hair" },
+	{ "name": "right_hair", "bone": "root", "attachment": "right_hair" },
+	{ "name": "Left_hair", "bone": "root", "attachment": "Left_hair" },
+	{ "name": "ear_L", "bone": "root", "attachment": "ear_L" }
+],
+"skins": {
+	"default": {
+		"hand_R": {
+			"hand_R": { "x": 391.5, "y": -1471, "width": 173, "height": 218 }
+		},
+		"신발": {
+			"신발": { "x": 1218.5, "y": -3080.5, "width": 313, "height": 583 }
+		},
+		"inside_R": {
+			"inside_R": { "x": 801, "y": -2188, "width": 206, "height": 214 }
+		},
+		"inside_L": {
+			"inside_L": { "x": 1379.5, "y": -1538, "width": 203, "height": 1558 }
+		},
+		"pants": {
+			"pants": { "x": 1101.5, "y": -2430.5, "width": 697, "height": 939 }
+		},
+		"tail": {
+			"tail": { "x": 1425.5, "y": -1746.5, "width": 1449, "height": 3245 }
+		},
+		"under_hair": {
+			"under_hair": { "x": 1510.5, "y": -1883, "width": 241, "height": 702 }
+		},
+		"back_hair": {
+			"back_hair": { "x": 1203.5, "y": -522, "width": 667, "height": 824 }
+		},
+		"should_R": {
+			"should_R": { "x": 1091, "y": -1520.5, "width": 1080, "height": 1525 }
+		},
+		"arm_R": {
+			"arm_R": { "x": 660, "y": -1427, "width": 402, "height": 786 }
+		},
+		"body": {
+			"body": { "x": 994, "y": -1274.5, "width": 800, "height": 1845 }
+		},
+		"outer_L": {
+			"outer_L": { "x": 1342.5, "y": -1522.5, "width": 357, "height": 1533 }
+		},
+		"arm_L": {
+			"arm_L": { "x": 1463.5, "y": -1207.5, "width": 359, "height": 815 }
+		},
+		"hand_L": {
+			"hand_L": { "x": 1517.5, "y": -1025.5, "width": 133, "height": 689 }
+		},
+		"face": {
+			"face": { "x": 1171.5, "y": -541, "width": 275, "height": 406 }
+		},
+		"belt": {
+			"belt": { "x": 1135.5, "y": -1556.5, "width": 297, "height": 601 }
+		},
+		"belt-1": {
+			"belt-1": { "x": 801.5, "y": -1717.5, "width": 127, "height": 867 }
+		},
+		"ear_R": {
+			"ear_R": { "x": 1174, "y": -527.5, "width": 634, "height": 809 }
+		},
+		"front_hair_2": {
+			"front_hair_2": { "x": 1177, "y": -448, "width": 376, "height": 320 }
+		},
+		"front_hair_1": {
+			"front_hair_1": { "x": 1205.5, "y": -444, "width": 319, "height": 328 }
+		},
+		"front_hair": {
+			"front_hair": { "x": 1212.5, "y": -445.5, "width": 305, "height": 325 }
+		},
+		"right_hair": {
+			"right_hair": { "x": 1095.5, "y": -491.5, "width": 231, "height": 503 }
+		},
+		"Left_hair": {
+			"Left_hair": { "x": 1304, "y": -513.5, "width": 348, "height": 555 }
+		},
+		"ear_L": {
+			"ear_L": { "x": 1266, "y": -512, "width": 608, "height": 840 }
+		}
+	}
+},
+"animations": { "animation": {} }
+}

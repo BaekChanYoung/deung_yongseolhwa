@@ -352,6 +352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SnowToParadise
       objectReference: {fileID: 0}
+    - target: {fileID: 1747402900120581316, guid: 51f2c5e375ba20a459abfabb7bef8b29, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5399862649708611755, guid: 51f2c5e375ba20a459abfabb7bef8b29, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -593,6 +597,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CliffToSnow
       objectReference: {fileID: 0}
+    - target: {fileID: 3230112668848364617, guid: d6acb63370c5a22489888b0eddac41e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -659,6 +667,10 @@ PrefabInstance:
     - target: {fileID: 5178125216025771530, guid: 48a83bd3a138d7e4ca4326b0c1519d9a, type: 3}
       propertyPath: m_Name
       value: Paradise
+      objectReference: {fileID: 0}
+    - target: {fileID: 5178125216025771530, guid: 48a83bd3a138d7e4ca4326b0c1519d9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

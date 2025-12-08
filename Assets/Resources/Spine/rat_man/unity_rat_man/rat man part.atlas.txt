@@ -1,0 +1,160 @@
+
+rat man part.png
+size: 2209,2209
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Arm-L
+  rotate: false
+  xy: 1821, 1692
+  size: 338, 515
+  orig: 338, 515
+  offset: 0, 0
+  index: -1
+Arm-R
+  rotate: false
+  xy: 1041, 46
+  size: 210, 362
+  orig: 219, 389
+  offset: 0, 1
+  index: -1
+Inside2
+  rotate: false
+  xy: 1821, 1269
+  size: 194, 421
+  orig: 194, 421
+  offset: 0, 0
+  index: -1
+Left_hair1
+  rotate: true
+  xy: 1703, 477
+  size: 155, 278
+  orig: 155, 278
+  offset: 0, 0
+  index: -1
+Left_hair2
+  rotate: false
+  xy: 1821, 926
+  size: 200, 341
+  orig: 425, 399
+  offset: 120, 0
+  index: -1
+Right_hair
+  rotate: false
+  xy: 2023, 1058
+  size: 154, 314
+  orig: 161, 314
+  offset: 4, 0
+  index: -1
+access
+  rotate: false
+  xy: 1704, 266
+  size: 240, 209
+  orig: 263, 243
+  offset: 0, 0
+  index: -1
+back_hair
+  rotate: false
+  xy: 1253, 60
+  size: 322, 348
+  orig: 441, 411
+  offset: 86, 0
+  index: -1
+belt
+  rotate: false
+  xy: 587, 2
+  size: 452, 486
+  orig: 475, 528
+  offset: 23, 19
+  index: -1
+body
+  rotate: true
+  xy: 2, 33
+  size: 455, 583
+  orig: 455, 677
+  offset: 0, 93
+  index: -1
+ear-R
+  rotate: true
+  xy: 1983, 475
+  size: 219, 191
+  orig: 219, 191
+  offset: 0, 0
+  index: -1
+ear_L
+  rotate: false
+  xy: 1946, 292
+  size: 165, 181
+  orig: 165, 181
+  offset: 0, 0
+  index: -1
+face
+  rotate: false
+  xy: 1703, 634
+  size: 220, 290
+  orig: 220, 290
+  offset: 0, 0
+  index: -1
+foot-L
+  rotate: false
+  xy: 1925, 696
+  size: 165, 228
+  orig: 165, 260
+  offset: 0, 0
+  index: -1
+foot-R
+  rotate: true
+  xy: 2017, 1374
+  size: 316, 183
+  orig: 316, 185
+  offset: 0, 0
+  index: -1
+front_hair1
+  rotate: false
+  xy: 2113, 293
+  size: 62, 180
+  orig: 87, 251
+  offset: 25, 71
+  index: -1
+front_hair2
+  rotate: true
+  xy: 1704, 127
+  size: 137, 229
+  orig: 409, 315
+  offset: 0, 31
+  index: -1
+inside
+  rotate: false
+  xy: 1577, 93
+  size: 125, 315
+  orig: 125, 315
+  offset: 0, 0
+  index: -1
+outter-L
+  rotate: false
+  xy: 1419, 947
+  size: 400, 1260
+  orig: 540, 1290
+  offset: 140, 0
+  index: -1
+outter-R
+  rotate: false
+  xy: 1044, 934
+  size: 373, 1273
+  orig: 373, 1275
+  offset: 0, 0
+  index: -1
+pants
+  rotate: false
+  xy: 2, 490
+  size: 1040, 1717
+  orig: 1081, 1770
+  offset: 41, 49
+  index: -1
+tail
+  rotate: false
+  xy: 1044, 410
+  size: 657, 522
+  orig: 657, 522
+  offset: 0, 0
+  index: -1

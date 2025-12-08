@@ -23,9 +23,18 @@ public class SpineCharacterStand : MonoBehaviour
         public bool enableShake = false;
     }
 
-    [Header("Spine Settings")]
-    [SerializeField] private SkeletonAnimation skeletonAnimation;
+    [Header("Character Info")]
     [SerializeField] private string characterName;
+
+    [Tooltip("이 스탠드가 그룹 캐릭터인지 여부")]
+    [SerializeField] private bool isGroupCharacter = false;
+
+    [Header("Single Character (기본)")]
+    [SerializeField] private SkeletonAnimation skeletonAnimation;
+
+    [Header("Group Characters (여러 캐릭터 동시 등장)")]
+    [Tooltip("그룹으로 등장할 캐릭터들 (순서대로 배치)")]
+    [SerializeField] private SkeletonAnimation[] groupSkeletons;
 
     [Header("Expression Mappings")]
     [Tooltip("Expression → Animation 매핑 (자유롭게 추가/삭제 가능)")]
@@ -57,23 +66,54 @@ public class SpineCharacterStand : MonoBehaviour
     private string currentExpression = "";
     private Color originalColor;
 
+    // 그룹 캐릭터용 원래 위치들
+    private Vector3[] groupOriginalPositions;
+    private Color[] groupOriginalColors;
+
     // 빠른 검색을 위한 Dictionary
     private Dictionary<string, ExpressionMapping> expressionDict;
 
     private void Awake()
     {
         characterTransform = transform;
-
-        if (skeletonAnimation == null)
-        {
-            skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
-        }
-
         originalPosition = characterTransform.position;
 
-        if (skeletonAnimation != null)
+        // 단일 캐릭터 초기화
+        if (!isGroupCharacter)
         {
-            originalColor = skeletonAnimation.Skeleton.GetColor();
+            if (skeletonAnimation == null)
+            {
+                skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
+            }
+
+            if (skeletonAnimation != null)
+            {
+                originalColor = skeletonAnimation.Skeleton.GetColor();
+            }
+        }
+        // 그룹 캐릭터 초기화
+        else
+        {
+            if (groupSkeletons != null && groupSkeletons.Length > 0)
+            {
+                groupOriginalPositions = new Vector3[groupSkeletons.Length];
+                groupOriginalColors = new Color[groupSkeletons.Length];
+
+                for (int i = 0; i < groupSkeletons.Length; i++)
+                {
+                    if (groupSkeletons[i] != null)
+                    {
+                        groupOriginalPositions[i] = groupSkeletons[i].transform.position;
+                        groupOriginalColors[i] = groupSkeletons[i].Skeleton.GetColor();
+                    }
+                }
+
+                Debug.Log($"[SpineCharacterStand] Group character '{characterName}' initialized with {groupSkeletons.Length} members");
+            }
+            else
+            {
+                Debug.LogWarning($"[SpineCharacterStand] Group character '{characterName}' has no group skeletons assigned!");
+            }
         }
 
         // Dictionary 생성 (대소문자 구분 없이)
@@ -114,7 +154,15 @@ public class SpineCharacterStand : MonoBehaviour
     public void Show(string position)
     {
         gameObject.SetActive(true);
-        StartCoroutine(FadeIn(position));
+
+        if (!isGroupCharacter)
+        {
+            StartCoroutine(FadeIn(position));
+        }
+        else
+        {
+            StartCoroutine(GroupFadeIn(position));
+        }
     }
 
     /// <summary>
@@ -122,9 +170,28 @@ public class SpineCharacterStand : MonoBehaviour
     /// </summary>
     public void Hide()
     {
-        if (skeletonAnimation != null)
+        // 단일 캐릭터
+        if (!isGroupCharacter)
         {
-            skeletonAnimation.Skeleton.SetColor(new Color(originalColor.r, originalColor.g, originalColor.b, 0f));
+            if (skeletonAnimation != null)
+            {
+                skeletonAnimation.Skeleton.SetColor(new Color(originalColor.r, originalColor.g, originalColor.b, 0f));
+            }
+        }
+        // 그룹 캐릭터
+        else
+        {
+            if (groupSkeletons != null)
+            {
+                for (int i = 0; i < groupSkeletons.Length; i++)
+                {
+                    if (groupSkeletons[i] != null && i < groupOriginalColors.Length)
+                    {
+                        Color c = groupOriginalColors[i];
+                        groupSkeletons[i].Skeleton.SetColor(new Color(c.r, c.g, c.b, 0f));
+                    }
+                }
+            }
         }
 
         gameObject.SetActive(false);
@@ -143,15 +210,8 @@ public class SpineCharacterStand : MonoBehaviour
     /// </summary>
     public void SetExpression(string expression)
     {
-        if (skeletonAnimation == null)
-        {
-            Debug.LogError($"[SpineCharacterStand] SkeletonAnimation is null on {characterName}!");
-            return;
-        }
-
         Debug.Log($"[SpineCharacterStand] {characterName} received expression: '{expression}'");
 
-        // 같은 표정이면 스킵
         if (currentExpression.Equals(expression, System.StringComparison.OrdinalIgnoreCase))
         {
             Debug.Log($"[SpineCharacterStand] Same expression, skipping: {expression}");
@@ -168,15 +228,31 @@ public class SpineCharacterStand : MonoBehaviour
             characterTransform.position = originalPosition;
         }
 
-        // Expression 매칭
         ExpressionMapping mapping = GetExpressionMapping(expression);
 
         if (mapping != null)
         {
             Debug.Log($"[SpineCharacterStand] Mapped '{expression}' → Animation: '{mapping.animationName}' (Shake: {mapping.enableShake})");
 
-            // 애니메이션 재생
-            PlaySpineAnimation(mapping.animationName);
+            // 단일 캐릭터
+            if (!isGroupCharacter)
+            {
+                PlaySpineAnimation(skeletonAnimation, mapping.animationName);
+            }
+            // 그룹 캐릭터 - 모든 캐릭터에 동일 애니메이션 적용
+            else
+            {
+                if (groupSkeletons != null)
+                {
+                    foreach (var skeleton in groupSkeletons)
+                    {
+                        if (skeleton != null)
+                        {
+                            PlaySpineAnimation(skeleton, mapping.animationName);
+                        }
+                    }
+                }
+            }
 
             // 흔들림 효과
             if (mapping.enableShake && enableShakeEffect)
@@ -188,7 +264,24 @@ public class SpineCharacterStand : MonoBehaviour
         else
         {
             Debug.LogWarning($"[SpineCharacterStand] No mapping found for '{expression}', using default: {defaultAnimation}");
-            PlaySpineAnimation(defaultAnimation);
+
+            if (!isGroupCharacter)
+            {
+                PlaySpineAnimation(skeletonAnimation, defaultAnimation);
+            }
+            else
+            {
+                if (groupSkeletons != null)
+                {
+                    foreach (var skeleton in groupSkeletons)
+                    {
+                        if (skeleton != null)
+                        {
+                            PlaySpineAnimation(skeleton, defaultAnimation);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -214,27 +307,26 @@ public class SpineCharacterStand : MonoBehaviour
     /// <summary>
     /// Spine 애니메이션 재생
     /// </summary>
-    private void PlaySpineAnimation(string animationName, float mixDuration = 0.2f)
+    private void PlaySpineAnimation(SkeletonAnimation skeleton, string animationName, float mixDuration = 0.2f)
     {
-        if (skeletonAnimation == null)
+        if (skeleton == null)
         {
             Debug.LogError("[SpineCharacterStand] SkeletonAnimation is null!");
             return;
         }
 
-        Debug.Log($"[SpineCharacterStand] Playing animation: '{animationName}'");
+        Debug.Log($"[SpineCharacterStand] Playing animation: '{animationName}' on {skeleton.name}");
 
-        var trackEntry = skeletonAnimation.state.SetAnimation(0, animationName, true);
+        var trackEntry = skeleton.state.SetAnimation(0, animationName, true);
 
         if (trackEntry != null)
         {
             trackEntry.MixDuration = mixDuration;
-            Debug.Log($"[SpineCharacterStand] Animation '{animationName}' started successfully!");
         }
         else
         {
             Debug.LogWarning($"[SpineCharacterStand] Animation '{animationName}' not found! Using default: {defaultAnimation}");
-            skeletonAnimation.state.SetAnimation(0, defaultAnimation, true);
+            skeleton.state.SetAnimation(0, defaultAnimation, true);
         }
     }
 
@@ -275,7 +367,7 @@ public class SpineCharacterStand : MonoBehaviour
     }
 
     /// <summary>
-    /// 페이드 인 효과
+    /// 단일 캐릭터 페이드 인
     /// </summary>
     private IEnumerator FadeIn(string position)
     {
@@ -294,6 +386,9 @@ public class SpineCharacterStand : MonoBehaviour
                 break;
             case "right":
                 startPos = new Vector3(originalPosition.x + moveDistance, originalPosition.y, originalPosition.z);
+                break;
+            case "center":
+                startPos = new Vector3(originalPosition.x, originalPosition.y - moveDistance, originalPosition.z);
                 break;
         }
 
@@ -321,6 +416,104 @@ public class SpineCharacterStand : MonoBehaviour
 
         skeleton.SetColor(endColor);
         characterTransform.position = originalPosition;
+    }
+
+    /// <summary>
+    /// 그룹 캐릭터 페이드 인
+    /// </summary>
+    private IEnumerator GroupFadeIn(string position)
+    {
+        if (groupSkeletons == null || groupSkeletons.Length == 0)
+        {
+            Debug.LogError("[SpineCharacterStand] No group skeletons assigned!");
+            yield break;
+        }
+
+        // 각 캐릭터의 시작 위치 계산
+        Vector3[] startPositions = new Vector3[groupSkeletons.Length];
+
+        for (int i = 0; i < groupSkeletons.Length; i++)
+        {
+            if (groupSkeletons[i] != null && i < groupOriginalPositions.Length)
+            {
+                Vector3 originalPos = groupOriginalPositions[i];
+
+                switch (position.ToLower())
+                {
+                    case "left":
+                    case "left_group":
+                        startPositions[i] = new Vector3(originalPos.x - moveDistance, originalPos.y, originalPos.z);
+                        break;
+                    case "right":
+                    case "right_group":
+                        startPositions[i] = new Vector3(originalPos.x + moveDistance, originalPos.y, originalPos.z);
+                        break;
+                    case "center":
+                        startPositions[i] = new Vector3(originalPos.x, originalPos.y - moveDistance, originalPos.z);
+                        break;
+                    default:
+                        startPositions[i] = originalPos;
+                        break;
+                }
+
+                groupSkeletons[i].transform.position = startPositions[i];
+
+                // 초기 알파값 0
+                Color c = groupOriginalColors[i];
+                groupSkeletons[i].Skeleton.SetColor(new Color(c.r, c.g, c.b, 0f));
+            }
+        }
+
+        float elapsed = 0f;
+
+        // 모든 캐릭터 동시에 페이드 인
+        while (elapsed < fadeInDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / fadeInDuration;
+
+            for (int i = 0; i < groupSkeletons.Length; i++)
+            {
+                if (groupSkeletons[i] != null && i < groupOriginalPositions.Length)
+                {
+                    // 위치 이동
+                    groupSkeletons[i].transform.position = Vector3.Lerp(startPositions[i], groupOriginalPositions[i], t);
+
+                    // 알파값 증가
+                    Color c = groupOriginalColors[i];
+                    Color newColor = new Color(c.r, c.g, c.b, Mathf.Lerp(0f, 1f, t));
+                    groupSkeletons[i].Skeleton.SetColor(newColor);
+                }
+            }
+
+            yield return null;
+        }
+
+        // 최종 상태
+        for (int i = 0; i < groupSkeletons.Length; i++)
+        {
+            if (groupSkeletons[i] != null && i < groupOriginalPositions.Length)
+            {
+                groupSkeletons[i].transform.position = groupOriginalPositions[i];
+                groupSkeletons[i].Skeleton.SetColor(groupOriginalColors[i]);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 캐릭터 이름 반환
+    /// </summary>
+    public string GetCharacterName()
+    {
+        return characterName;
+    }
+
+    /// <summary>
+    /// 그룹 캐릭터 여부 확인
+    /// </summary>
+    public bool IsGroupCharacter()
+    {
+        return isGroupCharacter;
     }
 
     /// <summary>

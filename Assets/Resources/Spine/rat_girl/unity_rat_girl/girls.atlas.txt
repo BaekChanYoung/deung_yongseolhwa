@@ -1,0 +1,174 @@
+
+girls.png
+size: 2389,2389
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Left_hair
+  rotate: true
+  xy: 785, 10
+  size: 268, 555
+  orig: 348, 555
+  offset: 29, 0
+  index: -1
+arm_L
+  rotate: false
+  xy: 1770, 1572
+  size: 354, 815
+  orig: 359, 815
+  offset: 0, 0
+  index: -1
+arm_R
+  rotate: true
+  xy: 1005, 1054
+  size: 398, 777
+  orig: 402, 786
+  offset: 0, 9
+  index: -1
+back_hair
+  rotate: false
+  xy: 785, 280
+  size: 518, 629
+  orig: 667, 824
+  offset: 77, 0
+  index: -1
+belt
+  rotate: false
+  xy: 1305, 329
+  size: 297, 591
+  orig: 297, 601
+  offset: 0, 0
+  index: -1
+belt-1
+  rotate: false
+  xy: 1651, 1540
+  size: 117, 847
+  orig: 127, 867
+  offset: 10, 20
+  index: -1
+body
+  rotate: false
+  xy: 317, 911
+  size: 686, 1476
+  orig: 800, 1845
+  offset: 84, 39
+  index: -1
+ear_L
+  rotate: false
+  xy: 1342, 2
+  size: 312, 325
+  orig: 608, 840
+  offset: 296, 515
+  index: -1
+ear_R
+  rotate: true
+  xy: 1835, 370
+  size: 256, 306
+  orig: 634, 809
+  offset: 0, 503
+  index: -1
+face
+  rotate: false
+  xy: 1835, 628
+  size: 275, 406
+  orig: 275, 406
+  offset: 0, 0
+  index: -1
+front_hair
+  rotate: false
+  xy: 2053, 1270
+  size: 124, 300
+  orig: 305, 325
+  offset: 36, 21
+  index: -1
+front_hair_1
+  rotate: false
+  xy: 1656, 131
+  size: 172, 284
+  orig: 319, 328
+  offset: 119, 44
+  index: -1
+front_hair_2
+  rotate: true
+  xy: 1830, 172
+  size: 196, 272
+  orig: 376, 320
+  offset: 0, 48
+  index: -1
+hand_L
+  rotate: true
+  xy: 1005, 922
+  size: 130, 679
+  orig: 133, 689
+  offset: 3, 10
+  index: -1
+hand_R
+  rotate: false
+  xy: 2053, 1050
+  size: 173, 218
+  orig: 173, 218
+  offset: 0, 0
+  index: -1
+inside_L
+  rotate: false
+  xy: 1656, 5
+  size: 153, 124
+  orig: 203, 1558
+  offset: 50, 6
+  index: -1
+inside_R
+  rotate: false
+  xy: 2112, 834
+  size: 206, 214
+  orig: 206, 214
+  offset: 0, 0
+  index: -1
+outer_L
+  rotate: false
+  xy: 2, 897
+  size: 313, 1490
+  orig: 357, 1533
+  offset: 28, 0
+  index: -1
+pants
+  rotate: false
+  xy: 1005, 1454
+  size: 644, 933
+  orig: 697, 939
+  offset: 53, 6
+  index: -1
+right_hair
+  rotate: false
+  xy: 1604, 417
+  size: 229, 503
+  orig: 231, 503
+  offset: 0, 0
+  index: -1
+should_R
+  rotate: false
+  xy: 2112, 705
+  size: 192, 127
+  orig: 1080, 1525
+  offset: 358, 1372
+  index: -1
+tail
+  rotate: false
+  xy: 2, 8
+  size: 781, 887
+  orig: 1449, 3245
+  offset: 668, 1315
+  index: -1
+under_hair
+  rotate: false
+  xy: 2126, 1689
+  size: 241, 698
+  orig: 241, 702
+  offset: 0, 0
+  index: -1
+신발
+  rotate: false
+  xy: 1784, 1036
+  size: 267, 534
+  orig: 313, 583
+  offset: 0, 0
+  index: -1

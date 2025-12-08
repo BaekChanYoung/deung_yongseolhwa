@@ -34,7 +34,7 @@ MonoBehaviour:
     fadeInDuration: 0
     loop: 1
   - sceneName: Prototype
-    musicClip: {fileID: 8300000, guid: fd5090370700cc844bab3b35f53bf83b, type: 3}
+    musicClip: {fileID: 8300000, guid: 0a7f77db17a09aa4b80f4337c7764d7a, type: 3}
     volume: 1
     fadeInDuration: 2
     loop: 1

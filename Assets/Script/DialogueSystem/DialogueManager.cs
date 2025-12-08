@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// Spine ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½
-/// Skip: ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½
+/// Spine ±â¹Ý ´ëÈ­ ½Ã½ºÅÛ ¸Å´ÏÀú
+/// Skip: ´ëÈ­ Á¾·á ÈÄ ´ÙÀ½ ¾À ÀÌµ¿
 /// </summary>
 public class DialogueManager : MonoBehaviour
 {
@@ -19,14 +19,20 @@ public class DialogueManager : MonoBehaviour
     public SpineCharacterStand leftCharacter;
     public SpineCharacterStand rightCharacter;
 
+    [Tooltip("¿À¸¥ÂÊ ±×·ì Ä³¸¯ÅÍ ½ºÅÄµå (¿¹: ºô·±µé)")]
+    public SpineCharacterStand rightGroupCharacter;
+
     [Header("UI References")]
     public GameObject dialoguePanel;
     public Button skipButton;
 
+    [Header("Cutscene & Background")]
+    public CutsceneManager cutsceneManager;
+
     [Header("Scene Transition")]
-    [Tooltip("ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SceneService ï¿½ï¿½ï¿½)")]
+    [Tooltip("´ëÈ­ Á¾·á ÈÄ ÀÌµ¿ÇÒ ¾À ÀÌ¸§ (ºñ¾îÀÖÀ¸¸é SceneService »ç¿ë)")]
     public string nextSceneName = "";
-    [Tooltip("SceneService ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    [Tooltip("SceneService »ç¿ë ¿©ºÎ")]
     public bool useSceneService = true;
 
     private List<DialogueData> dialogues;
@@ -37,9 +43,13 @@ public class DialogueManager : MonoBehaviour
     private string currentLeftCharacter = "";
     private string currentRightCharacter = "";
 
+    private SpineCharacterStand currentRightStand = null;
+
+    private bool isCutscenePlaying = false;
+
     void Start()
     {
-        // SceneService ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // SceneService °¡Á®¿À±â
         if (useSceneService)
         {
             sceneService = ServiceLocator.Resolve<ISceneService>();
@@ -53,18 +63,18 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(false);
         }
 
-        // Skip ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
+        // Skip ¹öÆ° ¼³Á¤
         SetupSkipButton();
     }
 
     /// <summary>
-    /// Skip ï¿½ï¿½Æ° ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// Skip ¹öÆ° ÃÊ±â ¼³Á¤
     /// </summary>
     public void SetupSkipButton()
     {
         if (skipButton != null)
         {
-            // ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+            // ¹öÆ° Å¬¸¯ ÀÌº¥Æ® ¿¬°á
             skipButton.onClick.AddListener(OnSkipButtonClicked);
             Debug.Log("[DialogueManager] Skip button setup complete");
         }
@@ -78,14 +88,16 @@ public class DialogueManager : MonoBehaviour
     {
         if (!isDialogueActive) return;
 
-        // ========== UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ==========
+        if (isCutscenePlaying) return;
+
+        // ========== UI À§¿¡¼­ Å¬¸¯ ½Ã ¹«½Ã ==========
         if (IsPointerOverUI())
         {
-            return; // UI ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ Ã³ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
+            return; // UI ¹öÆ° Å¬¸¯Àº ¿©±â¼­ Ã³¸® ¾È ÇÔ
         }
         // ==========================================
 
-        // ï¿½ï¿½ï¿½ì½º Å¬ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+        // ¸¶¿ì½º Å¬¸¯ÀÌ³ª ½ºÆäÀÌ½º¹Ù·Î ´ÙÀ½ ´ëÈ­ ÁøÇà
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             HandleDialogueProgress();
@@ -93,7 +105,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ì½ºï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+    /// ¸¶¿ì½º°¡ UI À§¿¡ ÀÖ´ÂÁö È®ÀÎ
     /// </summary>
     public bool IsPointerOverUI()
     {
@@ -102,38 +114,45 @@ public class DialogueManager : MonoBehaviour
             return false;
         }
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ¸ð¹ÙÀÏ
         if (Input.touchCount > 0)
         {
             return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
         }
 
-        // PC (ï¿½ï¿½ï¿½ì½º)
+        // PC (¸¶¿ì½º)
         return EventSystem.current.IsPointerOverGameObject();
     }
 
     /// <summary>
-    /// Skip ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½: ï¿½ï¿½È­ ï¿½ï¿½Ã¼ ï¿½ï¿½Åµï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// Skip ¹öÆ° Å¬¸¯ ½Ã: ´ëÈ­ ÀüÃ¼ ½ºÅµÇÏ°í ´ÙÀ½ ¾ÀÀ¸·Î
     /// </summary>
     public void OnSkipButtonClicked()
     {
         Debug.Log("[DialogueManager] Skip button clicked! Ending dialogue and moving to next scene...");
+
+        if (cutsceneManager != null && isCutscenePlaying)
+        {
+            cutsceneManager.SkipCutscene();
+            isCutscenePlaying = false;
+        }
+
         SkipDialogueAndMoveToNextScene();
     }
 
     /// <summary>
-    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ (Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ or ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­)
+    /// ´ëÈ­ ÁøÇà Ã³¸® (Å¸ÀÌÇÎ ½ºÅµ or ´ÙÀ½ ´ëÈ­)
     /// </summary>
     public void HandleDialogueProgress()
     {
         if (typingEffect != null && typingEffect.IsTyping)
         {
-            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½
+            // Å¸ÀÌÇÎ ÁßÀÌ¸é Áï½Ã ¿Ï·á
             typingEffect.SkipTyping();
         }
         else
         {
-            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­
+            // Å¸ÀÌÇÎ ¿Ï·á¸é ´ÙÀ½ ´ëÈ­
             ShowNextDialogue();
         }
     }
@@ -143,12 +162,12 @@ public class DialogueManager : MonoBehaviour
         dialogues = loadedDialogues;
         Debug.Log($"[DialogueManager] Loaded {dialogues.Count} dialogues");
 
-        // ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+        // ÀÚµ¿À¸·Î ´ëÈ­ ½ÃÀÛ
         StartDialogue();
     }
 
     /// <summary>
-    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+    /// ´ëÈ­ ½ÃÀÛ
     /// </summary>
     public void StartDialogue()
     {
@@ -166,7 +185,7 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(true);
         }
 
-        // Skip ï¿½ï¿½Æ° È°ï¿½ï¿½È­
+        // Skip ¹öÆ° È°¼ºÈ­
         if (skipButton != null)
         {
             skipButton.gameObject.SetActive(true);
@@ -176,7 +195,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ Ç¥ï¿½ï¿½
+    /// ÇöÀç ´ëÈ­ Ç¥½Ã
     /// </summary>
     public void ShowCurrentDialogue()
     {
@@ -187,8 +206,41 @@ public class DialogueManager : MonoBehaviour
         }
 
         DialogueData currentData = dialogues[currentDialogueIndex];
+        Debug.Log($"[DialogueManager] Showing dialogue #{currentData.id}");
 
-        // CharacterNameï¿½ï¿½ emptyï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ÄÆ½Å È®ÀÎ (ÃÖ¿ì¼± Ã³¸®)
+        if (currentData.HasCutscene())
+        {
+            string cutsceneName = currentData.GetCutsceneName();
+            Debug.Log($"[DialogueManager] Cutscene detected: {cutsceneName}");
+
+            PlayCutsceneAndProceed(cutsceneName);
+            return; // ÄÆ½Å Àç»ý ÈÄ ÀÚµ¿À¸·Î ´ÙÀ½ ´ëÈ­·Î ÁøÇà
+        }
+
+        // ¹è°æ º¯°æ È®ÀÎ
+        if (currentData.HasBackgroundChange())
+        {
+            string backgroundName = currentData.GetBackgroundName();
+            Debug.Log($"[DialogueManager] Background change detected: {backgroundName}");
+
+            if (cutsceneManager != null)
+            {
+                cutsceneManager.ChangeBackgroundWithFade(backgroundName);
+            }
+        }
+
+        // È¿°úÀ½ Àç»ý È®ÀÎ
+        if (currentData.HasSound())
+        {
+            string soundName = currentData.GetSoundName();
+            Debug.Log($"[DialogueManager] Sound detected: {soundName}");
+
+            // TODO: »ç¿îµå ¸Å´ÏÀú ¿¬µ¿
+            // SoundManager.Instance.PlaySFX(soundName);
+        }
+
+        // CharacterNameÀÌ empty¸é ÀÌ¸§ ¼û±è
         if (characterNameText != null)
         {
             if (currentData.characterName.ToLower() == "empty")
@@ -201,12 +253,14 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // DialogueTextï¿½ï¿½ emptyï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ
+        // DialogueText°¡ empty¸é Å¸ÀÌÇÎ ½ºÅµ
         if (typingEffect != null)
         {
+            string cleanText = currentData.GetCleanDialogueText();
+
             if (currentData.dialogueText.ToLower() == "empty")
             {
-                typingEffect.StartTyping(""); // ï¿½ï¿½ ï¿½Ø½ï¿½Æ®
+                typingEffect.StartTyping(""); // ºó ÅØ½ºÆ®
             }
             else
             {
@@ -214,12 +268,63 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        // Spine Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Äµï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // Spine Ä³¸¯ÅÍ ½ºÅÄµå Ç¥½Ã ¹× ¾Ö´Ï¸ÞÀÌ¼Ç ¼³Á¤
         UpdateSpineCharacterStand(currentData);
     }
 
     /// <summary>
-    /// Spine Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Äµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    /// ÄÆ½Å Àç»ý ÈÄ ÀÚµ¿À¸·Î ´ÙÀ½ ´ëÈ­ ÁøÇà
+    /// </summary>
+    private void PlayCutsceneAndProceed(string cutsceneName)
+    {
+        if (cutsceneManager == null)
+        {
+            Debug.LogWarning("[DialogueManager] CutsceneManager not assigned!");
+            ShowNextDialogue(); // ÄÆ½Å ¾øÀÌ ´ÙÀ½À¸·Î
+            return;
+        }
+
+        // ´ëÈ­Ã¢ ¼û±â±â (¼±ÅÃ»çÇ×)
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.SetActive(false);
+        }
+
+        // Ä³¸¯ÅÍ ¼û±â±â
+        if (leftCharacter != null) leftCharacter.Hide();
+        if (currentRightStand != null)
+        {
+            currentRightStand.Hide();
+        }
+        else if (rightCharacter != null)
+        {
+            rightCharacter.Hide();
+        }
+        currentLeftCharacter = "";
+        currentRightCharacter = "";
+        currentRightStand = null;
+
+        isCutscenePlaying = true;
+
+        // ÄÆ½Å Àç»ý (¿Ï·á ÈÄ ÄÝ¹é)
+        cutsceneManager.PlayCutscene(cutsceneName, () =>
+        {
+            isCutscenePlaying = false;
+
+            // ´ëÈ­Ã¢ ´Ù½Ã Ç¥½Ã
+            if (dialoguePanel != null)
+            {
+                dialoguePanel.SetActive(true);
+            }
+
+            // ´ÙÀ½ ´ëÈ­·Î ÀÚµ¿ ÁøÇà
+            ShowNextDialogue();
+        });
+    }
+
+
+    /// <summary>
+    /// Spine Ä³¸¯ÅÍ ½ºÅÄµå ¾÷µ¥ÀÌÆ®
     /// </summary>
     public void UpdateSpineCharacterStand(DialogueData data)
     {
@@ -227,9 +332,9 @@ public class DialogueManager : MonoBehaviour
         string characterName = data.characterName;
         string expression = data.expression;
 
+        // ===== PositionÀÌ "empty"ÀÏ ¶§ =====
         if (position == "empty")
         {
-            // ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ È®ï¿½ï¿½
             if (!string.IsNullOrEmpty(currentLeftCharacter))
             {
                 if (leftCharacter != null)
@@ -242,20 +347,28 @@ public class DialogueManager : MonoBehaviour
 
             if (!string.IsNullOrEmpty(currentRightCharacter))
             {
-                if (rightCharacter != null)
+                // ÇöÀç Ç¥½Ã ÁßÀÎ ¿À¸¥ÂÊ ½ºÅÄµå ¼û±è
+                if (currentRightStand != null)
+                {
+                    currentRightStand.Hide();
+                }
+                else if (rightCharacter != null)
                 {
                     rightCharacter.Hide();
                 }
+
                 currentRightCharacter = "";
+                currentRightStand = null;
                 Debug.Log("[DialogueManager] Right character hidden (empty)");
             }
 
             return;
         }
 
+        // ===== CharacterNameÀÌ "empty"ÀÏ ¶§ =====
         if (characterName.ToLower() == "empty")
         {
-            if (position == "left")
+            if (position.Contains("left"))
             {
                 if (leftCharacter != null)
                 {
@@ -264,67 +377,121 @@ public class DialogueManager : MonoBehaviour
                 currentLeftCharacter = "";
                 Debug.Log("[DialogueManager] Left character hidden (empty name)");
             }
-            else if (position == "right")
+
+            if (position.Contains("right"))
             {
-                if (rightCharacter != null)
+                // ÇöÀç Ç¥½Ã ÁßÀÎ ¿À¸¥ÂÊ ½ºÅÄµå ¼û±è
+                if (currentRightStand != null)
+                {
+                    currentRightStand.Hide();
+                }
+                else if (rightCharacter != null)
                 {
                     rightCharacter.Hide();
                 }
+
                 currentRightCharacter = "";
+                currentRightStand = null;
                 Debug.Log("[DialogueManager] Right character hidden (empty name)");
             }
 
             return;
         }
 
-        switch (position)
+        // ===== ¿ÞÂÊ Ä³¸¯ÅÍ Ã³¸® =====
+        if (position.Contains("left"))
         {
-            case "left":
-                if (leftCharacter != null)
+            if (leftCharacter != null)
+            {
+                if (currentLeftCharacter == characterName)
                 {
-                    // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ì¹ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½Åµ
-                    if (currentLeftCharacter == characterName)
-                    {
-                        // Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                        Debug.Log($"[DialogueManager] Left character '{characterName}' already shown, changing expression only");
-                        leftCharacter.SetExpression(expression);
-                    }
-                    else
-                    {
-                        // ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                        Debug.Log($"[DialogueManager] Showing new left character: {characterName}");
-                        leftCharacter.Show(position);
-                        leftCharacter.SetExpression(expression);
-                        currentLeftCharacter = characterName;
-                    }
+                    Debug.Log($"[DialogueManager] Left character '{characterName}' already shown, changing expression only");
+                    leftCharacter.SetExpression(expression);
                 }
-                break;
+                else
+                {
+                    Debug.Log($"[DialogueManager] Showing new left character: {characterName}");
+                    leftCharacter.Show(position);
+                    leftCharacter.SetExpression(expression);
+                    currentLeftCharacter = characterName;
+                }
+            }
+        }
 
-            case "right":
-                if (rightCharacter != null)
+        // ===== ¿À¸¥ÂÊ Ä³¸¯ÅÍ Ã³¸® (µ¿Àû ÀüÈ¯) =====
+        if (position.Contains("right"))
+        {
+            // ÀûÀýÇÑ ½ºÅÄµå ¼±ÅÃ
+            SpineCharacterStand targetStand = DetermineRightCharacterStand(characterName);
+
+            if (targetStand == null)
+            {
+                Debug.LogWarning($"[DialogueManager] No stand found for character: {characterName}");
+                return;
+            }
+
+            // ÀÌÀü Ä³¸¯ÅÍ¿Í ´Ù¸¥ ½ºÅÄµå¸é ±³Ã¼
+            if (currentRightStand != targetStand)
+            {
+                // ÀÌÀü ½ºÅÄµå ¼û±è
+                if (currentRightStand != null)
                 {
-                    // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ì¹ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½Åµ
-                    if (currentRightCharacter == characterName)
-                    {
-                        // Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                        Debug.Log($"[DialogueManager] Right character '{characterName}' already shown, changing expression only");
-                        rightCharacter.SetExpression(expression);
-                    }
-                    else
-                    {
-                        // ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-                        Debug.Log($"[DialogueManager] Showing new right character: {characterName}");
-                        rightCharacter.Show(position);
-                        rightCharacter.SetExpression(expression);
-                        currentRightCharacter = characterName;
-                    }
+                    currentRightStand.Hide();
+                    Debug.Log($"[DialogueManager] Hiding previous right stand: {currentRightStand.GetCharacterName()}");
                 }
-                break;
+
+                // »õ ½ºÅÄµå Ç¥½Ã
+                Debug.Log($"[DialogueManager] Showing new right character: {characterName} on {targetStand.name}");
+                targetStand.Show(position);
+                targetStand.SetExpression(expression);
+
+                currentRightStand = targetStand;
+                currentRightCharacter = characterName;
+            }
+            // °°Àº Ä³¸¯ÅÍ¸é Ç¥Á¤¸¸ º¯°æ
+            else if (currentRightCharacter == characterName)
+            {
+                Debug.Log($"[DialogueManager] Right character '{characterName}' already shown, changing expression only");
+                targetStand.SetExpression(expression);
+            }
+            // °°Àº ½ºÅÄµåÁö¸¸ ´Ù¸¥ Ä³¸¯ÅÍ (¿À·ù ¹æÁö)
+            else
+            {
+                Debug.Log($"[DialogueManager] Showing character '{characterName}' on same stand");
+                targetStand.Show(position);
+                targetStand.SetExpression(expression);
+                currentRightCharacter = characterName;
+            }
         }
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// Ä³¸¯ÅÍ ÀÌ¸§¿¡ µû¶ó ÀûÀýÇÑ ¿À¸¥ÂÊ ½ºÅÄµå °áÁ¤
+    /// </summary>
+    private SpineCharacterStand DetermineRightCharacterStand(string characterName)
+    {
+        // ºô·±µéÀÎ °æ¿ì rightGroupCharacter »ç¿ë
+        if (characterName == "ºô·±µé" || characterName.Contains("ºô·±"))
+        {
+            if (rightGroupCharacter != null)
+            {
+                Debug.Log($"[DialogueManager] Using rightGroupCharacter for: {characterName}");
+                return rightGroupCharacter;
+            }
+        }
+
+        // ±× ¿Ü¿¡´Â ±âº» rightCharacter »ç¿ë
+        if (rightCharacter != null)
+        {
+            Debug.Log($"[DialogueManager] Using rightCharacter for: {characterName}");
+            return rightCharacter;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// ´ÙÀ½ ´ëÈ­·Î ÁøÇà
     /// </summary>
     public void ShowNextDialogue()
     {
@@ -333,35 +500,35 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+    /// ´ëÈ­ Á¾·á ÈÄ ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
     /// </summary>
     public void EndDialogueAndMoveToNextScene()
     {
         Debug.Log("[DialogueManager] All dialogues complete. Moving to next scene...");
 
-        // ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+        // ´ëÈ­ Á¾·á
         EndDialogue();
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+        // ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
         MoveToNextScene();
     }
 
     /// <summary>
-    /// Skip ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½Åµï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// Skip ¹öÆ°À¸·Î ´ëÈ­ ½ºÅµÇÏ°í ´ÙÀ½ ¾ÀÀ¸·Î
     /// </summary>
     public void SkipDialogueAndMoveToNextScene()
     {
         Debug.Log("[DialogueManager] Skipping all dialogues...");
 
-        // ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
+        // ´ëÈ­ Á¾·á
         EndDialogue();
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+        // ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
         MoveToNextScene();
     }
 
     /// <summary>
-    /// ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ (UI ï¿½ï¿½ï¿½ï¿½)
+    /// ´ëÈ­ Á¾·á (UI Á¤¸®)
     /// </summary>
     public void EndDialogue()
     {
@@ -372,7 +539,7 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(false);
         }
 
-        // Skip ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
+        // Skip ¹öÆ° ºñÈ°¼ºÈ­
         if (skipButton != null)
         {
             skipButton.gameObject.SetActive(false);
@@ -383,37 +550,48 @@ public class DialogueManager : MonoBehaviour
             leftCharacter.Hide();
         }
 
-        if (rightCharacter != null)
+        // ¿À¸¥ÂÊ Ä³¸¯ÅÍ µ¿Àû ¼û±è
+        if (currentRightStand != null)
+        {
+            currentRightStand.Hide();
+        }
+        else if (rightCharacter != null)
         {
             rightCharacter.Hide();
+        }
+
+        // ±×·ì Ä³¸¯ÅÍµµ ¸í½ÃÀûÀ¸·Î ¼û±è
+        if (rightGroupCharacter != null)
+        {
+            rightGroupCharacter.Hide();
         }
 
         Debug.Log("[DialogueManager] Dialogue ended");
     }
 
     /// <summary>
-    /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+    /// ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
     /// </summary>
     public void MoveToNextScene()
     {
-        // SceneService ï¿½ï¿½ï¿½
+        // SceneService »ç¿ë
         if (useSceneService && sceneService != null)
         {
             Debug.Log("[DialogueManager] Using SceneService to load next scene");
 
-            // SceneServiceï¿½ï¿½ LoadNextScene() ï¿½Ç´ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½
-            // ï¿½ï¿½: sceneService.LoadScene("NextSceneName");
+            // SceneServiceÀÇ LoadNextScene() ¶Ç´Â Æ¯Á¤ ¾À ·Îµå
+            // ¿¹: sceneService.LoadScene("NextSceneName");
 
-            // ï¿½ï¿½ï¿½ï¿½ SceneServiceï¿½ï¿½ LoadNextScene() ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å°¡ ï¿½Ö´Ù¸ï¿½:
+            // ¸¸¾à SceneService¿¡ LoadNextScene() °°Àº ¸Þ¼­µå°¡ ÀÖ´Ù¸é:
             // sceneService.LoadNextScene();
 
-            // ï¿½Ç´ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½:
+            // ¶Ç´Â Æ¯Á¤ ¾À ÀÌ¸§À¸·Î ·Îµå:
             if (!string.IsNullOrEmpty(nextSceneName))
             {
                 Debug.Log($"[DialogueManager] Loading scene: {nextSceneName}");
                 // sceneService.LoadSceneWithLoading(nextSceneName);
 
-                // SceneServiceï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½:
+                // SceneService°¡ ¾ø´Ù¸é Á÷Á¢ ·Îµå:
                 sceneService.LoadSceneWithLoading(nextSceneName);
             }
             else
@@ -421,7 +599,7 @@ public class DialogueManager : MonoBehaviour
                 Debug.LogWarning("[DialogueManager] Next scene name is not set!");
             }
         }
-        // SceneService ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½
+        // SceneService ¾øÀÌ Á÷Á¢ ¾À ·Îµå
         else if (!string.IsNullOrEmpty(nextSceneName))
         {
             Debug.Log($"[DialogueManager] Loading scene directly: {nextSceneName}");
@@ -434,7 +612,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ï¿½ÜºÎ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// ¿ÜºÎ¿¡¼­ ´ÙÀ½ ¾À ÀÌ¸§ ¼³Á¤
     /// </summary>
     public void SetNextScene(string sceneName)
     {

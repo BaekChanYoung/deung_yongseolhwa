@@ -25,12 +25,26 @@ public class SceneTransitionUI : MonoBehaviour
     [Tooltip("로딩 퍼센트 텍스트 (0%)")]
     public Text percentText;
 
-    [Header("Loading Icon")]
-    [Tooltip("로딩 아이콘 (회전 애니메이션)")]
+    [Header("Loading Icon - Movement")]
+    [Tooltip("로딩 아이콘 RectTransform (슬라이더 위를 이동)")]
     public RectTransform loadingIcon;
 
-    [Tooltip("회전 속도")]
-    public float rotationSpeed = 180f;
+    [Tooltip("로딩 아이콘 Image 컴포넌트")]
+    public Image loadingIconImage;
+
+    [Tooltip("슬라이더 위 오프셋 (Y축 거리)")]
+    public float iconYOffset = 30f;
+
+    [Tooltip("아이콘 이동 속도 (보간)")]
+    [Range(1f, 20f)]
+    public float iconMoveSpeed = 10f;
+
+    [Header("Loading Icon - Sprite Animation")]
+    [Tooltip("애니메이션용 스프라이트 배열 (4개)")]
+    public Sprite[] iconSprites;
+
+    [Tooltip("스프라이트 전환 속도 (초)")]
+    public float spriteAnimSpeed = 0.1f;
 
     [Header("Loading Tips")]
     [Tooltip("팁 텍스트 UI")]
@@ -39,10 +53,10 @@ public class SceneTransitionUI : MonoBehaviour
     [Tooltip("팁 텍스트 배열")]
     public string[] loadingTips = new string[]
     {
-        "Tip: 마스터 볼륨으로 전체 소리를 조절할 수 있습니다.",
-        "Tip: 옵션에서 배경음과 효과음을 따로 조절하세요.",
-        "Tip: ESC 키로 옵션 창을 열고 닫을 수 있습니다.",
-        "Tip: 설정은 자동으로 저장됩니다."
+        "팁: 마스터 볼륨으로 전체 소리를 조절할 수 있습니다.",
+        "팁: 옵션에서 배경음과 효과음을 따로 조절하세요.",
+        "팁: ESC 키로 옵션 창을 열고 닫을 수 있습니다.",
+        "팁: 설정은 자동으로 저장됩니다."
     };
 
     [Header("Animation")]
@@ -50,8 +64,9 @@ public class SceneTransitionUI : MonoBehaviour
     public bool animateLoadingText = true;
 
     private Coroutine textAnimationCoroutine;
-    private bool isLoadingIconRotating = false;
+    private Coroutine spriteAnimationCoroutine;
     private bool isLoadingUIVisible = false;
+    private float currentProgress = 0f;
 
     void Awake()
     {
@@ -72,6 +87,17 @@ public class SceneTransitionUI : MonoBehaviour
             fadeImage.raycastTarget = false; // 클릭 차단 안 함
         }
 
+        // loadingIconImage 자동 할당
+        if (loadingIcon != null && loadingIconImage == null)
+        {
+            loadingIconImage = loadingIcon.GetComponent<Image>();
+
+            if (loadingIconImage == null)
+            {
+                Debug.LogWarning("[SceneTransitionUI] loadingIcon에 Image 컴포넌트가 없습니다!");
+            }
+        }
+
         // 로딩 UI 숨김
         HideLoadingUI();
 
@@ -80,10 +106,40 @@ public class SceneTransitionUI : MonoBehaviour
 
     void Update()
     {
-        if (isLoadingIconRotating && loadingIcon != null)
+        // 로딩 아이콘 위치 업데이트 (슬라이더 진행률 따라감)
+        if (isLoadingUIVisible && loadingIcon != null && loadingSlider != null)
         {
-            loadingIcon.Rotate(0f, 0f, -rotationSpeed * Time.unscaledDeltaTime);
+            UpdateIconPosition();
         }
+    }
+
+    /// <summary>
+    /// 로딩 아이콘 위치 업데이트 (슬라이더 위를 이동)
+    /// </summary>
+    void UpdateIconPosition()
+    {
+        // 슬라이더의 Fill Area 위치 계산
+        RectTransform sliderRect = loadingSlider.GetComponent<RectTransform>();
+
+        if (sliderRect == null) return;
+
+        // 슬라이더 진행률 (0 ~ 1)
+        float progress = loadingSlider.value;
+
+        // 슬라이더의 실제 너비
+        float sliderWidth = sliderRect.rect.width;
+
+        // 목표 X 위치 계산 (슬라이더 왼쪽 끝 기준)
+        float targetX = sliderRect.rect.xMin + (sliderWidth * progress);
+
+        // 현재 위치에서 부드럽게 이동
+        Vector2 currentPos = loadingIcon.anchoredPosition;
+        float newX = Mathf.Lerp(currentPos.x, targetX, Time.unscaledDeltaTime * iconMoveSpeed);
+
+        // Y 위치는 슬라이더 위쪽으로 고정
+        float newY = sliderRect.rect.yMax + iconYOffset;
+
+        loadingIcon.anchoredPosition = new Vector2(newX, newY);
     }
 
     /// <summary>
@@ -155,6 +211,8 @@ public class SceneTransitionUI : MonoBehaviour
             isLoadingUIVisible = true;
         }
 
+        currentProgress = progress;
+
         if (loadingSlider != null)
         {
             loadingSlider.value = progress;
@@ -171,29 +229,59 @@ public class SceneTransitionUI : MonoBehaviour
     /// </summary>
     void ShowLoadingUI()
     {
+        Debug.Log("[SceneTransitionUI] 로딩 UI 표시");
+
+        // 로딩 텍스트
         if (loadingText != null)
         {
             loadingText.gameObject.SetActive(true);
 
-            // 애니메이션 시작
             if (animateLoadingText && textAnimationCoroutine == null)
             {
                 textAnimationCoroutine = StartCoroutine(AnimateLoadingText());
             }
         }
 
+        // 슬라이더
         if (loadingSlider != null)
+        {
             loadingSlider.gameObject.SetActive(true);
+            loadingSlider.value = 0f;
+        }
 
+        // 퍼센트 텍스트
         if (percentText != null)
+        {
             percentText.gameObject.SetActive(true);
+            percentText.text = "0%";
+        }
 
+        // 로딩 아이콘
         if (loadingIcon != null)
         {
             loadingIcon.gameObject.SetActive(true);
-            isLoadingIconRotating = true;
+
+            // 초기 위치 설정 (슬라이더 왼쪽 끝)
+            if (loadingSlider != null)
+            {
+                RectTransform sliderRect = loadingSlider.GetComponent<RectTransform>();
+
+                if (sliderRect != null)
+                {
+                    float startX = sliderRect.rect.xMin;
+                    float startY = sliderRect.rect.yMax + iconYOffset;
+                    loadingIcon.anchoredPosition = new Vector2(startX, startY);
+                }
+            }
+
+            // 스프라이트 애니메이션 시작
+            if (iconSprites != null && iconSprites.Length > 0 && spriteAnimationCoroutine == null)
+            {
+                spriteAnimationCoroutine = StartCoroutine(AnimateIconSprites());
+            }
         }
 
+        // 팁 텍스트
         if (tipText != null && loadingTips.Length > 0)
         {
             int randomIndex = Random.Range(0, loadingTips.Length);
@@ -212,27 +300,34 @@ public class SceneTransitionUI : MonoBehaviour
         Debug.Log("[SceneTransitionUI] 로딩 UI 숨김");
 
         isLoadingUIVisible = false;
+        currentProgress = 0f;
 
         if (loadingText != null)
             loadingText.gameObject.SetActive(false);
 
         if (loadingSlider != null)
             loadingSlider.gameObject.SetActive(false);
-        
+
         if (percentText != null)
             percentText.gameObject.SetActive(false);
 
-        // 애니메이션 중지
+        // 텍스트 애니메이션 중지
         if (textAnimationCoroutine != null)
         {
             StopCoroutine(textAnimationCoroutine);
             textAnimationCoroutine = null;
         }
 
+        // 아이콘 숨김 + 스프라이트 애니메이션 중지
         if (loadingIcon != null)
         {
             loadingIcon.gameObject.SetActive(false);
-            isLoadingIconRotating = false;
+        }
+
+        if (spriteAnimationCoroutine != null)
+        {
+            StopCoroutine(spriteAnimationCoroutine);
+            spriteAnimationCoroutine = null;
         }
 
         if (tipText != null)
@@ -254,11 +349,38 @@ public class SceneTransitionUI : MonoBehaviour
             if (loadingText != null)
             {
                 loadingText.text = baseText + new string('.', dotCount);
-
-                dotCount = (dotCount + 1) % 4; // 0, 1, 2, 3 반복
+                dotCount = (dotCount + 1) % 4;
             }
 
             yield return new WaitForSecondsRealtime(0.3f);
+        }
+    }
+
+    /// <summary>
+    /// 로딩 아이콘 스프라이트 애니메이션 (4개 순환)
+    /// </summary>
+    IEnumerator AnimateIconSprites()
+    {
+        if (loadingIconImage == null || iconSprites == null || iconSprites.Length == 0)
+        {
+            Debug.LogWarning("[SceneTransitionUI] 스프라이트 애니메이션을 위한 설정이 부족합니다!");
+            yield break;
+        }
+
+        int currentIndex = 0;
+
+        while (true)
+        {
+            // 현재 스프라이트 표시
+            if (iconSprites[currentIndex] != null)
+            {
+                loadingIconImage.sprite = iconSprites[currentIndex];
+            }
+
+            // 다음 인덱스로 (순환)
+            currentIndex = (currentIndex + 1) % iconSprites.Length;
+
+            yield return new WaitForSecondsRealtime(spriteAnimSpeed);
         }
     }
 }
