@@ -1,24 +1,27 @@
 using TMPro;
 using UnityEngine;
 
-enum PullMode
+enum PullScoreMode
 {
     LastScore,
-    MaxScore
+    MaxScore,
+
 }
 
 public class PullScore : MonoBehaviour
 {
     [SerializeField]
-    PullMode pullMode;
+    PullScoreMode pullMode;
 
     [ReadOnly]
     [SerializeField]
     int score;
 
+    TextMeshProUGUI scoreText;
+
     void Start()
     {
-
+        scoreText = GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -26,11 +29,11 @@ public class PullScore : MonoBehaviour
     {
         switch(pullMode)
         {
-            case PullMode.LastScore:
-                GetComponent<TextMeshProUGUI>().text = GameManager.instance.pullScore().ToString();
+            case PullScoreMode.LastScore:
+                scoreText.text = GameManager.instance.pullScore().ToString();
                 break;
-            case PullMode.MaxScore:
-                GetComponent<TextMeshProUGUI>().text = GameManager.instance.PullMaxScore().ToString();
+            case PullScoreMode.MaxScore:
+                scoreText.text = GameManager.instance.PullMaxScore().ToString();
                 break;
         }
     }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7996257724933841709}
   - component: {fileID: 8203516009575502248}
   - component: {fileID: 3475065235370773156}
+  - component: {fileID: -5090974191943231485}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -138,3 +139,16 @@ MonoBehaviour:
   illusion: {fileID: 6778154883513697336, guid: 61a9dc008dc73c34498d9110f2a2a223, type: 3}
   Distance: 3
   spawnChancePercent: 100
+--- !u!114 &-5090974191943231485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6650132074972378466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8191ce26aaaf054a9faac7b1a77628b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coin: 0

@@ -287,13 +287,21 @@ public class GameManager : MonoBehaviour
     GameObject gameCamera;
     CameraMovement cameraMovement;
 
+    [Header("Score For Coin")]
+    
+    [SerializeField]
+    int minScoreForCoin;
 
-    //유저 데이터
-    PlayerDate playerdate;
-    string json;
+    [SerializeField]
+    int maxScoreForCoin;
+    
+    [ReadOnly][SerializeField]
+    private int noHaveCoinEnemyCount;
 
     void Awake()
     {
+        #region Awake
+
         sceneService = ServiceLocator.Resolve<ISceneService>();
 
         // VSync 설정을 끄고 (0)
@@ -316,11 +324,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        playerdate = new PlayerDate();
+        #endregion
     }
 
     void Start()
     {
+        #region Start
+
         GameSetup();
 
         IsCanTouch = true;
@@ -335,6 +345,9 @@ public class GameManager : MonoBehaviour
         //Timer.GetComponent<TimerBarController>().PauseTimer();
 
         cameraMovement = gameCamera.GetComponent<CameraMovement>();
+
+
+        #endregion
     }
 
     // Update is called once per frame
@@ -520,8 +533,8 @@ public class GameManager : MonoBehaviour
         RestartMessage.SetActive(true);
         player.isDead = true;
 
-        InputMaxScore(scoreSetting.score);
-        SaveJson();
+        PlayerDataManager.instance.InputMaxScore(scoreSetting.score);
+       PlayerDataManager.instance.SaveJson();
     }
 
     //////////////////////////////////////////////////////////////
@@ -530,6 +543,7 @@ public class GameManager : MonoBehaviour
     public void enemySpawn()
     {
         //Debug.Log("enemy 소환");
+        GameObject ennmy;
 
         int SpawnPoint = enemy.LastSpawnPoint;
 
@@ -587,7 +601,11 @@ public class GameManager : MonoBehaviour
         enemy.LastSpawnPoint = SpawnPoint;
 
         // 적 소환
-        Instantiate(enemy.Prefab, enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
+        ennmy = Instantiate(enemy.Prefab, enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
+
+        CoinManagement date = ennmy.GetComponent<CoinManagement>();
+
+        TryGrantScoreReward(date);
     }
 
     void enemyMoveToDown()
@@ -701,11 +719,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    #region Score
     void AddScore()
     {
         Debug.Log("점수 추가");
         scoreSetting.score++;
     }
+
+    
     //////////////////////////////////////////////////////////////
     /// 점수 반환
     //////////////////////////////////////////////////////////////
@@ -716,9 +737,17 @@ public class GameManager : MonoBehaviour
 
     public int PullMaxScore()
     {
-        return playerdate.MaxScore;
+        return PlayerDataManager.instance.PullMaxScore();
     }
+    
+    float ScaleToScore(float score)
+    {
+        float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
+        return scale;
+    }
+    #endregion
 
+    #region GemeSetUp
     void GameSetup()
     {
         //적 스폰 라인 위치 계산 후 배치
@@ -737,7 +766,10 @@ public class GameManager : MonoBehaviour
 
         // 적 중복 소환시 카운팅하는 변수 초기화
         enemy.repeatCount = 0;
+
+        noHaveCoinEnemyCount = 0;
     }
+    #endregion
 
     void CancelMove()
     {
@@ -748,13 +780,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
-    float ScaleToScore(float score)
-    {
-        float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
-        return scale;
-    }
-
+    
     public void TotheStart()
     {
         sceneService.LoadSceneWithLoading(SceneNames.START);
@@ -772,43 +798,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void InputMaxScore(int score)
+    public PlayerDataManager FindPlayerDateManager()
     {
-        LoadJson();
-        if(score > playerdate.MaxScore)
-        {
-            playerdate.MaxScore = score;
-            Debug.Log("최고점수 달성 : " + playerdate.MaxScore);
-        }
+        GameObject dateManager = GameObject.Find("PlayerDate");
+        return dateManager.GetComponent<PlayerDataManager>();
     }
 
-    void SaveJson()
+    public void TryGrantScoreReward(CoinManagement coinDate)
     {
-        json = JsonUtility.ToJson(playerdate);
-        File.WriteAllText(Application.dataPath + "/PlayerDate.json", json);
-    }
-
-    void LoadJson()
-    {
-        if(!File.Exists(Application.dataPath + "/PlayerDate.json"))
+        if(maxScoreForCoin == noHaveCoinEnemyCount)
         {
-            CreatJsonFile();
+            noHaveCoinEnemyCount = 0;
+            coinDate.addCoin(1);
         }
-
-        json = File.ReadAllText(Application.dataPath + "/PlayerDate.json");
-        
-        if(json == null)
+        else if(minScoreForCoin <= noHaveCoinEnemyCount && maxScoreForCoin > noHaveCoinEnemyCount)
         {
-            Debug.Log("파일이 없음, 생성시작");
-            CreatJsonFile();
+            int R = Random.Range(minScoreForCoin,maxScoreForCoin);
+            if(R < noHaveCoinEnemyCount)
+            {
+                noHaveCoinEnemyCount = 0;
+                coinDate.addCoin(1);
+            }
+            else
+            {
+                noHaveCoinEnemyCount++;
+            }
         }
-        playerdate = JsonUtility.FromJson<PlayerDate>(json);
-    }
-
-    void CreatJsonFile()
-    {
-        playerdate.MaxScore = 0;
-        SaveJson();
+        else
+        {
+            noHaveCoinEnemyCount++;
+        }
     }
 
     void OnDrawGizmosSelected()

@@ -17,10 +17,13 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     GameObject deadFX;
 
+    CoinManagement enemyCoinController;
+
     void Awake()
     {
         TargtPos = transform.position;
         Ani = GetComponent<Animator>();
+        enemyCoinController = GetComponent<CoinManagement>();
     }
 
     void CancelMove(Coroutine ct)
@@ -115,6 +118,7 @@ public class EnemyController : MonoBehaviour
     {
         Debug.Log("적 죽음 실행");
         StartCoroutine(deadEffect());
+        enemyCoinController.DropCoin();
     }
 
     IEnumerator deadEffect()
