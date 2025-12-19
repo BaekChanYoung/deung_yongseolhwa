@@ -45,3 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioManagerPrefab: {fileID: 4923822447910848641, guid: c218b0f968405e047befe1d1413fcd5a, type: 3}
+  sceneServicePrefab: {fileID: 1188658050087877684, guid: 3464396f0d73f3547957482fdeccedfa, type: 3}
+  transitionUIPrefab: {fileID: 712969118305730522, guid: 4e7472f2b7af88e47a6733254dc2adb4, type: 3}
+  sceneMusicManagerPrefab: {fileID: 2603534093906140662, guid: e0412b1fbcb734e4088f454560998d12, type: 3}

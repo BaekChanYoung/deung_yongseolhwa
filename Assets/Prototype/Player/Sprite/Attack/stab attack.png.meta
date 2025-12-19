@@ -1,0 +1,337 @@
+fileFormatVersion: 2
+guid: 73974cda16a6e884282f6d24d3b8f076
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: stab attack_0
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 1390
+        width: 436
+        height: 492
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -112.26068, y: 246}
+        - {x: -125.492035, y: 140.2312}
+        - {x: -101.10123, y: 85.754395}
+        - {x: -217.10435, y: 36.86963}
+        - {x: -218, y: -190.52783}
+        - {x: -165.98474, y: -200.20752}
+        - {x: -160.56737, y: -246}
+        - {x: -88.6304, y: -246}
+        - {x: 17.567352, y: -121.19031}
+        - {x: 66.429565, y: -118.946045}
+        - {x: 218, y: -13.176758}
+        - {x: 218, y: 32.95276}
+        - {x: 95.51077, y: -25.120117}
+        - {x: 79.00934, y: 46.25183}
+        - {x: 103.71292, y: 246}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6234aa9e475a9946a7d244846cbbad4
+      internalID: -807921758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab attack_1
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 1337
+        width: 409
+        height: 666
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 179.5, y: 333}
+        - {x: 105.73535, y: 178.76807}
+        - {x: -117.67633, y: 174.93396}
+        - {x: -132.97601, y: -45.211304}
+        - {x: -204.5, y: -130.0863}
+        - {x: -204.5, y: -333}
+        - {x: -66.5, y: -333}
+        - {x: 46.5, y: -202}
+        - {x: 188.5, y: 154}
+        - {x: 204.5, y: 275}
+        - {x: 204.5, y: 333}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1501f0886522a3a40baeee034dd8dc36
+      internalID: 629146151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab attack_2
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 723
+        width: 327
+        height: 637
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5c4f65f98d16d743a18d8b7eb18cc51
+      internalID: -1460186126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab attack_3
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 702
+        width: 278
+        height: 497
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -68, y: 248.5}
+        - {x: -139, y: 226.5}
+        - {x: -139, y: 64.2088}
+        - {x: -131, y: -34.5}
+        - {x: -98, y: -117.5}
+        - {x: -6, y: -235.5}
+        - {x: 41, y: -248.5}
+        - {x: 139, y: -248.5}
+        - {x: 139, y: 19.977478}
+        - {x: 90, y: 248.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f44c20159ce426c4d85fdc87d97d72e6
+      internalID: -581541346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab attack_4
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 54
+        width: 254
+        height: 695
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 71.37323, y: 347.5}
+        - {x: 43.41516, y: 188.29895}
+        - {x: -127, y: 126.53967}
+        - {x: -127, y: 73.701935}
+        - {x: -96.86749, y: 49.122925}
+        - {x: -84.204956, y: -39.933746}
+        - {x: -127, y: -127.52344}
+        - {x: -94.398254, y: -261.09314}
+        - {x: -26, y: -347.5}
+        - {x: 34, y: -347.5}
+        - {x: 79.97534, y: -178.02797}
+        - {x: 108.66449, y: -94.32205}
+        - {x: 80.46246, y: -53.499237}
+        - {x: 127, y: 5.4722595}
+        - {x: 127, y: 171.87268}
+        - {x: 105.089905, y: 347.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b401b136588f7a94991369b5e27acc1a
+      internalID: 1413042707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab attack_5
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 78
+        width: 279
+        height: 493
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a332471e5f28d3449888c7cbf3bd3cd4
+      internalID: -1963069381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      stab attack_0: -807921758
+      stab attack_1: 629146151
+      stab attack_2: -1460186126
+      stab attack_3: -581541346
+      stab attack_4: 1413042707
+      stab attack_5: -1963069381
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

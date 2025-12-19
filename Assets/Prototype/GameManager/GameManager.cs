@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -27,48 +26,69 @@ public struct HitSlowEffect
     public float HitSlowTime;
 }
 
-
-public class GameManager : MonoBehaviour
+// 내려가는 모드 목록
+[System.Serializable]
+public enum DownMovementMode
 {
+    moveToword,
+    SmoothDamp
+}
+
+[System.Serializable]
+public struct Enemy
+{
+    [Tooltip("적 프리펩")]
+    [SerializeField]
+    public GameObject []Prefab; // 적 프리펩
+
+    [Tooltip("적 소환시 부모지정")]
+    [SerializeField]
+    public GameObject EnemyParent; // 적 부모 오브젝트
+
+    [Tooltip("적 스폰시 기준 오브젝트")]
+    [SerializeField]
+    public GameObject EnemySpawnLines; // 적 스폰 위치들
+
     [ReadOnly]
-    public static GameManager instance;
+    [Tooltip("가장 가까운 적")]
     [SerializeField]
-    [Tooltip("게임의 점수")]
-    int score;
+    public GameObject TargetEnemy; // 가장 가까운 목표 적
 
-    [Header("Game Setting")]
-    [Tooltip("공격 히트 후 효과수치")]
     [SerializeField]
-    HitSlowEffect hitSlowEffect;
+    public DownMovementMode DownMode;
 
-    Coroutine hitEffectRoutine;
-
-    ////////////////////////////////////////
-    /// 배경화면 관련
-    ////////////////////////////////////////
-
-    [Header("Background")]
-
-    [Tooltip("배경 루프")]
+    [Tooltip("적 소환시 적들의 간격")]
     [SerializeField]
-    GameObject[] BackgroundLayer;
+    public float EnemyInterval; // 적 소환 시 사이의 간격
 
-    [Tooltip("배경이 내려가는 거리")]
+
+    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
-    float BackgroundDownDistance; // 배경 내려가는 거리
+    public float EnemyDownDuration;
 
-    [Tooltip("배경이 내려갈 시 걸리는 시간")]
+    [Tooltip("시작시 소환할 적 수(게임에 등장할 적의 수)")]
     [SerializeField]
-    float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+    public float StartSpawnCount;
 
-
-
-    ////////////////////////////////////////
-    /// 플레이어 관련
-    ////////////////////////////////////////
-    [Header("Player")]
     [SerializeField]
-    GameObject Player;
+    [ReadOnly]
+    public int LastSpawnPoint;
+
+    [HideInInspector]
+    public int repeatCount;
+}
+
+[System.Serializable]
+public struct Player
+{
+    [SerializeField]
+    public GameObject playerObj;
+
+    [SerializeField]
+    public EffectManager PlayerEffect;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
 
     [Tooltip("공격하는 걸리는 시간")]
     [SerializeField]
@@ -76,11 +96,11 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("공격후 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
     [SerializeField]
-    float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
+    public float PlayerDownDuration; // Player 떨어지는데 걸리는 시간
 
     [Tooltip("공격 이후 관성(미구현)")]
     [SerializeField]
-    float reboundPower;
+    public float reboundPower;
 
     // [Tooltip("")]
     // [ReadOnly]
@@ -91,46 +111,139 @@ public class GameManager : MonoBehaviour
     // 플레이어가 죽을시 true가 되는 변수
     [HideInInspector]
     public bool isDead;
+
+    [SerializeField]
+    public AudioClip[] attackSound;
+}
+[System.Serializable]
+public class ChangePoint
+{
+    public BackgroundList changeBackground;
+    public float Point;
+}
+
+[System.Serializable]
+public class Background
+{
+    [Tooltip("배경 선택")]
+    [SerializeField]
+    public BackgroundList selectLayer;
+
+    [SerializeField]
+    public ChangePoint[] changePoint;
+
+    [Tooltip("루프할 배경")]
+    [SerializeField]
+    public GameObject[] BackgroundLayer;
+
+    [SerializeField]
+    public DownMovementMode DownMode;
+
+    [Tooltip("배경이 내려가는 거리")]
+    [SerializeField]
+    public float BackgroundDownDistance; // 배경 내려가는 거리
+
+    [Tooltip("배경이 내려갈 시 걸리는 시간")]
+    [SerializeField]
+    public float BackgroundDownDuration; // 1회 내려갈 시 걸리는 시간
+}
+
+[System.Serializable]
+public struct ScoreSetting
+{
+    [ReadOnly]
+    [SerializeField]
+    [Tooltip("게임 점수")]
+    public int score;
+
+    [Tooltip("점수비례 타이머 가속의 최소치(시작 수치)")]
+    [SerializeField]
+    public float MinScale;
+
+    [Tooltip("점수비례 타이머 가속의 최대치(최대 수치)")]
+    [SerializeField]
+    public float MaxScale;
+
+    [SerializeField]
+    [Tooltip("스코어 스케일의 변화량\n(이 수치에 비례해서 최대치에 가까워짐)")]
+    public float difficultyScale;
+
+    [Tooltip("알파값(건들지 마시오)\n이 수치에 따라서 그래프의 모양이 바뀜")]
+    [SerializeField]
+    public float Alpha;
+
+    [Tooltip("현제 가속")]
+    [ReadOnly]
+    [SerializeField]
+    public float currentSpeedRate;
+}
+
+[System.Serializable]
+public enum InputMode
+{
+    AnswerCheckMode,
+    AngleCheckMode
+}
+
+public class GameManager : MonoBehaviour
+{
+    [ReadOnly]
+    public static GameManager instance;
+    [SerializeField]
+    [Tooltip("게임의 점수")]
+    ScoreSetting scoreSetting;
+
+    // Timer UI 오브젝트
+    [SerializeField]
+    GameObject Timer;
+
+    [SerializeField]
+    public float MaxTime;
+
+    [SerializeField]
+    public float startTime;
+
+    [SerializeField]
+    float AddSecond;
+
+    [Header("Game Setting")]
+    [Space(5f)]
+
+    [Tooltip("공격 히트 후 효과수치")]
+    [SerializeField]
+    public HitSlowEffect hitSlowEffect;
+
+    Coroutine hitEffectRoutine;
+
     
 
     ////////////////////////////////////////
-    /// 적 관련
+    /// 배경화면 관련
     ////////////////////////////////////////
-    [Header("Enemy")]
-
-    [Tooltip("적 프리펩")]
     [SerializeField]
-    GameObject Enemy; // 적 프리펩
+    public Background background;
 
-    [Tooltip("적 소환시 부모지정")]
+    ////////////////////////////////////////
+    /// 플레이어 관련
+    ////////////////////////////////////////
     [SerializeField]
-    GameObject EnemyParents; // 적 부모 오브젝트
+    public Player player;
 
-    [Tooltip("적 스폰시 기준 오브젝트")]
+    ////////////////////////////////////////
+    /// 적 관련
+    // ////////////////////////////////////////
+    [Space(10f)]
     [SerializeField]
-    GameObject EnemySpawnLines; // 적 스폰 위치들
-
-    [Tooltip("적 소환시 적들의 간격")]
-    [SerializeField]
-    float EnemyInterval; // 적 소환 시 사이의 간격
-
-    [ReadOnly]
-    [Tooltip("가장 가까운 적")]
-    [SerializeField]
-    GameObject TargetEnemy; // 가장 가까운 목표 적
-
-    [Tooltip("공격이후 적을이 내려오는데 걸리는 시간\n(효과가 없을때 기준)")]
-    [SerializeField]
-    float EnemyDownDuration;
-
-    [SerializeField]
-    float StartSpawnCount;
+    public Enemy enemy;
 
 
     ////////////////////////////////////////
     //입력 관연 전역 변수들
     ////////////////////////////////////////
     [Header("Input System")]
+
+    [SerializeField]
+    public InputMode inputMode;
 
     [ReadOnly]
     [SerializeField]
@@ -145,6 +258,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public AngleRange RightAngle; // 우측 인식 범위
 
+    [SerializeField]
+    public float errorAngleRange;
 
     [HideInInspector]
     public SwipeDirection InputDirection; // 스와이프후 인식 반향 저장
@@ -157,8 +272,38 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject RestartMessage;
 
+    [SerializeField]
+    public float DeadFallTime;
+
+    [ReadOnly]
+    [SerializeField]
+    bool isStart = false;
+
+    //
+    private ISceneService sceneService;
+    
+    // 카메라
+    [SerializeField]
+    GameObject gameCamera;
+    CameraMovement cameraMovement;
+
+    [Header("Score For Coin")]
+    
+    [SerializeField]
+    int minScoreForCoin;
+
+    [SerializeField]
+    int maxScoreForCoin;
+    
+    [ReadOnly][SerializeField]
+    private int noHaveCoinEnemyCount;
+
     void Awake()
     {
+        #region Awake
+
+        sceneService = ServiceLocator.Resolve<ISceneService>();
+
         // VSync 설정을 끄고 (0)
         QualitySettings.vSyncCount = 0;
 
@@ -167,10 +312,7 @@ public class GameManager : MonoBehaviour
 
         // 또는 화면의 기본 재생 빈도로 설정 (예: 60Hz, 90Hz, 120Hz 등)
         // Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
-    }
 
-    void Start()
-    {
         // 게임 매니저 중복 확인
         if (instance == null)
         {
@@ -182,6 +324,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        #endregion
+    }
+
+    void Start()
+    {
+        #region Start
+
         GameSetup();
 
         IsCanTouch = true;
@@ -190,13 +339,29 @@ public class GameManager : MonoBehaviour
         CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
         RestartMessage.SetActive(false);
+
+        scoreSetting.currentSpeedRate = 1f;
+
+        //Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        cameraMovement = gameCamera.GetComponent<CameraMovement>();
+
+
+        #endregion
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isDead)
+        if (!player.isDead)
         {
+            if (!isStart)
+            {
+                Timer.GetComponent<TimerBarController>().ResumeTimer();
+                isStart = true;
+            }
+            // startTimer
+
             FindToTargetEnemy(); // 목표로 지정할 적 정하기
             CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
@@ -212,39 +377,46 @@ public class GameManager : MonoBehaviour
             {
                 ProcessWrongAnswer(); // 오답처리 실시
             }
+
+            // if(Timer.GetComponent<TimerBarController>().GetRemainingTime() < 0f)
+            //     {}
+
+            CheckBackground();
         }
 
-        if (isDead)
+        if (player.isDead)
         {
             if (Input.touchCount == 0)
             {
 
             }
-            else if (Input.GetTouch(0).phase == TouchPhase.Began && Input.GetKeyDown(KeyCode.Space))
+            else if (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene("Prototype");
+                //SceneManager.LoadScene("Prototype");
             }
         }
     }
 
+    // 가장 가까운 적을 목표 적으로 지정
     void FindToTargetEnemy()
     {
-        GameObject returnEnemy = EnemyParents.transform.GetChild(0).gameObject;
-        for (int i = 1; i < EnemyParents.transform.childCount; i++)
+        GameObject returnEnemy = enemy.EnemyParent.transform.GetChild(0).gameObject;
+        for (int i = 1; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            if (returnEnemy.transform.position.y > EnemyParents.transform.GetChild(i).transform.position.y)
+            if (returnEnemy.transform.position.y > enemy.EnemyParent.transform.GetChild(i).transform.position.y)
             {
-                returnEnemy = EnemyParents.transform.GetChild(i).gameObject;
+                returnEnemy = enemy.EnemyParent.transform.GetChild(i).gameObject;
             }
         }
 
-        TargetEnemy = returnEnemy;
+        enemy.TargetEnemy = returnEnemy;
     }
 
+    // 정답을 학인하여 비교
     void CheckAnswer()
     {
-        float enemy_x = TargetEnemy.transform.position.x;
-        float Player_x = Player.transform.position.x;
+        float enemy_x = enemy.TargetEnemy.transform.position.x;
+        float Player_x = player.playerObj.transform.position.x;
 
 
         if (enemy_x == Player_x)
@@ -263,99 +435,263 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 정답처리 진행
     void ProcessCorrectAnswer()
     {
         Debug.Log("정답");
         AddScore();
         IsCanTouch = false;
 
-        if (TargetEnemy.GetComponent<EnemyController>().IsDown)
+        scoreSetting.currentSpeedRate = ScaleToScore(scoreSetting.score);
+
+        if (enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
         {
             enemyRushToDown();
             backgroundRushToDown();
+            effectRushToDown();
         }
 
-        Player.GetComponent<PlayerController>().moveToTarget(TargetEnemy, AttackDuration);
+        player.playerObj.GetComponent<PlayerController>().moveToTarget(enemy.TargetEnemy, player.AttackDuration);
+
+        player.playerObj.GetComponent<PlayerController>().AnimationCalculationProcessing(InputDirection);
 
         InputDirection = SwipeDirection.None;
-    }
 
+        player.PlayerEffect.targetAngle();
+
+        player.PlayerEffect.windFX();
+    }
+    //////////////////////////////////////////////////////////////
+    /// 오답 처리 진행
+    //////////////////////////////////////////////////////////////
     void ProcessWrongAnswer()
     {
-        isDead = true;
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        player.isDead = true;
         IsCanTouch = false;
-        RestartMessage.SetActive(true);
+
+        Time.timeScale = 1f;
+
+        //RestartMessage.SetActive(true);
+        player.isDead = true;
+
+        scoreSetting.currentSpeedRate = ScaleToScore(scoreSetting.score);
+
+        if (enemy.TargetEnemy.GetComponent<EnemyController>().IsDown)
+        {
+            enemyRushToDown();
+            backgroundRushToDown();
+            effectRushToDown();
+        }
+
+        float x = player.playerObj.transform.position.x;
+
+        switch (InputDirection)
+        {
+            case SwipeDirection.Left:
+                x += -3f;
+                break;
+            case SwipeDirection.Up:
+                x += 0;
+                break;
+            case SwipeDirection.Right:
+                x += 3f;
+                break;
+        }
+
+        Vector2 TP = new Vector2(x, enemy.TargetEnemy.transform.position.y);
+
+        player.playerObj.GetComponent<PlayerController>().moveToPos(TP, player.AttackDuration);
+
+        player.playerObj.GetComponent<PlayerController>().AnimationCalculationProcessing(InputDirection);
+
+        //Dead();
+    }
+
+    public void ReLoad()
+    {
+        SceneManager.LoadScene("Prototype");
     }
 
 
     public void AttackSuccess()
     {
-        CancelMove(hitEffectRoutine);
+        CancelMove();
         hitEffectRoutine = StartCoroutine(HitEffect());
     }
 
-    void Dead()
+    public void Dead()
     {
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        player.isDead = true;
+        IsCanTouch = false;
+
+        Time.timeScale = 1f;
+
         RestartMessage.SetActive(true);
-        isDead = true;
+        player.isDead = true;
+
+        PlayerDataManager.instance.InputMaxScore(scoreSetting.score);
+       PlayerDataManager.instance.SaveJson();
     }
 
+    //////////////////////////////////////////////////////////////
+    /// 적 소환 메서드
+    //////////////////////////////////////////////////////////////
     public void enemySpawn()
     {
-        Debug.Log("Enemy 소환");
-        int Line = Random.Range(0, 3);
+        //Debug.Log("enemy 소환");
+        GameObject ennmy;
 
-        Instantiate(Enemy, EnemySpawnLines.transform.GetChild(Line).position, Quaternion.identity, EnemyParents.transform);
+        int SpawnPoint = enemy.LastSpawnPoint;
+
+        int changeCheck;
+
+        switch (SpawnPoint)
+        {
+            case (0):
+                changeCheck = Random.Range(0, 2 + enemy.repeatCount);
+
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 0;
+                    enemy.repeatCount++;
+                }
+                else
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount = 0;
+                }
+                break;
+            case (1):
+                changeCheck = Random.Range(0, 3 + enemy.repeatCount);
+
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount += 2;
+                }
+                else
+                {
+                    if (changeCheck % 2 == 0)
+                        SpawnPoint = 0;
+                    else
+                        SpawnPoint = 2;
+                }
+                break;
+            case (2):
+                changeCheck = Random.Range(0, 2 + enemy.repeatCount);
+
+                if (changeCheck == 0)
+                {
+                    SpawnPoint = 2;
+                    enemy.repeatCount++;
+                }
+                else
+                {
+                    SpawnPoint = 1;
+                    enemy.repeatCount = 0;
+                }
+                break;
+        }
+
+        // 마지막 스폰 위치 저장
+        enemy.LastSpawnPoint = SpawnPoint;
+
+        int count = Random.Range(0,enemy.Prefab.Length);
+
+        // 적 소환
+        ennmy = Instantiate(enemy.Prefab[count], enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
+
+        CoinManagement date = ennmy.GetComponent<CoinManagement>();
+
+        TryGrantScoreReward(date);
     }
 
     void enemyMoveToDown()
     {
-        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        for (int i = 0; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().MovetoDown(EnemyInterval, EnemyDownDuration);
+            enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().moveToDown(enemy.EnemyInterval, enemy.EnemyDownDuration, enemy.DownMode);
         }
     }
 
     void enemyRushToDown()
     {
-        for (int i = 0; i < EnemyParents.transform.childCount; i++)
+        for (int i = 0; i < enemy.EnemyParent.transform.childCount; i++)
         {
-            EnemyParents.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(AttackDuration);
+            enemy.EnemyParent.transform.GetChild(i).GetComponent<EnemyController>().rushToDown(player.AttackDuration);
         }
     }
 
     void backgroundMoveToDown()
     {
-        for (int j = 0; j < BackgroundLayer.Length; j++)
+        for (int j = 0; j < background.BackgroundLayer.Length; j++)
         {
-            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            for (int i = 0; i < background.BackgroundLayer[j].transform.childCount; i++)
             {
-                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().MoveToDown(BackgroundDownDistance, BackgroundDownDuration);
+                background.BackgroundLayer[j].transform.GetChild(i).GetComponent<BackgroundController>().moveToDown(background.BackgroundDownDistance, background.BackgroundDownDuration, background.DownMode);
             }
         }
     }
 
     void backgroundRushToDown()
     {
-        for (int j = 0; j < BackgroundLayer.Length; j++)
+        for (int j = 0; j < background.BackgroundLayer.Length; j++)
         {
-            for (int i = 0; i < BackgroundLayer[j].transform.childCount; i++)
+            for (int i = 0; i < background.BackgroundLayer[j].transform.childCount; i++)
             {
-                BackgroundLayer[j].transform.GetChild(i).GetComponent<Background>().rushToDown(AttackDuration);
+                background.BackgroundLayer[j].transform.GetChild(i).GetComponent<BackgroundController>().rushToDown(player.AttackDuration, background.DownMode);
             }
+        }
+    }
+
+    void effectMoveToDown()
+    {
+        for (int i = 0; i < player.PlayerEffect.gameObject.transform.childCount; i++)
+        {
+            player.PlayerEffect.gameObject.transform.GetChild(i).GetComponent<EffectMovementController>().moveToDown(enemy.EnemyInterval, enemy.EnemyDownDuration, enemy.DownMode);
+        }
+    }
+
+    void effectRushToDown()
+    {
+        for (int i = 0; i < player.PlayerEffect.gameObject.transform.childCount; i++)
+        {
+            player.PlayerEffect.gameObject.transform.GetChild(i).GetComponent<EffectMovementController>().rushToDown(player.AttackDuration);
         }
     }
 
     IEnumerator HitEffect()
     {
-        // 순간적인 효가를 위해 잠깐 움직임 정지
+        cameraMovement.ShakeMove();
+
+        player.PlayerEffect.AttackSlashFX();
+
+        player.playerObj.GetComponent<PlayerController>().AttackIsHit(true);
+
+        for (int i = 0; i < player.attackSound.Length; i++)
+        {
+            ServiceLocator.Resolve<IAudioService>().PlaySfx(player.attackSound[i]);
+        } 
+        
+        // 순간적인 효과를 위해 잠깐 움직임 정지
         Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime);
+
+        Timer.GetComponent<TimerBarController>().AddTime(AddSecond);
+        Timer.GetComponent<TimerBarController>().TimerScale(scoreSetting.currentSpeedRate);
+
+        // 타이머 잠시 멈춤
+        Timer.GetComponent<TimerBarController>().PauseTimer();
+
+        yield return new WaitForSecondsRealtime(hitSlowEffect.HitStopTime); // HitStopTime 시간동안 잠시 정지
 
         // 슬로우 모션을 표현하기 위힌 timescale 저장
         Time.timeScale = hitSlowEffect.HitSlowScale;
 
-        Destroy(TargetEnemy); // 목표 적 제거
+        enemy.TargetEnemy.GetComponent<EnemyController>().Dead(); // 목표 적 제거
 
         enemySpawn(); // 새로운 적 소환
 
@@ -363,50 +699,153 @@ public class GameManager : MonoBehaviour
 
         CheckAnswer(); // 목표 적을 기준으로 플레이어가 입력해야하는 정답 정하기
 
-        Player.GetComponent<PlayerController>().moveToDown(EnemyInterval, PlayerDownDuration);
+        player.playerObj.GetComponent<PlayerController>().moveToDown(enemy.EnemyInterval, player.PlayerDownDuration, player.DownMode);
 
         enemyMoveToDown();
 
         backgroundMoveToDown();
 
+        effectMoveToDown();
+
         IsCanTouch = true;
+
+        // 타이머 제계
+        Timer.GetComponent<TimerBarController>().ResumeTimer();
 
         yield return new WaitForSecondsRealtime(hitSlowEffect.HitSlowTime);
 
-        Time.timeScale = 1f;
+        //scoreSetting.currentSpeedRate += scoreSetting.difficultyScale;
+
+        //Time.timeScale = scoreSetting.currentSpeedRate;
+
+        Time.timeScale = 1;
     }
 
+    #region Score
     void AddScore()
     {
         Debug.Log("점수 추가");
-        score++;
+        scoreSetting.score++;
     }
+
+    
+    //////////////////////////////////////////////////////////////
+    /// 점수 반환
+    //////////////////////////////////////////////////////////////
     public int pullScore()
     {
-        return score;
+        return scoreSetting.score;
     }
 
+    public int PullMaxScore()
+    {
+        return PlayerDataManager.instance.PullMaxScore();
+    }
+    
+    float ScaleToScore(float score)
+    {
+        float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
+        return scale;
+    }
+    #endregion
+
+    #region GemeSetUp
     void GameSetup()
     {
-        EnemySpawnLines.transform.position = new Vector2(0f, Player.transform.position.y + (EnemyInterval * (StartSpawnCount + 1)));
+        //적 스폰 라인 위치 계산 후 배치
+        enemy.EnemySpawnLines.transform.position = new Vector2(0f, player.playerObj.transform.position.y + (enemy.EnemyInterval * (enemy.StartSpawnCount + 1)));
 
-        for (int i = 0; i < StartSpawnCount; i++)
+        // 적 소환
+        for (int i = 0; i < enemy.StartSpawnCount; i++)
         {
             enemySpawn();
-            for (int j = 0; j < EnemyParents.transform.childCount; j++)
+            for (int j = 0; j < enemy.EnemyParent.transform.childCount; j++)
             {
-                EnemyParents.transform.GetChild(j).Translate(Vector2.down * EnemyInterval);
-                EnemyParents.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * EnemyInterval;
+                enemy.EnemyParent.transform.GetChild(j).Translate(Vector2.down * enemy.EnemyInterval);
+                enemy.EnemyParent.transform.GetChild(j).GetComponent<EnemyController>().TargtPos += Vector3.down * enemy.EnemyInterval;
+            }
+        }
+
+        // 적 중복 소환시 카운팅하는 변수 초기화
+        enemy.repeatCount = 0;
+
+        noHaveCoinEnemyCount = 0;
+    }
+    #endregion
+
+    void CancelMove()
+    {
+        if (hitEffectRoutine != null)
+        {
+            StopCoroutine(hitEffectRoutine);
+            hitEffectRoutine = null;
+        }
+
+    }
+    
+    public void TotheStart()
+    {
+        sceneService.LoadSceneWithLoading(SceneNames.START);
+    }
+
+    void CheckBackground()
+    {
+        for (int i = 0; i < background.changePoint.Length; i++)
+        {
+            if (scoreSetting.score >= background.changePoint[i].Point)
+            {
+                Debug.Log("배경변경 : " + background.changePoint[i].changeBackground);
+                background.selectLayer = background.changePoint[i].changeBackground;
             }
         }
     }
 
-    void CancelMove(Coroutine ct)
+    public PlayerDataManager FindPlayerDateManager()
     {
-        if (ct != null)
+        GameObject dateManager = GameObject.Find("PlayerDate");
+        return dateManager.GetComponent<PlayerDataManager>();
+    }
+
+    public void TryGrantScoreReward(CoinManagement coinDate)
+    {
+        if(maxScoreForCoin == noHaveCoinEnemyCount)
         {
-            StopCoroutine(ct);
-            ct = null;
+            noHaveCoinEnemyCount = 0;
+            coinDate.addCoin(1);
         }
+        else if(minScoreForCoin <= noHaveCoinEnemyCount && maxScoreForCoin > noHaveCoinEnemyCount)
+        {
+            int R = Random.Range(minScoreForCoin,maxScoreForCoin);
+            if(R < noHaveCoinEnemyCount)
+            {
+                noHaveCoinEnemyCount = 0;
+                coinDate.addCoin(1);
+            }
+            else
+            {
+                noHaveCoinEnemyCount++;
+            }
+        }
+        else
+        {
+            noHaveCoinEnemyCount++;
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+
+        float h = Mathf.Sin((90f - (errorAngleRange/2)) * Mathf.Deg2Rad);
+
+        float w = Mathf.Cos((90f - (errorAngleRange/2)) * Mathf.Deg2Rad);
+
+        Vector2 errorAngle1 = new Vector2(w,h).normalized;
+        Vector2 errorAngle2 = new Vector2(-w,h).normalized;
+
+        Vector2 pos = player.playerObj.transform.position;
+
+        Gizmos.DrawLine(pos, pos + (errorAngle1 * enemy.EnemyInterval));
+        Gizmos.DrawLine(pos,  pos + (errorAngle2 * enemy.EnemyInterval));
     }
 }

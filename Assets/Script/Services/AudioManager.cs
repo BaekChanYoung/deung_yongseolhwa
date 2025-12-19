@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -24,8 +23,28 @@ public class AudioManager : MonoBehaviour, IAudioService
     private float cachedMusicVolume;
     private float cachedSfxVolume;
 
+    private Coroutine musicFadeCoroutine;
+
+    //private static bool _instanceExists = false; // AudioManager 자체의 중복 방지 플래그 (이전 대화에서 사용했다면)
+
     void Awake()
     {
+        // 등록 전 확인
+        if (ServiceLocator.IsRegistered<IAudioService>())
+        {
+            Debug.Log("AudioService already exists. Destroying duplicate.");
+            Destroy(gameObject);
+            return;
+        }
+
+        // 안전한 등록
+        if (!ServiceLocator.Register<IAudioService>(this))
+        {
+            Debug.LogError("Failed to register AudioService!");
+            Destroy(gameObject);
+            return;
+        }
+
         SetupAudioSources();
 
         // AudioSettings 기본값 사용
@@ -148,7 +167,7 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void Start()
     {
-        if (musicSource != null && musicSource.clip != null)
+        /*if (musicSource != null && musicSource.clip != null)
         {
             // 추가 확인: 현재 Music 볼륨 dB 읽기
             float currentMusicDb;
@@ -159,7 +178,7 @@ public class AudioManager : MonoBehaviour, IAudioService
 
             musicSource.Play();
             Debug.Log("[AudioManager] 배경음악 재생 시작");
-        }
+        }*/
     }
 
     // IAudioService 구현 (public 메서드)
@@ -205,6 +224,13 @@ public class AudioManager : MonoBehaviour, IAudioService
         mainMixer.SetFloat(SFX_PARAM, db);
     }
 
+    public void SetMusicVolumeInternal(float sliderValue)
+    {
+        // PlayerPrefs 저장 없이 볼륨만 변경!
+        cachedMusicVolume = sliderValue; // 캐시는 업데이트
+        SetMusicVolume_Internal(sliderValue);
+    }
+
     // SFX 재생 (PlayOneShot 사용)
     public void PlaySfx(AudioClip clip, float volume = 1f)
     {
@@ -234,17 +260,17 @@ public class AudioManager : MonoBehaviour, IAudioService
     IEnumerator DuckCoroutine(float duckTarget, float duckTime, float restoreTime)
     {
         // 현재 볼륨 로드
-        float current; 
+        float current;
         mainMixer.GetFloat(MUSIC_PARAM, out current);
         // current는 dB. 변환 필요 if you want percentage, but we'll work in dB:
         float targetDb = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(duckTarget)); // duckTarget in 0..1
         // fade to duck
         float t = 0f;
         while (t < duckTime)
-        { 
-            mainMixer.SetFloat(MUSIC_PARAM, Mathf.Lerp(current, targetDb, t / duckTime)); 
-            t += Time.unscaledDeltaTime; 
-            yield return null; 
+        {
+            mainMixer.SetFloat(MUSIC_PARAM, Mathf.Lerp(current, targetDb, t / duckTime));
+            t += Time.unscaledDeltaTime;
+            yield return null;
         }
         mainMixer.SetFloat(MUSIC_PARAM, targetDb);
 
@@ -255,7 +281,7 @@ public class AudioManager : MonoBehaviour, IAudioService
         float savedDb = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(cachedMusicVolume));
         t = 0f;
         while (t < restoreTime)
-        { 
+        {
             mainMixer.SetFloat(MUSIC_PARAM, Mathf.Lerp(targetDb, savedDb, t / restoreTime));
             t += Time.unscaledDeltaTime;
             yield return null;
@@ -269,6 +295,127 @@ public class AudioManager : MonoBehaviour, IAudioService
         var snap = mainMixer.FindSnapshot(snapshotName);
         if (snap != null) snap.TransitionTo(time);
         else Debug.LogWarning("Snapshot not found: " + snapshotName);
+    }
+
+    /// <summary>
+    /// 음악 재생 (즉시)
+    /// </summary>
+    public void PlayMusic(AudioClip clip, bool loop = true)
+    {
+        if (musicSource == null || clip == null)
+        {
+            Debug.LogWarning("[AudioManager] musicSource 또는 clip이 null입니다!");
+            return;
+        }
+
+        // 기존 페이드 중단
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = null;
+        }
+
+        musicSource.clip = clip;
+        musicSource.loop = loop;
+        musicSource.Play();
+
+        Debug.Log($"[AudioManager] 음악 재생: {clip.name}");
+    }
+
+    /// <summary>
+    /// 음악 정지
+    /// </summary>
+    public void StopMusic()
+    {
+        if (musicSource == null) return;
+
+        // 기존 페이드 중단
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = null;
+        }
+
+        musicSource.Stop();
+        Debug.Log("[AudioManager] 음악 정지");
+    }
+
+    /// <summary>
+    /// 크로스 페이드로 음악 전환
+    /// </summary>
+    public void CrossFadeMusic(AudioClip newClip, float fadeDuration = 1f)
+    {
+        if (musicSource == null || newClip == null)
+        {
+            Debug.LogWarning("[AudioManager] musicSource 또는 newClip이 null입니다!");
+            return;
+        }
+
+        // 같은 음악이 이미 재생 중이면 무시
+        if (musicSource.clip == newClip && musicSource.isPlaying)
+        {
+            Debug.Log($"[AudioManager] 이미 재생 중: {newClip.name}");
+            return;
+        }
+
+        // 기존 페이드 중단
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+        }
+
+        musicFadeCoroutine = StartCoroutine(CrossFadeMusicCoroutine(newClip, fadeDuration));
+    }
+
+    /// <summary>
+    /// 특정 음악이 재생 중인지 확인
+    /// </summary>
+    public bool IsMusicPlaying(AudioClip clip)
+    {
+        if (musicSource == null || clip == null) return false;
+        return musicSource.clip == clip && musicSource.isPlaying;
+    }
+
+    IEnumerator CrossFadeMusicCoroutine(AudioClip newClip, float fadeDuration)
+    {
+        float halfDuration = fadeDuration * 0.5f;
+
+        // 1단계: 페이드 아웃 (AudioSource.volume 사용)
+        if (musicSource.isPlaying)
+        {
+            float startVolume = musicSource.volume;
+            float elapsed = 0f;
+
+            while (elapsed < halfDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / halfDuration);
+                yield return null;
+            }
+
+            musicSource.Stop();
+        }
+
+        // 2단계: 페이드 인
+        musicSource.clip = newClip;
+        musicSource.loop = true;
+        musicSource.volume = 0f;
+        musicSource.Play();
+
+        float elapsed2 = 0f;
+
+        while (elapsed2 < halfDuration)
+        {
+            elapsed2 += Time.unscaledDeltaTime;
+            musicSource.volume = Mathf.Lerp(0f, 1f, elapsed2 / halfDuration);
+            yield return null;
+        }
+
+        musicSource.volume = 1f;
+
+        Debug.Log($"[AudioManager] 크로스 페이드 완료: {newClip.name}");
+
+        musicFadeCoroutine = null;
     }
 
     private void ResetAllSettings()
@@ -331,8 +478,7 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void OnDestroy()
     {
-        if ((UnityEngine.Object)ServiceLocator.Resolve<IAudioService>() == this)
-            ServiceLocator.Unregister<IAudioService>();
+        ServiceLocator.Unregister<IAudioService>();
     }
 
     void OnApplicationQuit()

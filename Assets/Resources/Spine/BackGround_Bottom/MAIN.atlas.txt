@@ -1,0 +1,139 @@
+
+MAIN.png
+size: 1318,758
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Fish
+  rotate: false
+  xy: 317, 354
+  size: 59, 23
+  orig: 1066, 332
+  offset: 0, 309
+  index: -1
+Fish10
+  rotate: false
+  xy: 356, 9
+  size: 56, 43
+  orig: 1066, 332
+  offset: 203, 149
+  index: -1
+Fish2
+  rotate: false
+  xy: 249, 351
+  size: 69, 30
+  orig: 1066, 332
+  offset: 208, 138
+  index: -1
+Fish3
+  rotate: false
+  xy: 389, 26
+  size: 101, 88
+  orig: 1066, 332
+  offset: 34, 216
+  index: -1
+Fish4
+  rotate: false
+  xy: 2, 311
+  size: 46, 24
+  orig: 1066, 332
+  offset: 126, 138
+  index: -1
+Fish5
+  rotate: false
+  xy: 2, 202
+  size: 47, 17
+  orig: 1066, 332
+  offset: 222, 127
+  index: -1
+Fish6
+  rotate: false
+  xy: 226, 13
+  size: 80, 60
+  orig: 1066, 332
+  offset: 594, 0
+  index: -1
+Fish7
+  rotate: false
+  xy: 162, 341
+  size: 94, 47
+  orig: 1066, 332
+  offset: 859, 162
+  index: -1
+Fish8
+  rotate: false
+  xy: 299, 4
+  size: 62, 45
+  orig: 1066, 332
+  offset: 956, 135
+  index: -1
+Fish9
+  rotate: false
+  xy: 162, 339
+  size: 38, 18
+  orig: 1066, 332
+  offset: 1028, 170
+  index: -1
+Flower
+  rotate: false
+  xy: 114, 7
+  size: 111, 66
+  orig: 759, 224
+  offset: 0, 158
+  index: -1
+Flower2
+  rotate: false
+  xy: 2, 6
+  size: 111, 67
+  orig: 759, 224
+  offset: 648, 0
+  index: -1
+Leaf
+  rotate: false
+  xy: 226, 75
+  size: 174, 38
+  orig: 1084, 348
+  offset: 910, 310
+  index: -1
+Leaf2
+  rotate: false
+  xy: 2, 75
+  size: 166, 51
+  orig: 1084, 348
+  offset: 34, 168
+  index: -1
+Leaf3
+  rotate: false
+  xy: 2, 336
+  size: 159, 53
+  orig: 1084, 348
+  offset: 860, 98
+  index: -1
+Leaf4
+  rotate: false
+  xy: 592, 3
+  size: 502, 125
+  orig: 1084, 348
+  offset: 0, 0
+  index: -1
+Shadow
+  rotate: false
+  xy: 40, 126
+  size: 1048, 257
+  orig: 1054, 257
+  offset: 6, 0
+  index: -1
+Stone
+  rotate: true
+  xy: 1096, 48
+  size: 708, 219
+  orig: 708, 219
+  offset: 0, 0
+  index: -1
+Water
+  rotate: false
+  xy: 2, 378
+  size: 1092, 378
+  orig: 1092, 378
+  offset: 0, 0
+  index: -1

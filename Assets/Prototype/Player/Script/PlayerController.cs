@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Spine.Unity;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -16,7 +15,38 @@ public class PlayerController : MonoBehaviour
 
     Coroutine moveRoutine;
 
-    Coroutine reboundRoutine;
+    Coroutine waiiRoutine;
+
+    [SerializeField]
+    public GameObject SpriteAni;
+    private Animator SpriteAnimation;
+
+    [SerializeField]
+    GameObject SpineAnimation;
+    private SkeletonAnimation SpineSkeleton;
+
+    bool IsOnSpine;
+
+    
+
+    enum PlayerAniClip
+    {
+        idle = 0,
+        slash,
+        stab,
+        Length
+    }
+
+    void Start()
+    {
+        SpriteAnimation = SpriteAni.GetComponent<Animator>();
+        SpineSkeleton = SpineAnimation.GetComponent<SkeletonAnimation>();
+        IsOnSpine = true;
+
+        SpineSkeleton.AnimationState.SetAnimation(1,"base",true);
+
+        OnSpine();
+    }
 
     void CancelMove(Coroutine ct)
     {
@@ -58,9 +88,32 @@ public class PlayerController : MonoBehaviour
 
         moveRoutine = StartCoroutine(FollowObject(Pos, moveSpeed));
 
-        CancelMove(reboundRoutine);
     }
 
+    public void moveToPos(Vector2 targetPos, float arrivalTime)
+    {
+        float distance;
+        float moveSpeed;
+        if (!IsDown)
+        {
+            distance = Vector2.Distance(transform.position, targetPos); // 공격시 이동 거리 계산
+
+            moveSpeed = distance / arrivalTime; // 거리와 이동 수행 시간을 기준로 이동 속도 계산
+        }
+        else
+        {
+            IsDown = false;
+            //Pos = target.GetComponent<EnemyController>().TargtPos;
+
+            distance = Vector2.Distance(transform.position, targetPos); // 공격시 이동 거리 계산
+
+            moveSpeed = distance / arrivalTime; // 거리와 이동 수행 시간을 기준로 이동 속도 계산
+        }
+
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(FollowPos(targetPos, moveSpeed));
+    }
 
     IEnumerator FollowObject(Vector3 targetPos, float moveSpeed)
     {
@@ -81,70 +134,227 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
     }
-
-    public void moveToDown(float distance, float downArrivalTime)
-    {
-        IsDown = true;
-
-        Vector3 MovePos = transform.position + Vector3.down * distance;
-
-        float moveSpeed = distance / downArrivalTime;
-
-        CancelMove(moveRoutine);
-
-        moveRoutine = StartCoroutine(DownMove(MovePos, moveSpeed));
-    }
-
-    public void moveToDown(float distance, float downArrivalTime, float reboundPower)
-    {
-        IsDown = true;
-
-        Vector3 MovePos = transform.position + Vector3.down * distance;
-
-        float moveSpeed = distance / downArrivalTime;
-
-        CancelMove(moveRoutine);
-
-        moveRoutine = StartCoroutine(DownMove(MovePos, moveSpeed));
-
-        CancelMove(reboundRoutine);
-
-        reboundRoutine = StartCoroutine(reboundMove(reboundPower));
-    }
-
-    IEnumerator DownMove(Vector3 Pos, float moveSpeed)
+    IEnumerator FollowPos(Vector3 targetPos, float moveSpeed)
     {
         //float StartTime = Time.time;
         while (true)
         {
-            transform.position = Vector2.MoveTowards(transform.position, Pos, moveSpeed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
-            if (transform.position == Pos)
+            if (transform.position == targetPos)
             {
-                IsDown = false;
-                // Debug.Log(Time.time - StartTime);
+                //IsAttack = false;
+                //Debug.Log(Time.time - StartTime);
+                //GameManager.instance.AttackSuccess();
+                Dead();
+
                 yield break;
             }
-            if (GameManager.instance.isDead)
-            {
-                yield break;
-            }
-
 
             yield return null;
         }
     }
 
-    IEnumerator reboundMove(float reboundPower)
+    public void moveToDown(float distance, float downArrivalTime, DownMovementMode DownMode = DownMovementMode.moveToword)
     {
-       while (true)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, (Vector2)transform.position + AttackDirection, reboundPower * Time.deltaTime);
+        IsDown = true;
 
-            AttackDirection += Vector2.down * 0.98f * Time.deltaTime;
+        Vector3 TargtPos = transform.position + Vector3.down * distance;
+
+        if (DownMode == DownMovementMode.moveToword)
+        {
+            float moveSpeed = distance / downArrivalTime;
+
+            CancelMove(moveRoutine);
+
+            moveRoutine = StartCoroutine(DownMove(TargtPos, moveSpeed, DownMode));
+        }
+
+        if (DownMode == DownMovementMode.SmoothDamp)
+        {
+            moveRoutine = StartCoroutine(DownMove(TargtPos, downArrivalTime, DownMode));
+        }
+    }
+
+    // 리바운드 사용시(근대 안쓸듯?)
+    public void moveToDown(float distance, float downArrivalTime, float reboundPower, DownMovementMode DownMode = DownMovementMode.moveToword)
+    {
+        IsDown = true;
+
+        Vector3 MovePos = transform.position + Vector3.down * distance;
+
+        float moveSpeed = distance / downArrivalTime;
+
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(DownMove(MovePos, moveSpeed));
+
+        //reboundRoutine = StartCoroutine(reboundMove(reboundPower));
+    }
+
+    IEnumerator DownMove(Vector3 Pos, float moveSpeed, DownMovementMode DownMode = DownMovementMode.moveToword)
+    {
+        //SmoothDamp를 위한 vecter 선언(왜 쓰는지 모름)
+        Vector2 SDR = Vector2.zero;
+        //float StartTime = Time.time;
+        
+        while (true)
+        {
+            // MovwToWard 모드
+            if (DownMode == DownMovementMode.moveToword)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, Pos, moveSpeed * Time.deltaTime);
+
+                if (transform.position == Pos)
+                {
+                    IsDown = false;
+                    // Debug.Log(Time.time - StartTime);
+                    yield break;
+                }
+                if (GameManager.instance.player.isDead)
+                {
+                    yield break;
+                }
+            }
+
+            if (DownMode == DownMovementMode.SmoothDamp)
+            {
+                transform.position = Vector2.SmoothDamp(transform.position, Pos, ref SDR, moveSpeed * Time.deltaTime); // ref? 이해는 되는데 외 쓰는지는 잘 모르겠다.
+
+                if (transform.position == Pos)
+                {
+                    IsDown = false;
+                    // Debug.Log(Time.time - StartTime);
+                    yield break;
+                }
+                if (GameManager.instance.player.isDead)
+                {
+                    yield break;
+                }
+            }
 
             yield return null;
         }
     }
 
+    #region Animation
+    public void AnimationCalculationProcessing(SwipeDirection Direction)
+    {
+        IsOnSpine = false;
+
+        OnSpine();
+
+        switch(Direction)
+        {
+            case SwipeDirection.Left:
+                SpriteAnimation.SetTrigger("GoLeft");
+                break;
+            case SwipeDirection.Up:
+                SpriteAnimation.SetTrigger("GoUp");
+                break;
+            case SwipeDirection.Right:
+                SpriteAnimation.SetTrigger("GoLeft");
+                break;
+        }
+
+        int Attack = Random.Range(1, (int)PlayerAniClip.Length);
+        
+        switch (Attack)
+        {       
+            case (int)PlayerAniClip.stab:
+                SpriteAnimation.SetTrigger("Stab");
+                break;
+                
+            case (int)PlayerAniClip.slash:
+                SpriteAnimation.SetTrigger("Slash");
+                break;
+        }
+    }
+
+
+    // 공격이 적중 시 호출
+    public void AttackIsHit(bool IsHit)
+    {
+        if (!IsHit)
+            return;
+        else
+        {
+            SpriteAnimation.SetTrigger("Hit");
+            waitAni();
+        }
+    }
+
+    void OnSpine()
+    {
+        SpriteAnimation.SetBool("OnSpine",IsOnSpine);
+        SpineAnimation.SetActive(IsOnSpine);
+        SpriteAni.SetActive(!IsOnSpine);
+    }
+
+    void waitAni()
+    {
+        CancelMove(waiiRoutine);
+
+        waiiRoutine = StartCoroutine(WaitAnimation());
+    }
+
+    IEnumerator WaitAnimation()
+    {
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitStopTime);
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitSlowTime);
+        IsOnSpine = true;
+        OnSpine();
+    }
+
+    #endregion
+
+    public void Dead()
+    {
+        //Debug.Log("start Dead1");
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(DeadMove());
+    }
+
+    IEnumerator DeadMove()
+    {
+        //Debug.Log("start Dead2");
+        yield return new WaitForSecondsRealtime(1f);
+
+        //SpriteAnimationController.SetTrigger("Dead");
+
+        //yield return new WaitForSecondsRealtime(0.5f);
+
+        //GameManager.instance.Dead();
+
+        deadDrop();
+
+        yield break;
+    }
+
+    void deadDrop()
+    {
+        CancelMove(moveRoutine);
+
+        moveRoutine = StartCoroutine(deadDropMove());
+    }
+
+    IEnumerator deadDropMove()
+    {
+        float timer = 0;
+        Vector2 Pos = (Vector2)transform.position + Vector2.down * 100;
+        while(true)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, Pos, 50 * Time.deltaTime);
+
+            if (timer > GameManager.instance.DeadFallTime)
+            {
+                GameManager.instance.Dead();
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
 }
