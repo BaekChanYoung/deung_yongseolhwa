@@ -25,7 +25,7 @@ public class PlayerSkinData : ScriptableObject
     [SpineSkin(dataField: "startSceneSpine")]
     public string startSceneSkinName;
 
-    [SpineAnimation(dataField: "playSceneSpine")]
+    [SpineAnimation(dataField: "startSceneSpine")]
     public string startSceneAnimationName;
 
     public bool startSceneAnimationLoop;

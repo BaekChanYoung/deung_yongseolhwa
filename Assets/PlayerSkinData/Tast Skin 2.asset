@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a63741f079e4fb4d9d51a573e44dd84, type: 3}
-  m_Name: Default Skin
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkinData
-  serialNumber: 0
+  m_Name: Tast Skin 2
+  m_EditorClassIdentifier: 
+  serialNumber: 2
   spriteLibrary: {fileID: 7108339969198208228, guid: d0a4f9fb4ab72844889f72ecc1f5cff2, type: 3}
   playSceneSpine: {fileID: 11400000, guid: 3c5fbb6eb2bb5e14c84c96dad031b865, type: 2}
   playSceneSkinName: default
   playSceneAnimationName: base
   playSceneAnimationLoop: 1
-  startSceneSpine: {fileID: 11400000, guid: 2b5e1ad5e7e5c304a83468b3d8639ea9, type: 2}
+  startSceneSpine: {fileID: 11400000, guid: 3c5fbb6eb2bb5e14c84c96dad031b865, type: 2}
   startSceneSkinName: default
-  startSceneAnimationName: stand
+  startSceneAnimationName: base
   startSceneAnimationLoop: 1

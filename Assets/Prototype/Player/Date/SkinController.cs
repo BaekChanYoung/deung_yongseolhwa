@@ -63,7 +63,28 @@ public class SkinController : MonoBehaviour
             controllerSpine.AnimationState.Apply(controllerSpine.Skeleton); // 상태 업데이트
         }
 
-        // 기본 애니메이션 재생
-        //controllerSpine.AnimationState.SetAnimation(0, "idle", true);
+        // 3. [추가] 애니메이션 재생 로직
+        string targetAnimName = "";
+        bool isLoop = false;
+
+        // 모드에 따라 데이터에서 애니메이션 정보 가져오기
+        if (skinMode == SkinMode.StartScene)
+        {
+            targetAnimName = data.startSceneAnimationName;
+            isLoop = data.startSceneAnimationLoop;
+        }
+        else
+        {
+            targetAnimName = data.playSceneAnimationName;
+            isLoop = data.playSceneAnimationLoop;
+        }
+
+        // 애니메이션 이름이 설정되어 있다면 재생
+        if (!string.IsNullOrEmpty(targetAnimName))
+        {
+            // 0번 트랙에 애니메이션 설정
+            controllerSpine.AnimationState.SetAnimation(0, targetAnimName, isLoop);
+            //Debug.Log($"[SkinController] Playing Animation: {targetAnimName} (Loop: {isLoop})");
+        }
     }
 }

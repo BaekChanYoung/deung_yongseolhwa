@@ -152,7 +152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5203587369243058509
 Transform:
   m_ObjectHideFlags: 0
@@ -209,12 +209,12 @@ SpriteRenderer:
   m_SortingLayerID: 1203584839
   m_SortingLayer: 7
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1460186126, guid: 73974cda16a6e884282f6d24d3b8f076, type: 3}
+  m_Sprite: {fileID: -1057644041, guid: 4069ec87933bc324799accb6837823c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.53, y: 4.92}
+  m_Size: {x: 2.78, y: 4.97}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -246,10 +246,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CategoryHash: 0.00000020758782
-  m_labelHash: 3.1858978e-19
+  m_CategoryHash: 2.697242e-35
+  m_labelHash: 0.000000023568607
   m_SpriteKey: 0
-  m_SpriteHash: 875628074
+  m_SpriteHash: 1046202
 --- !u!95 &2976639608042820318
 Animator:
   serializedVersion: 5
@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 6929539900570164895}
   - component: {fileID: 3961908575684922106}
   - component: {fileID: 8324716797712296091}
+  - component: {fileID: 7448221225371431816}
   m_Layer: 0
   m_Name: Spine GameObject (critical draw)
   m_TagString: Untagged
@@ -392,3 +393,17 @@ MonoBehaviour:
   _animationName: 
   loop: 1
   timeScale: 1
+--- !u!114 &7448221225371431816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8910759908174949453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81437fd08c0bb5b4185b7b0ddea34333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerSpine: {fileID: 8324716797712296091}
+  skinMode: 1

@@ -1454,7 +1454,7 @@ MonoBehaviour:
   - skinId: skin_3
     skinName: "\uC2A4\uD0A8 3"
     thumbnailSprite: {fileID: 21300000, guid: 86b5387c397fc2147a338db9e37bc016, type: 3}
-    skinData: {fileID: 0}
+    skinData: {fileID: 11400000, guid: 63646e23f4640c84ab58b940ac64a35c, type: 2}
     isLocked: 1
     unlockCost: 3
     description: 
@@ -26652,12 +26652,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8410486172308561101, guid: d047fce81ed01ce4d89a939a98889488, type: 3}
       propertyPath: json
-      value: '{"MaxScore":0,"coin":100,"defaultSkin":{"instanceID":30668},"skinList":[{"instanceID":30668}],"useSkinNumber":0}'
+      value: '{"MaxScore":0,"coin":100,"defaultSkin":{"instanceID":32364},"skinList":[{"instanceID":32364}],"useSkinNumber":0}'
       objectReference: {fileID: 0}
     - target: {fileID: 8410486172308561101, guid: d047fce81ed01ce4d89a939a98889488, type: 3}
       propertyPath: playerdata.coin
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 8410486172308561101, guid: d047fce81ed01ce4d89a939a98889488, type: 3}
+      propertyPath: playerdata.defaultSkin
+      value: 
+      objectReference: {fileID: 11400000, guid: 4345dcd2e6d12c14a9c4cab08bb10300, type: 2}
     - target: {fileID: 8410486172308561101, guid: d047fce81ed01ce4d89a939a98889488, type: 3}
       propertyPath: playerdata.useSkinNumber
       value: 0
@@ -26673,7 +26677,7 @@ PrefabInstance:
     - target: {fileID: 8410486172308561101, guid: d047fce81ed01ce4d89a939a98889488, type: 3}
       propertyPath: playerdata.skinList.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 9dddc983e422a0e41b70ee22f9256f0a, type: 2}
+      objectReference: {fileID: 919132149155446097, guid: 9e1c97fc44f9a8744b61b58f72c56de4, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

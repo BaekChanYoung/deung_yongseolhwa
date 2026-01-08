@@ -69,13 +69,9 @@ public class SkinManager : MonoBehaviour
             return;
         }
 
-        // 로드 후 즉시 적용
-        ///LoadPlayerPrefs();
+        
 
-        // 로드된 스킨을 캐릭터에 적용
-        //ApplySkinToCharacters();
-
-        Debug.Log($"[SkinManager] 초기화 완료 - 현재 스킨: {currentSkinId}");
+        
     }
 
     /// <summary>
@@ -89,15 +85,31 @@ public class SkinManager : MonoBehaviour
         List<PlayerSkinData> haveSkinList = PlayerDataManager.instance.GetAllSkinData();
 
         foreach (SkinData skin in allSkins)
+        {
             foreach (PlayerSkinData haveSkin in haveSkinList)
+            {
                 if(skin.skinData == haveSkin)
                     skin.isLocked = false;
+            }
+        }
 
+        SaveCurrentSkinId();
+
+        Debug.Log($"[SkinManager] 초기화 완료 - 현재 스킨: {currentSkinId}");
     }
 
     public List<SkinData> GetAllSkins()
     {
         return allSkins;
+    }
+
+    public void SaveCurrentSkinId()
+    {
+        PlayerSkinData usePlayerSkinData = PlayerDataManager.instance.GetSkinData();
+
+        SkinData useSkinData = allSkins.FirstOrDefault(s => s.skinData == usePlayerSkinData);
+
+        currentSkinId = useSkinData.skinId;
     }
 
     /// <summary>
@@ -152,6 +164,8 @@ public class SkinManager : MonoBehaviour
 
         // 씬의 캐릭터 업데이트
         //ApplySkinToCharacters();
+
+        SaveCurrentSkinId();
 
         Debug.Log($"[SkinManager] Skin changed to: {skin.skinName}");
     }
