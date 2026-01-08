@@ -132,11 +132,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Enemy_SD_Dead_0
+      name: Enemy_SD_Dead_5
       rect:
         serializedVersion: 2
         x: 56
@@ -157,7 +170,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Dead_1
+      name: Enemy_SD_Dead_3
       rect:
         serializedVersion: 2
         x: 546
@@ -199,7 +212,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Dead_3
+      name: Enemy_SD_Dead_4
       rect:
         serializedVersion: 2
         x: 65
@@ -220,11 +233,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Dead_4
+      name: Enemy_SD_Dead_1
       rect:
         serializedVersion: 2
         x: 554
-        y: 176
+        y: 179
         width: 437
         height: 316
       alignment: 0
@@ -251,11 +264,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Enemy_SD_Dead_0: 285840339
-      Enemy_SD_Dead_1: 1432863469
+      Enemy_SD_Dead_1: 1983501563
       Enemy_SD_Dead_2: 94559963
-      Enemy_SD_Dead_3: -473354488
-      Enemy_SD_Dead_4: 1983501563
+      Enemy_SD_Dead_3: 1432863469
+      Enemy_SD_Dead_4: -473354488
+      Enemy_SD_Dead_5: 285840339
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

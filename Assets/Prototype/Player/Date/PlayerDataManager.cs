@@ -1,13 +1,25 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+
+[System.Serializable]
 [SerializeField]
-public struct PlayerDate
+public struct PlayerData
 {
+    [ReadOnly]
     public int MaxScore;
+
+    [ReadOnly]
     public int coin;
+
+    public PlayerSkinData defaultSkin;
+
+    [ReadOnly]
+    public List<PlayerSkinData> skinList;
+
+    [ReadOnly]
+    public int useSkinNumber;
 }
 
 public class PlayerDataManager : MonoBehaviour
@@ -15,9 +27,13 @@ public class PlayerDataManager : MonoBehaviour
     [ReadOnly]
     public static PlayerDataManager instance;
 
-    [ReadOnly][SerializeField]
-    public PlayerDate playerdate;
-    [ReadOnly][SerializeField]
+    [SerializeField]
+    public PlayerData playerdata;
+
+    [ReadOnly]
+    public bool IsChangeSkin = false;
+
+    [SerializeField][ReadOnly]
     string json;
 
     void Awake()
@@ -35,79 +51,88 @@ public class PlayerDataManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        playerdate = new PlayerDate();
+        playerdata = new PlayerData();
 
         LoadJson();
 
         SaveJson();
 
-        Debug.Log("playerdate.score : " + playerdate.MaxScore);
-        Debug.Log("playerdate.coin : " + playerdate.coin);
+        Debug.Log("playerdata.score : " + playerdata.MaxScore);
+        Debug.Log("playerdata.coin : " + playerdata.coin);
     }
 
     public void InputMaxScore(int score)
     {
-        if(score > playerdate.MaxScore)
+        if(score > playerdata.MaxScore)
         {
-            playerdate.MaxScore = score;
-            Debug.Log("최고점수 달성 : " + playerdate.MaxScore);
+            playerdata.MaxScore = score;
+            Debug.Log("최고점수 달성 : " + playerdata.MaxScore);
         }
     }
 
     public void SaveJson()
     {
-        json = JsonUtility.ToJson(playerdate);
-        File.WriteAllText(Application.persistentDataPath + "/PlayerDate.json", json);
+        json = JsonUtility.ToJson(playerdata);
+        File.WriteAllText(Application.persistentDataPath + "/PlayerData.json", json);
     }
 
     void LoadJson()
     {
         // File.Exists -> 파일 경로에 이 파일이 존제하는지 확인해줌
-        if(!File.Exists(Application.persistentDataPath + "/PlayerDate.json"))
+        if(!File.Exists(Application.persistentDataPath + "/PlayerData.json"))
         {
             CreatJsonFile();
         }
 
-        json = File.ReadAllText(Application.persistentDataPath + "/PlayerDate.json");
+        json = File.ReadAllText(Application.persistentDataPath + "/PlayerData.json");
         
         if(json == null)
         {
             Debug.Log("파일이 없음, 생성시작");
             CreatJsonFile();
         }
-        playerdate = JsonUtility.FromJson<PlayerDate>(json);
+        playerdata = JsonUtility.FromJson<PlayerData>(json);
     }
 
     void CreatJsonFile()
     {
-        playerdate.MaxScore = 0;
+        playerdata.MaxScore = 0;
+        playerdata.coin = 100;
+        playerdata.skinList = new List<PlayerSkinData>() {playerdata.defaultSkin};
+        playerdata.useSkinNumber = 0;
         SaveJson();
     }
 
     public void TakeCoin(int addCoin = 0)
     {
         Debug.Log("코인 회득");
-        playerdate.coin += addCoin;
+        playerdata.coin += addCoin;
     }
 
     public int PullMaxScore()
     {
-        return playerdate.MaxScore;
+        return playerdata.MaxScore;
     }
 
     public int PullCoin()
     {
-        return playerdate.coin;
+        return playerdata.coin;
+    }
+
+    [Button("Save PlayerData JSON")]
+    void SaveJsonDate()
+    {
+        SaveJson();
     }
 
     [Button("Reset PlayerData JSON")]
-    void ResetJsonData()
+    public void ResetJsonData()
     {
-        string path = Application.persistentDataPath + "/PlayerDate.json";
+        string path = Application.persistentDataPath + "/PlayerData.json";
         if (File.Exists(path))
         {
             File.Delete(path);
-            Debug.Log("기존 PlayerDate.json 삭제");
+            Debug.Log("기존 PlayerData.json 삭제");
         }
 
         CreatJsonFile();
@@ -120,5 +145,40 @@ public class PlayerDataManager : MonoBehaviour
     void ReadJsonDate()
     {
         LoadJson();
+    }
+
+    // 스킨 추가하는 메서드
+    public void AddSkin(PlayerSkinData newSkin)
+    {
+        playerdata.skinList.Add(newSkin);
+        SaveJson();
+    }   
+
+    public void ChangeSkin(int useNumber)
+    {
+        playerdata.useSkinNumber = useNumber;
+        IsChangeSkin = true;
+        SaveJson();
+    }
+
+    public PlayerSkinData GetSkinData()
+    {
+        PlayerSkinData useData = null;
+        foreach (PlayerSkinData skin in playerdata.skinList)
+        {
+            if(skin.serialNumber == playerdata.useSkinNumber)
+                useData = skin;
+        }
+
+        if(useData == null)
+        {
+            useData = playerdata.skinList[0];
+            playerdata.useSkinNumber = 0;
+        }
+        return useData;
+    }
+    public List<PlayerSkinData> GetAllSkinData()
+    {
+        return playerdata.skinList;
     }
 }

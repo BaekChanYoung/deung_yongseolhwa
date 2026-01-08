@@ -18,7 +18,23 @@ public class EnemyIllusionCreater : MonoBehaviour
 
     void Awake()
     {
+        spawnChancePercent = GameManager.instance.EnemyIllusionChancePercent();
+    }
+
+    void Start()
+    {
         if(Random.Range(0f, 100f) < spawnChancePercent)
+        {
+            CreatIllusion();
+        }
+    }
+
+
+    void CreatIllusion()
+    {
+        float x = transform.position.x;
+
+        if(x == 0f)
         {
             int i = Random.Range(0, 2);
             if(i == 0) 
@@ -26,12 +42,17 @@ public class EnemyIllusionCreater : MonoBehaviour
             if(i == 1)
                 CreatIllusion(Vector2.right);
         }
-    }
-
-
-    void CreatIllusion()
-    {
-        CreatIllusion(Vector2.zero);
+        else
+        {
+            if(x > 0f)
+            {
+                CreatIllusion(Vector2.left);
+            }
+            if(x < 0f)
+            {
+                CreatIllusion(Vector2.right);
+            }
+        }
     }
 
 
@@ -41,7 +62,5 @@ public class EnemyIllusionCreater : MonoBehaviour
         
         Instantiate(illusion, transform.position + ((Vector3)addPos * Distance), Quaternion.identity, transform);
     }
-
-
 }
 

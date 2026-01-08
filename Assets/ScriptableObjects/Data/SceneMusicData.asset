@@ -23,13 +23,13 @@ MonoBehaviour:
     volume: 1
     fadeInDuration: 0.5
     loop: 1
-  - sceneName: DialogueScene
-    musicClip: {fileID: 8300000, guid: a8afc53e7d906584bb58d76a62fe0815, type: 3}
+  - sceneName: Dialogue
+    musicClip: {fileID: 8300000, guid: 776642a8cb0dfab49805bfdb9eee32d4, type: 3}
     volume: 1
     fadeInDuration: 0
     loop: 1
   - sceneName: Start
-    musicClip: {fileID: 8300000, guid: a8afc53e7d906584bb58d76a62fe0815, type: 3}
+    musicClip: {fileID: 8300000, guid: 776642a8cb0dfab49805bfdb9eee32d4, type: 3}
     volume: 1
     fadeInDuration: 0
     loop: 1

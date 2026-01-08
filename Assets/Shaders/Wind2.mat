@@ -109,7 +109,7 @@ Material:
     - _UVSec: 0
     - _WindInfluenceMask: 1
     - _WindScale: 0.1
-    - _WindSpeed: 1
+    - _WindSpeed: 4
     - _WindStregth: 3
     - _ZWrite: 1
     m_Colors:

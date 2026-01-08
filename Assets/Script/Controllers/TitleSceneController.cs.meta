@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b38d66ff476dd9046852e124f06237aa
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - startGameClickEvent: {fileID: 11400000, guid: 7781452f421480b4994ad85ac1c5147a, type: 2}
+  - startButton: {instanceID: 0}
+  - buttonImage: {instanceID: 0}
+  - brushBackground: {instanceID: 0}
+  - clickSfx: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

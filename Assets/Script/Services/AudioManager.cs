@@ -29,16 +29,21 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void Awake()
     {
-        // 중복 인스턴스 방지 로직 (Self-registration pattern)
-        if (ServiceLocator.Resolve<IAudioService>() != null) // 이미 등록된 인스턴스가 있다면
+        // 등록 전 확인
+        if (ServiceLocator.IsRegistered<IAudioService>())
         {
-            Destroy(gameObject); // 이 인스턴스는 파괴합니다.
+            Debug.Log("AudioService already exists. Destroying duplicate.");
+            Destroy(gameObject);
             return;
         }
 
-        // ServiceLocator에 자기 자신을 등록
-        ServiceLocator.Register<IAudioService>(this);
-        Debug.Log("[AudioManager] ServiceLocator에 등록되었습니다.");
+        // 안전한 등록
+        if (!ServiceLocator.Register<IAudioService>(this))
+        {
+            Debug.LogError("Failed to register AudioService!");
+            Destroy(gameObject);
+            return;
+        }
 
         SetupAudioSources();
 
@@ -473,8 +478,7 @@ public class AudioManager : MonoBehaviour, IAudioService
 
     void OnDestroy()
     {
-        if ((UnityEngine.Object)ServiceLocator.Resolve<IAudioService>() == this)
-            ServiceLocator.Unregister<IAudioService>();
+        ServiceLocator.Unregister<IAudioService>();
     }
 
     void OnApplicationQuit()

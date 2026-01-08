@@ -132,19 +132,32 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Enemy_SD_Hit_0
+      name: Enemy_SD_Hit_2
       rect:
         serializedVersion: 2
         x: 53
-        y: 838
+        y: 839
         width: 308
         height: 494
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -165,7 +178,7 @@ TextureImporter:
         width: 308
         height: 494
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -178,7 +191,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Hit_2
+      name: Enemy_SD_Hit_4
       rect:
         serializedVersion: 2
         x: 699
@@ -186,7 +199,7 @@ TextureImporter:
         width: 308
         height: 494
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -199,7 +212,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Hit_3
+      name: Enemy_SD_Hit_5
       rect:
         serializedVersion: 2
         x: 145
@@ -207,7 +220,7 @@ TextureImporter:
         width: 314
         height: 471
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -220,7 +233,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy_SD_Hit_4
+      name: Enemy_SD_Hit_3
       rect:
         serializedVersion: 2
         x: 480
@@ -228,7 +241,7 @@ TextureImporter:
         width: 305
         height: 479
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -251,11 +264,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Enemy_SD_Hit_0: 1116345123
       Enemy_SD_Hit_1: -1873502279
-      Enemy_SD_Hit_2: 115397181
-      Enemy_SD_Hit_3: -485596814
-      Enemy_SD_Hit_4: -1499856875
+      Enemy_SD_Hit_2: 1116345123
+      Enemy_SD_Hit_3: -1499856875
+      Enemy_SD_Hit_4: 115397181
+      Enemy_SD_Hit_5: -485596814
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

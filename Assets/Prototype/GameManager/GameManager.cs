@@ -34,12 +34,13 @@ public enum DownMovementMode
     SmoothDamp
 }
 
+#region Enemy Value
 [System.Serializable]
 public struct Enemy
 {
     [Tooltip("적 프리펩")]
     [SerializeField]
-    public GameObject Prefab; // 적 프리펩
+    public GameObject []Prefab; // 적 프리펩
 
     [Tooltip("적 소환시 부모지정")]
     [SerializeField]
@@ -74,10 +75,29 @@ public struct Enemy
     [ReadOnly]
     public int LastSpawnPoint;
 
+    [Header("IllusionPercent")]
+
     [HideInInspector]
     public int repeatCount;
-}
+        [Tooltip("점수비례 타이머 가속의 최소치(시작 수치)")]
+    [SerializeField]
+    public float MinIllusionPercent;
 
+    [Tooltip("점수비례 타이머 가속의 최대치(최대 수치)")]
+    [SerializeField]
+    public float MaxIllusionPercent;
+
+    [SerializeField]
+    [Tooltip("스코어 스케일의 변화량\n(이 수치에 비례해서 최대치에 가까워짐)")]
+    public float difficultyIllusionPercent;
+
+    [Tooltip("알파값(건들지 마시오)\n이 수치에 따라서 그래프의 모양이 바뀜")]
+    [SerializeField]
+    public float Alpha;
+}
+#endregion
+
+#region Player Value
 [System.Serializable]
 public struct Player
 {
@@ -115,6 +135,9 @@ public struct Player
     [SerializeField]
     public AudioClip[] attackSound;
 }
+
+#endregion
+
 [System.Serializable]
 public class ChangePoint
 {
@@ -453,7 +476,7 @@ public class GameManager : MonoBehaviour
 
         player.playerObj.GetComponent<PlayerController>().moveToTarget(enemy.TargetEnemy, player.AttackDuration);
 
-        player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
+        player.playerObj.GetComponent<PlayerController>().AnimationCalculationProcessing(InputDirection);
 
         InputDirection = SwipeDirection.None;
 
@@ -504,7 +527,7 @@ public class GameManager : MonoBehaviour
 
         player.playerObj.GetComponent<PlayerController>().moveToPos(TP, player.AttackDuration);
 
-        player.playerObj.GetComponent<PlayerController>().PlayerAnimationCalculationProcessing(InputDirection);
+        player.playerObj.GetComponent<PlayerController>().AnimationCalculationProcessing(InputDirection);
 
         //Dead();
     }
@@ -537,6 +560,7 @@ public class GameManager : MonoBehaviour
        PlayerDataManager.instance.SaveJson();
     }
 
+    #region enemy
     //////////////////////////////////////////////////////////////
     /// 적 소환 메서드
     //////////////////////////////////////////////////////////////
@@ -600,12 +624,20 @@ public class GameManager : MonoBehaviour
         // 마지막 스폰 위치 저장
         enemy.LastSpawnPoint = SpawnPoint;
 
+        int count = Random.Range(0,enemy.Prefab.Length);
+
         // 적 소환
-        ennmy = Instantiate(enemy.Prefab, enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
+        ennmy = Instantiate(enemy.Prefab[count], enemy.EnemySpawnLines.transform.GetChild(SpawnPoint).position, Quaternion.identity, enemy.EnemyParent.transform);
 
         CoinManagement date = ennmy.GetComponent<CoinManagement>();
 
         TryGrantScoreReward(date);
+    }
+
+    public float EnemyIllusionChancePercent()
+    {
+        float Percent = ScaleToScore(scoreSetting.score, enemy.MaxIllusionPercent, enemy.MinIllusionPercent, enemy.difficultyIllusionPercent, enemy.Alpha);
+        return Percent;
     }
 
     void enemyMoveToDown()
@@ -624,6 +656,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Background
     void backgroundMoveToDown()
     {
         for (int j = 0; j < background.BackgroundLayer.Length; j++)
@@ -645,7 +680,9 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Effect
     void effectMoveToDown()
     {
         for (int i = 0; i < player.PlayerEffect.gameObject.transform.childCount; i++)
@@ -661,6 +698,7 @@ public class GameManager : MonoBehaviour
             player.PlayerEffect.gameObject.transform.GetChild(i).GetComponent<EffectMovementController>().rushToDown(player.AttackDuration);
         }
     }
+    #endregion
 
     IEnumerator HitEffect()
     {
@@ -743,6 +781,12 @@ public class GameManager : MonoBehaviour
     float ScaleToScore(float score)
     {
         float scale = scoreSetting.MinScale + (scoreSetting.MaxScale - scoreSetting.MinScale) * (1 - Mathf.Exp(-scoreSetting.difficultyScale * Mathf.Pow(score, scoreSetting.Alpha)));
+        return scale;
+    }
+
+    float ScaleToScore(float score, float MaxScale, float MinScale, float difficultyScale, float Alpha = 1)
+    {
+        float scale = MinScale + (MaxScale - MinScale) * (1 - Mathf.Exp(-difficultyScale * Mathf.Pow(score, Alpha)));
         return scale;
     }
     #endregion

@@ -12,7 +12,10 @@ public class EnemyController : MonoBehaviour
 
     Coroutine moveRoutine;
 
-    Animator Ani;
+    [SerializeField]
+    Sprite DeadImage;
+
+    SpriteRenderer spriteRender;
 
     [SerializeField]
     GameObject deadFX;
@@ -22,8 +25,9 @@ public class EnemyController : MonoBehaviour
     void Awake()
     {
         TargtPos = transform.position;
-        Ani = GetComponent<Animator>();
         enemyCoinController = GetComponent<CoinManagement>();
+
+        spriteRender = GetComponent<SpriteRenderer>();
     }
 
     void CancelMove(Coroutine ct)
@@ -125,7 +129,7 @@ public class EnemyController : MonoBehaviour
     {
         Debug.Log("적 죽음 코루틴 실행");
 
-        Ani.SetTrigger("Hit");
+        spriteRender.sprite = DeadImage;
 
         yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitStopTime);
         

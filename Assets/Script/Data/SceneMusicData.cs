@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -29,20 +30,62 @@ public class SceneMusicData : ScriptableObject
     [Header("Scene Music List")]
     public SceneMusic[] sceneMusicList;
 
+    // 캐싱을 위한 Dictionary
+    private Dictionary<string, SceneMusic> musicCache;
+
+    // 초기화 (첫 접근 시 자동 실행)
+    void OnEnable()
+    {
+        BuildCache();
+    }
+
+    void BuildCache()
+    {
+        musicCache = new Dictionary<string, SceneMusic>();
+
+        foreach (var sceneMusic in sceneMusicList)
+        {
+            if (string.IsNullOrEmpty(sceneMusic.sceneName))
+            {
+                Debug.LogWarning("[SceneMusicData] Scene name is empty!");
+                continue;
+            }
+
+            if (musicCache.ContainsKey(sceneMusic.sceneName))
+            {
+                Debug.LogWarning($"[SceneMusicData] Duplicate scene name: {sceneMusic.sceneName}");
+                continue;
+            }
+
+            musicCache.Add(sceneMusic.sceneName, sceneMusic);
+        }
+
+        Debug.Log($"[SceneMusicData] Loaded {musicCache.Count} scene music entries");
+    }
+
     /// <summary>
     /// 씬 이름으로 음악 찾기
     /// </summary>
     public SceneMusic GetMusicForScene(string sceneName)
     {
-        foreach (var sceneMusic in sceneMusicList)
-        {
-            if (sceneMusic.sceneName == sceneName)
-            {
-                return sceneMusic;
-            }
-        }
+        if (musicCache == null)
+            BuildCache();
 
-        Debug.LogWarning($"[SceneMusicData] '{sceneName}' 씬의 배경음악을 찾을 수 없습니다.");
+        if (musicCache.TryGetValue(sceneName, out var sceneMusic))
+            return sceneMusic;
+
+        Debug.LogWarning($"[SceneMusicData] No music found for scene: {sceneName}");
         return null;
     }
+
+    /// <summary>
+    /// 등록된 모든 씬 이름 가져오기
+    /// </summary>
+    /*public string[] GetRegisteredSceneNames()
+    {
+        if (musicCache == null)
+            BuildCache();
+
+        return new List<string>(musicCache.Keys).ToArray();
+    }*/
 }

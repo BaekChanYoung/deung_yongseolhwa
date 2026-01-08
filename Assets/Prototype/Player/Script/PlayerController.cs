@@ -1,4 +1,5 @@
 using System.Collections;
+using Spine.Unity;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -14,11 +15,17 @@ public class PlayerController : MonoBehaviour
 
     Coroutine moveRoutine;
 
-    Coroutine reboundRoutine;
+    Coroutine waiiRoutine;
 
-    public GameObject SpriteAnimation;
+    [SerializeField]
+    public GameObject SpriteAni;
+    private Animator SpriteAnimation;
 
-    public Animator SpriteAnimationController;
+    [SerializeField]
+    GameObject SpineAnimation;
+    private SkeletonAnimation SpineSkeleton;
+
+    bool IsOnSpine;
 
     
 
@@ -26,13 +33,19 @@ public class PlayerController : MonoBehaviour
     {
         idle = 0,
         slash,
-        tornado,
+        stab,
         Length
     }
 
     void Start()
     {
-        SpriteAnimationController = SpriteAnimation.GetComponent<Animator>();
+        SpriteAnimation = SpriteAni.GetComponent<Animator>();
+        SpineSkeleton = SpineAnimation.GetComponent<SkeletonAnimation>();
+        IsOnSpine = true;
+
+        SpineSkeleton.AnimationState.SetAnimation(1,"base",true);
+
+        OnSpine();
     }
 
     void CancelMove(Coroutine ct)
@@ -75,7 +88,6 @@ public class PlayerController : MonoBehaviour
 
         moveRoutine = StartCoroutine(FollowObject(Pos, moveSpeed));
 
-        CancelMove(reboundRoutine);
     }
 
     public void moveToPos(Vector2 targetPos, float arrivalTime)
@@ -101,8 +113,6 @@ public class PlayerController : MonoBehaviour
         CancelMove(moveRoutine);
 
         moveRoutine = StartCoroutine(FollowPos(targetPos, moveSpeed));
-
-        CancelMove(reboundRoutine);
     }
 
     IEnumerator FollowObject(Vector3 targetPos, float moveSpeed)
@@ -179,8 +189,6 @@ public class PlayerController : MonoBehaviour
 
         moveRoutine = StartCoroutine(DownMove(MovePos, moveSpeed));
 
-        CancelMove(reboundRoutine);
-
         //reboundRoutine = StartCoroutine(reboundMove(reboundPower));
     }
 
@@ -229,55 +237,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator reboundMove(float reboundPower)
+    #region Animation
+    public void AnimationCalculationProcessing(SwipeDirection Direction)
     {
-        while (true)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, (Vector2)transform.position + AttackDirection, reboundPower * Time.deltaTime);
+        IsOnSpine = false;
 
-            AttackDirection += Vector2.down * 0.98f * Time.deltaTime;
+        OnSpine();
 
-            yield return null;
-        }
-    }
-
-    public void PlayerAnimationCalculationProcessing(SwipeDirection Direction)
-    {
-        if (Direction == SwipeDirection.Up)
+        switch(Direction)
         {
-            SpriteAnimationController.SetTrigger("Top_Attack");
-        }
-        else
-        {
-            SpriteAnimationController.SetTrigger("Right_Attack");
-            //int Attack = Random.Range(1, (int)PlayerAniClip.Length);
-            if (Direction == SwipeDirection.Right)
-                SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            if (Direction == SwipeDirection.Left)
-                SpriteAnimation.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            case SwipeDirection.Left:
+                SpriteAnimation.SetTrigger("GoLeft");
+                break;
+            case SwipeDirection.Up:
+                SpriteAnimation.SetTrigger("GoUp");
+                break;
+            case SwipeDirection.Right:
+                SpriteAnimation.SetTrigger("GoRight");
+                break;
         }
 
         int Attack = Random.Range(1, (int)PlayerAniClip.Length);
         
         switch (Attack)
         {       
-            case (int)PlayerAniClip.tornado:
-                SpriteAnimationController.SetTrigger("Tornado_Attack");
+            case (int)PlayerAniClip.stab:
+                SpriteAnimation.SetTrigger("Stab");
                 break;
                 
             case (int)PlayerAniClip.slash:
-                SpriteAnimationController.SetTrigger("Slash_Attack");
+                SpriteAnimation.SetTrigger("Slash");
                 break;
         }
     }
 
+
+    // 공격이 적중 시 호출
     public void AttackIsHit(bool IsHit)
     {
         if (!IsHit)
             return;
         else
-            SpriteAnimationController.SetTrigger("Hit_Attack");
+        {
+            SpriteAnimation.SetTrigger("Hit");
+            waitAni();
+        }
     }
+
+    void OnSpine()
+    {
+        SpineAnimation.SetActive(IsOnSpine);
+        SpriteAni.SetActive(!IsOnSpine);
+        SpriteAnimation.SetBool("OnSpine",IsOnSpine);
+    }
+
+    void waitAni()
+    {
+        CancelMove(waiiRoutine);
+
+        waiiRoutine = StartCoroutine(WaitAnimation());
+    }
+
+    IEnumerator WaitAnimation()
+    {
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitStopTime);
+        yield return new WaitForSecondsRealtime(GameManager.instance.hitSlowEffect.HitSlowTime);
+        IsOnSpine = true;
+        OnSpine();
+    }
+
+    #endregion
 
     public void Dead()
     {
@@ -285,8 +314,6 @@ public class PlayerController : MonoBehaviour
         CancelMove(moveRoutine);
 
         moveRoutine = StartCoroutine(DeadMove());
-        //Debug.Log("start Dead3");
-        CancelMove(reboundRoutine);
     }
 
     IEnumerator DeadMove()
@@ -310,8 +337,6 @@ public class PlayerController : MonoBehaviour
         CancelMove(moveRoutine);
 
         moveRoutine = StartCoroutine(deadDropMove());
-
-        CancelMove(reboundRoutine);
     }
 
     IEnumerator deadDropMove()

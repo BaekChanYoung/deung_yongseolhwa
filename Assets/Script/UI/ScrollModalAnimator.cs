@@ -14,36 +14,28 @@ public class ScrollModalAnimator : MonoBehaviour
     public RectTransform scrollBottom;   // 하단 두루마리 (아래로 이동)
     public CanvasGroup mainCanvasGroup;  // 중앙 내용 페이드용
 
-    [Header("Content References")]
-    [Tooltip("제목 이미지 (경고! 등)")]
+    [Header("Content References - Image Mode")]
+    [Tooltip("Image 모드용 (기존)")]
     public Image titleImage;
-
-    [Tooltip("제목 텍스트 (경고! 등)")]
     public Image titleText;
-
-    [Tooltip("메시지 이미지 (게임을 종료 하시겠습니까? 등)")]
     public Image messageImage;
-
-    [Tooltip("메시지 텍스트 (게임을 종료 하시겠습니까? 등)")]
     public Image messageText;
-
-    [Tooltip("왼쪽 버튼")]
-    public Button leftButton;
-
-    [Tooltip("왼쪽 버튼 텍스트")]
+    public Image leftButtonImage;
+    public Image rightButtonImage;
     public Image leftButtonText;
-
-    [Tooltip("오른쪽 버튼")]
-    public Button rightButton;
-
-    [Tooltip("오른쪽 버튼 텍스트")]
     public Image rightButtonText;
 
-    [Tooltip("왼쪽 버튼 텍스트/이미지")]
-    public Image leftButtonImage;
+    [Header("Content References - Text Mode")]
+    [Tooltip("Text 모드용 (동적 텍스트)")]
+    public bool useTextMode = false;
+    public Text titleTextComponent;
+    public Text messageTextComponent;
+    public Text leftButtonTextComponent;
+    public Text rightButtonTextComponent;
 
-    [Tooltip("오른쪽 버튼 텍스트/이미지")]
-    public Image rightButtonImage;
+    [Header("Button References")]
+    public Button leftButton;
+    public Button rightButton;
 
     [Header("Animation Settings")]
     public float animationDuration = 0.5f;
@@ -306,67 +298,102 @@ public class ScrollModalAnimator : MonoBehaviour
     // ========== 콘텐츠 알파 설정 ==========
     void SetContentAlpha(float alpha)
     {
-        // 제목 이미지
-        if (titleImage != null)
+        // Text 모드
+        if (useTextMode)
         {
-            Color c = titleImage.color;
-            c.a = alpha;
-            titleImage.color = c;
-        }
-        // 제목 텍스트
-        if (titleText != null)
-        {
-            Color c = titleText.color;
-            c.a = alpha;
-            titleText.color = c;
-        }
+            if (titleTextComponent != null)
+            {
+                Color c = titleTextComponent.color;
+                c.a = alpha;
+                titleTextComponent.color = c;
+            }
 
-        // 메시지 이미지
-        if (messageImage != null)
-        {
-            Color c = messageImage.color;
-            c.a = alpha;
-            messageImage.color = c;
-        }
+            if (messageTextComponent != null)
+            {
+                Color c = messageTextComponent.color;
+                c.a = alpha;
+                messageTextComponent.color = c;
+            }
 
-        // 메시지 텍스트
-        if (messageText != null)
-        {
-            Color c = messageText.color;
-            c.a = alpha;
-            messageText.color = c;
-        }
+            if (leftButtonTextComponent != null)
+            {
+                Color c = leftButtonTextComponent.color;
+                c.a = alpha;
+                leftButtonTextComponent.color = c;
+            }
 
-        // 왼쪽 버튼 이미지 (버튼 자체는 투명)
-        if (leftButtonImage != null)
-        {
-            Color c = leftButtonImage.color;
-            c.a = alpha;
-            leftButtonImage.color = c;
+            if (rightButtonTextComponent != null)
+            {
+                Color c = rightButtonTextComponent.color;
+                c.a = alpha;
+                rightButtonTextComponent.color = c;
+            }
         }
-
-        // 왼쪽 버튼 텍스트
-        if (leftButtonText != null)
+        // Image 모드 (기존)
+        else
         {
-            Color c = leftButtonText.color;
-            c.a = alpha;
-            leftButtonText.color = c;
-        }
+            // 제목 이미지
+            if (titleImage != null)
+            {
+                Color c = titleImage.color;
+                c.a = alpha;
+                titleImage.color = c;
+            }
+            // 제목 텍스트
+            if (titleText != null)
+            {
+                Color c = titleText.color;
+                c.a = alpha;
+                titleText.color = c;
+            }
 
-        // 오른쪽 버튼 이미지
-        if (rightButtonImage != null)
-        {
-            Color c = rightButtonImage.color;
-            c.a = alpha;
-            rightButtonImage.color = c;
-        }
+            // 메시지 이미지
+            if (messageImage != null)
+            {
+                Color c = messageImage.color;
+                c.a = alpha;
+                messageImage.color = c;
+            }
 
-        // 오른쪽 버튼 텍스트
-        if (rightButtonText != null)
-        {
-            Color c = rightButtonText.color;
-            c.a = alpha;
-            rightButtonText.color = c;
+            // 메시지 텍스트
+            if (messageText != null)
+            {
+                Color c = messageText.color;
+                c.a = alpha;
+                messageText.color = c;
+            }
+
+            // 왼쪽 버튼 이미지 (버튼 자체는 투명)
+            if (leftButtonImage != null)
+            {
+                Color c = leftButtonImage.color;
+                c.a = alpha;
+                leftButtonImage.color = c;
+            }
+
+            // 왼쪽 버튼 텍스트
+            if (leftButtonText != null)
+            {
+                Color c = leftButtonText.color;
+                c.a = alpha;
+                leftButtonText.color = c;
+            }
+
+            // 오른쪽 버튼 이미지
+            if (rightButtonImage != null)
+            {
+                Color c = rightButtonImage.color;
+                c.a = alpha;
+                rightButtonImage.color = c;
+            }
+
+            // 오른쪽 버튼 텍스트
+            if (rightButtonText != null)
+            {
+                Color c = rightButtonText.color;
+                c.a = alpha;
+                rightButtonText.color = c;
+            }
         }
     }
 

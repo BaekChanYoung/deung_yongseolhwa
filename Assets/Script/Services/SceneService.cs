@@ -33,14 +33,21 @@ public class SceneService : MonoBehaviour, ISceneService
 
     void Awake()
     {
-        if (ServiceLocator.Resolve<ISceneService>() != null)
+        // 등록 전 확인
+        if (ServiceLocator.IsRegistered<ISceneService>())
         {
+            Debug.Log("SceneService already exists. Destroying duplicate.");
             Destroy(gameObject);
             return;
         }
 
-        ServiceLocator.Register<ISceneService>(this);
-        Debug.Log("[SceneService] ServiceLocator에 등록되었습니다.");
+        // 안전한 등록
+        if (!ServiceLocator.Register<ISceneService>(this))
+        {
+            Debug.LogError("Failed to register ISceneService!");
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void Start()
@@ -187,9 +194,6 @@ public class SceneService : MonoBehaviour, ISceneService
 
     void OnDestroy()
     {
-        if ((UnityEngine.Object)ServiceLocator.Resolve<ISceneService>() == this)
-        {
-            ServiceLocator.Unregister<ISceneService>();
-        }
+        ServiceLocator.Unregister<ISceneService>();
     }
 }

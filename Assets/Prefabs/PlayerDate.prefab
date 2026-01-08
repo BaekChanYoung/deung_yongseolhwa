@@ -44,4 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0aa922a8c2e3f4e812c7d155ec1650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  json: 
+  playerdata:
+    MaxScore: 0
+    coin: 0
+    defaultSkin: {fileID: 11400000, guid: 4345dcd2e6d12c14a9c4cab08bb10300, type: 2}
+    skinList:
+    - {fileID: 11400000, guid: 9dddc983e422a0e41b70ee22f9256f0a, type: 2}
+    useSkinNumber: 0
+  json: '{"MaxScore":0,"coin":0,"defaultSkin":{"instanceID":30638},"skinList":[{"instanceID":30638}],"useSkinNumber":0}'

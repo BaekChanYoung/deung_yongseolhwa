@@ -140,38 +140,33 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 151
-        y: 861
+        y: 1390
         width: 436
         height: 492
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -166, y: 246}
-        - {x: -218, y: 10}
-        - {x: -218, y: -219}
-        - {x: -183, y: -246}
-        - {x: -36, y: -246}
-        - {x: 40, y: -223}
-        - {x: 218, y: -8}
-        - {x: 218, y: 145}
-        - {x: 127, y: 246}
-      - - {x: 33, y: 45}
-        - {x: 32, y: 46}
-        - {x: 32, y: 48}
-        - {x: 30, y: 53}
-        - {x: 28, y: 54}
-        - {x: 30, y: 55}
-        - {x: 32, y: 53}
-        - {x: 32, y: 52}
-        - {x: 31, y: 51}
-        - {x: 31, y: 41}
-        - {x: 33, y: 40}
+      - - {x: -112.26068, y: 246}
+        - {x: -125.492035, y: 140.2312}
+        - {x: -101.10123, y: 85.754395}
+        - {x: -217.10435, y: 36.86963}
+        - {x: -218, y: -190.52783}
+        - {x: -165.98474, y: -200.20752}
+        - {x: -160.56737, y: -246}
+        - {x: -88.6304, y: -246}
+        - {x: 17.567352, y: -121.19031}
+        - {x: 66.429565, y: -118.946045}
+        - {x: 218, y: -13.176758}
+        - {x: 218, y: 32.95276}
+        - {x: 95.51077, y: -25.120117}
+        - {x: 79.00934, y: 46.25183}
+        - {x: 103.71292, y: 246}
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f0962e94ed97aa64a9a2334e66dd97cc
-      internalID: -2120193183
+      spriteID: e6234aa9e475a9946a7d244846cbbad4
+      internalID: -807921758
       vertices: []
       indices: 
       edges: []
@@ -181,7 +176,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 522
-        y: 808
+        y: 1337
         width: 409
         height: 666
       alignment: 0
@@ -189,10 +184,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
       - - {x: 179.5, y: 333}
-        - {x: -118.5, y: 212}
-        - {x: -129.5, y: -41}
-        - {x: -190.5, y: -107}
-        - {x: -204.5, y: -231}
+        - {x: 105.73535, y: 178.76807}
+        - {x: -117.67633, y: 174.93396}
+        - {x: -132.97601, y: -45.211304}
+        - {x: -204.5, y: -130.0863}
         - {x: -204.5, y: -333}
         - {x: -66.5, y: -333}
         - {x: 46.5, y: -202}
@@ -202,38 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: de2a9a07de8d9824cab2979c5db44ac7
-      internalID: 1331412877
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: stab_left_attack_0
-      rect:
-        serializedVersion: 2
-        x: 177
-        y: 194
-        width: 327
-        height: 637
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -141.5, y: 318.5}
-        - {x: -163.5, y: 318.5}
-        - {x: -163.5, y: -74.5}
-        - {x: -17.5, y: -318.5}
-        - {x: 163.5, y: -318.5}
-        - {x: 163.5, y: -202.5}
-        - {x: 58.5, y: -42.5}
-        - {x: 79.5, y: 122.5}
-        - {x: 41.5, y: 173.5}
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7bc8cf4a57d79d14b819762d3ceebe93
-      internalID: 983761930
+      spriteID: 1501f0886522a3a40baeee034dd8dc36
+      internalID: 629146151
       vertices: []
       indices: 
       edges: []
@@ -242,8 +207,29 @@ TextureImporter:
       name: stab_left_attack_1
       rect:
         serializedVersion: 2
+        x: 177
+        y: 723
+        width: 327
+        height: 637
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5c4f65f98d16d743a18d8b7eb18cc51
+      internalID: -1460186126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab_left_attack_0
+      rect:
+        serializedVersion: 2
         x: 511
-        y: 173
+        y: 702
         width: 278
         height: 497
       alignment: 0
@@ -252,19 +238,77 @@ TextureImporter:
       outline:
       - - {x: -68, y: 248.5}
         - {x: -139, y: 226.5}
-        - {x: -139, y: 29.5}
+        - {x: -139, y: 64.2088}
         - {x: -131, y: -34.5}
         - {x: -98, y: -117.5}
         - {x: -6, y: -235.5}
         - {x: 41, y: -248.5}
         - {x: 139, y: -248.5}
-        - {x: 139, y: 136.5}
+        - {x: 139, y: 19.977478}
         - {x: 90, y: 248.5}
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76c38b512aadd424fb33414fe76c7437
-      internalID: -2055992500
+      spriteID: f44c20159ce426c4d85fdc87d97d72e6
+      internalID: -581541346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab_up_attack_1
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 54
+        width: 254
+        height: 695
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 71.37323, y: 347.5}
+        - {x: 43.41516, y: 188.29895}
+        - {x: -127, y: 126.53967}
+        - {x: -127, y: 73.701935}
+        - {x: -96.86749, y: 49.122925}
+        - {x: -84.204956, y: -39.933746}
+        - {x: -127, y: -127.52344}
+        - {x: -94.398254, y: -261.09314}
+        - {x: -26, y: -347.5}
+        - {x: 34, y: -347.5}
+        - {x: 79.97534, y: -178.02797}
+        - {x: 108.66449, y: -94.32205}
+        - {x: 80.46246, y: -53.499237}
+        - {x: 127, y: 5.4722595}
+        - {x: 127, y: 171.87268}
+        - {x: 105.089905, y: 347.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b401b136588f7a94991369b5e27acc1a
+      internalID: 1413042707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stab_up_attack_0
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 78
+        width: 279
+        height: 493
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a332471e5f28d3449888c7cbf3bd3cd4
+      internalID: -1963069381
       vertices: []
       indices: 
       edges: []
@@ -280,12 +324,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      stab attack_4: 1413042707
-      stab attack_5: -1963069381
-      stab_left_attack_0: 983761930
-      stab_left_attack_1: -2055992500
-      stab_right_attack_0: -2120193183
-      stab_right_attack_1: 1331412877
+      stab_left_attack_0: -581541346
+      stab_left_attack_1: -1460186126
+      stab_right_attack_0: -807921758
+      stab_right_attack_1: 629146151
+      stab_up_attack_0: -1963069381
+      stab_up_attack_1: 1413042707
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
