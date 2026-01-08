@@ -16,7 +16,7 @@ public struct PlayerData
     public PlayerSkinData defaultSkin;
 
     [ReadOnly]
-    public List<PlayerSkinData> skinList;
+    public List<int> skinList;
 
     [ReadOnly]
     public int useSkinNumber;
@@ -98,7 +98,7 @@ public class PlayerDataManager : MonoBehaviour
     {
         playerdata.MaxScore = 0;
         playerdata.coin = 100;
-        playerdata.skinList = new List<PlayerSkinData>() {playerdata.defaultSkin};
+        playerdata.skinList = new List<int>() {0};
         playerdata.useSkinNumber = 0;
         SaveJson();
     }
@@ -150,7 +150,7 @@ public class PlayerDataManager : MonoBehaviour
     // 스킨 추가하는 메서드
     public void AddSkin(PlayerSkinData newSkin)
     {
-        playerdata.skinList.Add(newSkin);
+        playerdata.skinList.Add(newSkin.serialNumber);
         SaveJson();
     }   
 
@@ -161,12 +161,12 @@ public class PlayerDataManager : MonoBehaviour
         SaveJson();
     }
 
-    public PlayerSkinData GetSkinData()
+    public int? GetUseSkinSerialNumber()
     {
-        PlayerSkinData useData = null;
-        foreach (PlayerSkinData skin in playerdata.skinList)
+        int? useData = null;
+        foreach (int skin in playerdata.skinList)
         {
-            if(skin.serialNumber == playerdata.useSkinNumber)
+            if(skin == playerdata.useSkinNumber)
                 useData = skin;
         }
 
@@ -177,7 +177,7 @@ public class PlayerDataManager : MonoBehaviour
         }
         return useData;
     }
-    public List<PlayerSkinData> GetAllSkinData()
+    public List<int> GetAllSkinSerialNumber()
     {
         return playerdata.skinList;
     }

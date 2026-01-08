@@ -21,7 +21,7 @@ public class SkinController : MonoBehaviour
 
     void Start()
     {
-        data = PlayerDataManager.instance.GetSkinData();
+        data = SkinManager.Instance.GetSkinData();
         SpineChange();
     }
 
@@ -34,7 +34,7 @@ public class SkinController : MonoBehaviour
         if(PlayerDataManager.instance.IsChangeSkin)
         {
             PlayerDataManager.instance.IsChangeSkin = false;
-            data = PlayerDataManager.instance.GetSkinData();
+            data = SkinManager.Instance.GetSkinData();
             SpineChange();
         }
     }

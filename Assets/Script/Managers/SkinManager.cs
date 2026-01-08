@@ -68,10 +68,6 @@ public class SkinManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        
-
-        
     }
 
     /// <summary>
@@ -82,13 +78,13 @@ public class SkinManager : MonoBehaviour
     void Start()
     {
         // 현제 보유중인 스킨 잠금해제
-        List<PlayerSkinData> haveSkinList = PlayerDataManager.instance.GetAllSkinData();
+        List<int> haveSkinList = PlayerDataManager.instance.GetAllSkinSerialNumber();
 
         foreach (SkinData skin in allSkins)
         {
-            foreach (PlayerSkinData haveSkin in haveSkinList)
+            foreach (int haveSkin in haveSkinList)
             {
-                if(skin.skinData == haveSkin)
+                if(skin.skinData.serialNumber == haveSkin)
                     skin.isLocked = false;
             }
         }
@@ -105,9 +101,9 @@ public class SkinManager : MonoBehaviour
 
     public void SaveCurrentSkinId()
     {
-        PlayerSkinData usePlayerSkinData = PlayerDataManager.instance.GetSkinData();
+        int? usePlayerSkinData = PlayerDataManager.instance.GetUseSkinSerialNumber();
 
-        SkinData useSkinData = allSkins.FirstOrDefault(s => s.skinData == usePlayerSkinData);
+        SkinData useSkinData = allSkins.FirstOrDefault(s => s.skinData.serialNumber == usePlayerSkinData);
 
         currentSkinId = useSkinData.skinId;
     }
@@ -205,6 +201,23 @@ public class SkinManager : MonoBehaviour
         PlayerDataManager.instance.AddSkin(skin.skinData);
 
         Debug.Log($"[SkinManager] Skin unlocked: {skin.skinName}, Remaining currency: {PlayerDataManager.instance.PullCoin()}");
+    }
+
+    public PlayerSkinData GetSkinData()
+    {
+        PlayerSkinData useData = null;
+        foreach (SkinData skin in allSkins)
+        {
+            if(skin.skinData.serialNumber == PlayerDataManager.instance.GetUseSkinSerialNumber())
+                useData = skin.skinData;
+        }
+
+        if(useData == null)
+        {
+            useData = allSkins[0].skinData;
+            PlayerDataManager.instance.ChangeSkin(0);
+        }
+        return useData;
     }
 
     /// <summary>
