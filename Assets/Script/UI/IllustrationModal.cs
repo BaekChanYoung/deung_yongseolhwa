@@ -4,8 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// ÀÏ·¯½ºÆ® ¼±ÅÃ ¸ğ´Ş ÄÁÆ®·Ñ·¯
-/// IllustrationBtn Å¬¸¯ ½Ã Ç¥½ÃµÇ´Â ÀÏ·¯½ºÆ® °¶·¯¸® UI
+/// ì¼ëŸ¬ìŠ¤íŠ¸ ì„ íƒ ëª¨ë‹¬ ì»¨íŠ¸ë¡¤ëŸ¬
+/// IllustrationBtn í´ë¦­ ì‹œ í‘œì‹œë˜ëŠ” ì¼ëŸ¬ìŠ¤íŠ¸ ê°¤ëŸ¬ë¦¬ UI
 /// </summary>
 public class IllustrationModal : MonoBehaviour
 {
@@ -15,28 +15,28 @@ public class IllustrationModal : MonoBehaviour
     public Button closeButton;
 
     [Header("Currency Display")]
-    [Tooltip("ÀçÈ­ Ç¥½Ã Text")]
+    [Tooltip("ì¬í™” í‘œì‹œ Text")]
     public Text currencyText;
 
     [Header("Illustration Grid")]
-    [Tooltip("ÀÏ·¯½ºÆ® ¾ÆÀÌÅÛµéÀÌ µé¾î°¥ Grid Layout")]
+    [Tooltip("ì¼ëŸ¬ìŠ¤íŠ¸ ì•„ì´í…œë“¤ì´ ë“¤ì–´ê°ˆ Grid Layout")]
     public Transform illustrationGridContainer;
 
-    [Tooltip("ÀÏ·¯½ºÆ® ¾ÆÀÌÅÛ ÇÁ¸®ÆÕ")]
+    [Tooltip("ì¼ëŸ¬ìŠ¤íŠ¸ ì•„ì´í…œ í”„ë¦¬íŒ¹")]
     public GameObject illustrationItemPrefab;
 
     [Header("Full View")]
-    [Tooltip("ÀÏ·¯½ºÆ® ÀüÃ¼º¸±â Panel")]
+    [Tooltip("ì¼ëŸ¬ìŠ¤íŠ¸ ì „ì²´ë³´ê¸° Panel")]
     public GameObject fullViewPanel;
 
-    [Tooltip("ÀüÃ¼º¸±â ÀÌ¹ÌÁö")]
+    [Tooltip("ì „ì²´ë³´ê¸° ì´ë¯¸ì§€")]
     public Image fullViewImage;
 
-    [Tooltip("ÀüÃ¼º¸±â ´İ±â ¹öÆ°")]
+    [Tooltip("ì „ì²´ë³´ê¸° ë‹«ê¸° ë²„íŠ¼")]
     public Button fullViewCloseButton;
 
     [Header("Universal Modal")]
-    [Tooltip("ÇØ±İ È®ÀÎ ¸ğ´Ş (Inspector¿¡¼­ ¿¬°á!)")]
+    [Tooltip("í•´ê¸ˆ í™•ì¸ ëª¨ë‹¬ (Inspectorì—ì„œ ì—°ê²°!)")]
     public UniversalModalController universalModal;
 
     [Header("Audio")]
@@ -49,7 +49,7 @@ public class IllustrationModal : MonoBehaviour
     private IAudioService audioService;
     private bool isOpen = false;
 
-    // ÀÏ·¯½ºÆ® ¾ÆÀÌÅÛ ¸®½ºÆ®
+    // ì¼ëŸ¬ìŠ¤íŠ¸ ì•„ì´í…œ ë¦¬ìŠ¤íŠ¸
     private List<IllustrationItemUI> illustrationItemUIList = new List<IllustrationItemUI>();
 
     public bool IsOpen => isOpen;
@@ -64,63 +64,63 @@ public class IllustrationModal : MonoBehaviour
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
 
-        // UniversalModalÀÌ ¿¬°á ¾È µÆÀ¸¸é ÀÚµ¿ °Ë»ö (Fallback)
+        // UniversalModalì´ ì—†ì„ ê²½ìš° ìë™ìœ¼ë¡œ ê²€ìƒ‰ (Fallback)
         if (universalModal == null)
         {
             universalModal = FindObjectOfType<UniversalModalController>();
 
             if (universalModal == null)
             {
-                Debug.LogWarning("[IllustrationModal] UniversalModalController¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù! Inspector¿¡¼­ ¿¬°áÇØÁÖ¼¼¿ä.");
+                Debug.LogWarning("[IllustrationModal] UniversalModalControllerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤! Inspectorì—ì„œ ì—°ê²°í•´ì£¼ì„¸ìš”.");
             }
         }
 
-        // ´İ±â ¹öÆ°
+        // ë‹«ê¸° ë²„íŠ¼
         if (closeButton != null)
         {
             closeButton.onClick.AddListener(OnCloseButtonClicked);
         }
 
-        // ÀüÃ¼º¸±â ´İ±â ¹öÆ°
+        // ì „ì²´ë³´ê¸° ë‹«ê¸° ë²„íŠ¼
         if (fullViewCloseButton != null)
         {
             fullViewCloseButton.onClick.AddListener(CloseFullView);
         }
 
-        // ÀüÃ¼º¸±â ÆĞ³Î ¼û±è
+        // ì „ì²´ë³´ê¸° íŒ¨ë„ ì´ˆê¸°í™”
         if (fullViewPanel != null)
         {
             fullViewPanel.SetActive(false);
         }
 
-        // ÃÊ±â »óÅÂ: ¼û±è
+        // ì´ˆê¸° ìƒíƒœ: ìˆ¨ê¹€
         Hide(true);
     }
 
     /// <summary>
-    /// ¸ğ´Ş ¿­±â
+    /// ëª¨ë‹¬ í‘œì‹œ
     /// </summary>
     public void Show()
     {
         if (isOpen)
         {
-            Debug.LogWarning("[IllustrationModal] ÀÌ¹Ì ¿­·ÁÀÖ½À´Ï´Ù!");
+            Debug.LogWarning("[IllustrationModal] ì´ë¯¸ ì—´ë ¤ìˆìŠµë‹ˆë‹¤!");
             return;
         }
 
-        // È¿°úÀ½
+        // íš¨ê³¼ìŒ
         if (audioService != null && openSfx != null)
         {
             audioService.PlaySfx(openSfx, 0.5f);
         }
 
-        // ÀÏ·¯½ºÆ® ¸ñ·Ï ·Îµå
+        // ì¼ëŸ¬ìŠ¤íŠ¸ ëª©ë¡ ë¡œë“œ
         LoadIllustrationList();
 
-        // ÀçÈ­ Ç¥½Ã ¾÷µ¥ÀÌÆ®
+        // ì¬í™” í‘œì‹œ ì—…ë°ì´íŠ¸
         UpdateCurrencyDisplay();
 
-        // Ç¥½Ã
+        // í‘œì‹œ
         gameObject.SetActive(true);
         isOpen = true;
 
@@ -128,7 +128,7 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸ğ´Ş ´İ±â
+    /// ëª¨ë‹¬ ë‹«ê¸°
     /// </summary>
     public void Hide(bool immediate = false)
     {
@@ -147,7 +147,7 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// Ç¥½Ã ¾Ö´Ï¸ŞÀÌ¼Ç
+    /// í‘œì‹œ ì• ë‹ˆë©”ì´ì…˜
     /// </summary>
     IEnumerator ShowAnimation()
     {
@@ -155,7 +155,7 @@ public class IllustrationModal : MonoBehaviour
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = true;
 
-        // ¹è°æ ÆäÀÌµå ÀÎ
+        // ë°°ê²½ í˜ì´ë“œ ì¸
         float elapsed = 0f;
         float duration = 0.2f;
 
@@ -167,7 +167,7 @@ public class IllustrationModal : MonoBehaviour
             yield return null;
         }
 
-        // µÎ·ç¸¶¸® ÆîÄ¡±â
+        // ìŠ¤í¬ë¡¤ ì• ë‹ˆë©”ì´ì…˜
         yield return StartCoroutine(scrollAnimator.AnimateOpen());
 
         canvasGroup.alpha = 1f;
@@ -175,22 +175,22 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼û±è ¾Ö´Ï¸ŞÀÌ¼Ç
+    /// ìˆ¨ê¹€ ì• ë‹ˆë©”ì´ì…˜
     /// </summary>
     IEnumerator HideAnimation()
     {
         canvasGroup.interactable = false;
 
-        // È¿°úÀ½
+        // íš¨ê³¼ìŒ
         if (audioService != null && closeSfx != null)
         {
             audioService.PlaySfx(closeSfx, 0.5f);
         }
 
-        // µÎ·ç¸¶¸® Á¢±â
+        // ìŠ¤í¬ë¡¤ ë‹«ê¸°
         yield return StartCoroutine(scrollAnimator.AnimateClose());
 
-        // ¹è°æ ÆäÀÌµå ¾Æ¿ô
+        // ë°°ê²½ í˜ì´ë“œ ì•„ì›ƒ
         float elapsed = 0f;
         float duration = 0.2f;
 
@@ -209,22 +209,22 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀçÈ­ Ç¥½Ã ¾÷µ¥ÀÌÆ®
+    /// ì¬í™” í‘œì‹œ ì—…ë°ì´íŠ¸
     /// </summary>
     void UpdateCurrencyDisplay()
     {
         if (currencyText == null) return;
 
         int currency = IllustrationManager.Instance.GetCurrentCurrency();
-        currencyText.text = $"ÀçÈ­: {currency}";
+        currencyText.text = $"ë³´ìœ  ì¬í™”: {currency}";
     }
 
     /// <summary>
-    /// ÀÏ·¯½ºÆ® ¸ñ·Ï ·Îµå
+    /// ì¼ëŸ¬ìŠ¤íŠ¸ ëª©ë¡ ë¡œë“œ
     /// </summary>
     void LoadIllustrationList()
     {
-        // ±âÁ¸ ¾ÆÀÌÅÛ Á¦°Å
+        // ê¸°ì¡´ ì•„ì´í…œ ì‚­ì œ
         foreach (var item in illustrationItemUIList)
         {
             if (item != null)
@@ -234,17 +234,17 @@ public class IllustrationModal : MonoBehaviour
         }
         illustrationItemUIList.Clear();
 
-        // IllustrationManager¿¡¼­ ÀÏ·¯½ºÆ® ¸ñ·Ï °¡Á®¿À±â
+        // IllustrationManagerì—ì„œ ì¼ëŸ¬ìŠ¤íŠ¸ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
         IllustrationManager illustrationManager = IllustrationManager.Instance;
         if (illustrationManager == null)
         {
-            Debug.LogError("[IllustrationModal] IllustrationManager not found!");
+            Debug.LogError("[IllustrationModal] IllustrationManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!");
             return;
         }
 
         List<IllustrationData> allIllustrations = illustrationManager.GetAllIllustrations();
 
-        // ÀÏ·¯½ºÆ® ¾ÆÀÌÅÛ »ı¼º
+        // ì¼ëŸ¬ìŠ¤íŠ¸ ì•„ì´í…œ ìƒì„±
         foreach (IllustrationData illustrationData in allIllustrations)
         {
             GameObject itemObj = Instantiate(illustrationItemPrefab, illustrationGridContainer);
@@ -259,38 +259,38 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀÏ·¯½ºÆ® ¼±ÅÃ (ÀüÃ¼º¸±â)
+    /// ì¼ëŸ¬ìŠ¤íŠ¸ ì„ íƒ (ì „ì²´ë³´ê¸°)
     /// </summary>
     public void OnIllustrationSelected(IllustrationData illustrationData)
     {
-        // È¿°úÀ½
+        // íš¨ê³¼ìŒ
         if (audioService != null && selectSfx != null)
         {
             audioService.PlaySfx(selectSfx, 0.7f);
         }
 
-        // ÀüÃ¼º¸±â Ç¥½Ã
+        // ì „ì²´ë³´ê¸° í‘œì‹œ
         ShowFullView(illustrationData);
     }
 
     /// <summary>
-    /// Àá±İ ÇØÁ¦ È®ÀÎ ¸ğ´Ş Ç¥½Ã (IllustrationItemUI¿¡¼­ È£Ãâ)
+    /// ì ê¸ˆ í•´ì œ í™•ì¸ ëª¨ë‹¬ í‘œì‹œ (IllustrationItemUIì—ì„œ í˜¸ì¶œ)
     /// </summary>
     public void ShowUnlockConfirmationModal(IllustrationData illustrationData)
     {
         if (universalModal == null)
         {
-            Debug.LogError("[IllustrationModal] UniversalModalÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("[IllustrationModal] UniversalModalì´ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
-        string message = $"{illustrationData.illustrationName}À»(¸¦) ÇØ±İÇÏ½Ã°Ú½À´Ï±î?\nºñ¿ë: {illustrationData.unlockCost}";
+        string message = $"{illustrationData.illustrationName}ì„(ë¥¼) í•´ê¸ˆí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\në¹„ìš©: {illustrationData.unlockCost}";
 
         universalModal.Show(
-            title: "ÀÏ·¯½ºÆ® ÇØ±İ",
+            title: "ì¼ëŸ¬ìŠ¤íŠ¸ í•´ê¸ˆ",
             message: message,
-            leftText: "ÇØ±İ",
-            rightText: "Ãë¼Ò",
+            leftText: "í•´ê¸ˆ",
+            rightText: "ì·¨ì†Œ",
             onLeft: () => {
                 TryUnlockIllustration(illustrationData);
             },
@@ -299,42 +299,39 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀÏ·¯½ºÆ® ÇØ±İ ½Ãµµ (UniversalModal Äİ¹é¿¡¼­ È£Ãâ)
+    /// ì¼ëŸ¬ìŠ¤íŠ¸ í•´ê¸ˆ ì‹œë„ (UniversalModal ì½œë°±ì—ì„œ í˜¸ì¶œ)
     /// </summary>
     public void TryUnlockIllustration(IllustrationData illustrationData)
     {
         IllustrationManager manager = IllustrationManager.Instance;
 
-        // ÀçÈ­ È®ÀÎ
+        // ì¬í™” í™•ì¸
         if (manager.CanUnlock(illustrationData))
         {
-            // ÇØ±İ ½ÇÇà
+            // í•´ê¸ˆ ì‹¤í–‰
             manager.UnlockIllustration(illustrationData.illustrationId);
 
-            // È¿°úÀ½
+            // íš¨ê³¼ìŒ
             if (audioService != null && unlockSfx != null)
             {
                 audioService.PlaySfx(unlockSfx, 1.0f);
             }
 
-            // UI °»½Å
+            // UI ê°±ì‹ 
             LoadIllustrationList();
             UpdateCurrencyDisplay();
 
-            Debug.Log($"[IllustrationModal] ÀÏ·¯½ºÆ® ÇØ±İ ¿Ï·á: {illustrationData.illustrationName}");
-
-            // TODO: ÇØ±İ ÃàÇÏ ¿¬Ãâ
+            Debug.Log($"[IllustrationModal] ì¼ëŸ¬ìŠ¤íŠ¸ í•´ê¸ˆ ì™„ë£Œ: {illustrationData.illustrationName}");
         }
         else
         {
-            Debug.Log($"[IllustrationModal] ÀçÈ­ ºÎÁ·!");
-
-            // TODO: ÀçÈ­ ºÎÁ· ¾Ë¸²
+            Debug.Log($"[IllustrationModal] ì¬í™” ë¶€ì¡±!");
+            // TODO: ì¬í™” ë¶€ì¡± ì•Œë¦¼ ì—°ì¶œ
         }
     }
 
     /// <summary>
-    /// ÀüÃ¼º¸±â Ç¥½Ã
+    /// ì „ì²´ë³´ê¸° í‘œì‹œ
     /// </summary>
     void ShowFullView(IllustrationData illustrationData)
     {
@@ -343,11 +340,11 @@ public class IllustrationModal : MonoBehaviour
         fullViewImage.sprite = illustrationData.illustrationSprite;
         fullViewPanel.SetActive(true);
 
-        Debug.Log($"[IllustrationModal] ÀüÃ¼º¸±â: {illustrationData.illustrationName}");
+        Debug.Log($"[IllustrationModal] ì „ì²´ë³´ê¸°: {illustrationData.illustrationName}");
     }
 
     /// <summary>
-    /// ÀüÃ¼º¸±â ´İ±â
+    /// ì „ì²´ë³´ê¸° ë‹«ê¸°
     /// </summary>
     void CloseFullView()
     {
@@ -358,7 +355,7 @@ public class IllustrationModal : MonoBehaviour
     }
 
     /// <summary>
-    /// ´İ±â ¹öÆ° Å¬¸¯
+    /// ë‹«ê¸° ë²„íŠ¼ í´ë¦­
     /// </summary>
     void OnCloseButtonClicked()
     {

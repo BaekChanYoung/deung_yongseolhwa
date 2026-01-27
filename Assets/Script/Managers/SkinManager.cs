@@ -78,11 +78,11 @@ public class SkinManager : MonoBehaviour
     void Start()
     {
         // 현제 보유중인 스킨 잠금해제
-        List<int> haveSkinList = PlayerDataManager.instance.GetAllSkinSerialNumber();
+        List<string> haveSkinList = PlayerDataManager.instance.GetAllSkinSerialNumber();
 
         foreach (SkinData skin in allSkins)
         {
-            foreach (int haveSkin in haveSkinList)
+            foreach (string haveSkin in haveSkinList)
             {
                 if(skin.skinData.serialNumber == haveSkin)
                     skin.isLocked = false;
@@ -101,7 +101,7 @@ public class SkinManager : MonoBehaviour
 
     public void SaveCurrentSkinId()
     {
-        int? usePlayerSkinData = PlayerDataManager.instance.GetUseSkinSerialNumber();
+        string usePlayerSkinData = PlayerDataManager.instance.GetUseSkinSerialNumber();
 
         SkinData useSkinData = allSkins.FirstOrDefault(s => s.skinData.serialNumber == usePlayerSkinData);
 
@@ -215,7 +215,7 @@ public class SkinManager : MonoBehaviour
         if(useData == null)
         {
             useData = allSkins[0].skinData;
-            PlayerDataManager.instance.ChangeSkin(0);
+            PlayerDataManager.instance.ChangeSkin(useData.serialNumber);
         }
         return useData;
     }
