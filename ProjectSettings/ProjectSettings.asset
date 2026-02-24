@@ -826,11 +826,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 822227f0-5db4-4175-8d5f-ef668eacff18
+  cloudProjectId: 6387b0bf-d397-493f-b509-05736ce0ee22
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: DeungYongSeolHwa
-  organizationId: unity_20202526
+  organizationId: hsy200303
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

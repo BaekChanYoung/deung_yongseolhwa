@@ -2,24 +2,18 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-
 [System.Serializable]
-[SerializeField]
-public struct PlayerData
+public class PlayerData // [핵심 1] struct에서 class로 변경하여 데이터 유실 방지!
 {
-    [ReadOnly]
-    public int MaxScore;
-
-    [ReadOnly]
-    public int coin;
-
+    [ReadOnly] public int MaxScore;
+    [ReadOnly] public int coin;
+    
     public PlayerSkinData defaultSkin;
-
-    [ReadOnly]
-    public List<int> skinList;
-
-    [ReadOnly]
-    public int useSkinNumber;
+    
+    // 리스트가 null이 되지 않도록 기본값 할당
+    [ReadOnly] public List<string> skinList = new List<string>(); 
+    [ReadOnly] public List<string> IllustrationList = new List<string>();
+    [ReadOnly] public string useSkinNumber;
 }
 
 public class PlayerDataManager : MonoBehaviour
@@ -33,34 +27,25 @@ public class PlayerDataManager : MonoBehaviour
     [ReadOnly]
     public bool IsChangeSkin = false;
 
-    [SerializeField][ReadOnly]
+    [SerializeField][ReadOnly][TextArea(5,100)]
     string json;
 
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            //Debug.LogWarning("씬에 두개 이상의 플레이어 데이터 매니저가 존재합니다!");
-            Destroy(gameObject);
-            return;
-        }
+        if (instance == null) { instance = this; }
+        else { Destroy(gameObject); return; }
 
         DontDestroyOnLoad(gameObject);
 
-        playerdata = new PlayerData();
+        // [핵심 2] playerdata = new PlayerData(); 삭제!
+        // 인스펙터에서 넣은 defaultSkin 값이 날아가지 않도록 보호합니다.
+        if (playerdata == null) playerdata = new PlayerData();
 
         LoadJson();
-
         SaveJson();
-
-        Debug.Log("playerdata.score : " + playerdata.MaxScore);
-        Debug.Log("playerdata.coin : " + playerdata.coin);
     }
 
+    // ... (InputMaxScore 함수는 기존과 동일하게 유지) ...
     public void InputMaxScore(int score)
     {
         if(score > playerdata.MaxScore)
@@ -72,58 +57,61 @@ public class PlayerDataManager : MonoBehaviour
 
     public void SaveJson()
     {
-        json = JsonUtility.ToJson(playerdata);
+        json = JsonUtility.ToJson(playerdata, true);
         File.WriteAllText(Application.persistentDataPath + "/PlayerData.json", json);
     }
 
     void LoadJson()
     {
-        // File.Exists -> 파일 경로에 이 파일이 존제하는지 확인해줌
-        if(!File.Exists(Application.persistentDataPath + "/PlayerData.json"))
+        string path = Application.persistentDataPath + "/PlayerData.json";
+        if(!File.Exists(path))
         {
             CreatJsonFile();
         }
 
-        json = File.ReadAllText(Application.persistentDataPath + "/PlayerData.json");
+        json = File.ReadAllText(path);
         
-        if(json == null)
+        if(string.IsNullOrEmpty(json))
         {
-            Debug.Log("파일이 없음, 생성시작");
             CreatJsonFile();
+            json = File.ReadAllText(path);
         }
-        playerdata = JsonUtility.FromJson<PlayerData>(json);
+        
+        // [핵심 3] FromJson 대신 FromJsonOverwrite 사용!
+        // 기존 defaultSkin 연결은 유지하면서, 파일에 저장된 코인과 스킨 리스트만 쏙 덮어씌웁니다.
+        JsonUtility.FromJsonOverwrite(json, playerdata);
     }
 
     void CreatJsonFile()
     {
         playerdata.MaxScore = 0;
-        playerdata.coin = 100;
-        playerdata.skinList = new List<int>() {0};
-        playerdata.useSkinNumber = 0;
+        playerdata.coin = 1000;
+        
+        playerdata.skinList = new List<string>();
+        // defaultSkin이 비어있지 않을 때만 안전하게 추가
+        if (playerdata.defaultSkin != null)
+        {
+            playerdata.skinList.Add(playerdata.defaultSkin.serialNumber);
+            playerdata.useSkinNumber = playerdata.defaultSkin.serialNumber;
+        }
+        
+        playerdata.IllustrationList = new List<string>();
         SaveJson();
     }
 
     public void TakeCoin(int addCoin = 0)
     {
-        Debug.Log("코인 회득");
         playerdata.coin += addCoin;
+        // [안전 추가] 재화가 변동될 때마다 즉시 디스크에 저장하여 엇갈림 방지
+        SaveJson(); 
+        Debug.Log("코인 변동 적용 및 저장 완료");
     }
 
-    public int PullMaxScore()
-    {
-        return playerdata.MaxScore;
-    }
-
-    public int PullCoin()
-    {
-        return playerdata.coin;
-    }
+    public int PullMaxScore() { return playerdata.MaxScore; }
+    public int PullCoin() { return playerdata.coin; }
 
     [Button("Save PlayerData JSON")]
-    void SaveJsonDate()
-    {
-        SaveJson();
-    }
+    void SaveJsonDate() { SaveJson(); }
 
     [Button("Reset PlayerData JSON")]
     public void ResetJsonData()
@@ -135,6 +123,7 @@ public class PlayerDataManager : MonoBehaviour
             Debug.Log("기존 PlayerData.json 삭제");
         }
 
+        playerdata.skinList.Clear();
         CreatJsonFile();
         LoadJson();
         
@@ -142,43 +131,55 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     [Button("Load PlayerData JSON")]
-    void ReadJsonDate()
-    {
-        LoadJson();
-    }
+    void ReadJsonDate() { LoadJson(); }
 
     // 스킨 추가하는 메서드
     public void AddSkin(PlayerSkinData newSkin)
     {
-        playerdata.skinList.Add(newSkin.serialNumber);
-        SaveJson();
+        if (playerdata.skinList == null) playerdata.skinList = new List<string>();
+
+        // 중복 획득 방지 로직 추가
+        if (!playerdata.skinList.Contains(newSkin.serialNumber))
+        {
+            playerdata.skinList.Add(newSkin.serialNumber);
+            SaveJson();
+        }
     }   
 
-    public void ChangeSkin(int useNumber)
+    public void ChangeSkin(string useNumber)
     {
         playerdata.useSkinNumber = useNumber;
         IsChangeSkin = true;
         SaveJson();
     }
 
-    public int? GetUseSkinSerialNumber()
+    public void AddIllustration(string serialNumber)
     {
-        int? useData = null;
-        foreach (int skin in playerdata.skinList)
+        if (playerdata.IllustrationList == null) playerdata.IllustrationList = new List<string>();
+        if (!playerdata.IllustrationList.Contains(serialNumber))
+        {
+            playerdata.IllustrationList.Add(serialNumber);
+            SaveJson();
+        }
+    }
+
+    public string GetUseSkinSerialNumber()
+    {
+        string useData = null;
+        foreach (string skin in playerdata.skinList)
         {
             if(skin == playerdata.useSkinNumber)
                 useData = skin;
         }
 
-        if(useData == null)
+        if(useData == null && playerdata.skinList.Count > 0)
         {
             useData = playerdata.skinList[0];
-            playerdata.useSkinNumber = 0;
+            playerdata.useSkinNumber = playerdata.skinList[0];
         }
         return useData;
     }
-    public List<int> GetAllSkinSerialNumber()
-    {
-        return playerdata.skinList;
-    }
+    
+    public List<string> GetAllSkinSerialNumber() { return playerdata.skinList; }
+    public List<string> GetAllIllustrationSerialNumber() { return playerdata.IllustrationList; }
 }
