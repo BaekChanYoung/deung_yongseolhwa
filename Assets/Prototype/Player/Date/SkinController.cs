@@ -17,7 +17,18 @@ public class SkinController : MonoBehaviour
     SkeletonAnimation controllerSpine;
 
     [SerializeField]
+    bool UiSpine = false;
+
+    [SerializeField]
+    SkeletonGraphic controllerSpineUi;
+
+    [SerializeField]
     SkinMode skinMode;
+
+    [Header("setting")]
+
+    [SerializeField]
+    bool useLateUpdate = true;
 
     void Start()
     {
@@ -31,7 +42,7 @@ public class SkinController : MonoBehaviour
     }
     void LateUpdate()
     {
-        if(PlayerDataManager.instance.IsChangeSkin)
+        if(PlayerDataManager.instance.IsChangeSkin && useLateUpdate)
         {
             PlayerDataManager.instance.IsChangeSkin = false;
             data = SkinManager.Instance.GetSkinData();
@@ -39,52 +50,113 @@ public class SkinController : MonoBehaviour
         }
     }
 
-    void SpineChange()
+    public void SpineChange()
     {
-        switch(skinMode)
+        if(UiSpine && controllerSpineUi == null) return;
+        if(!UiSpine && controllerSpine == null) return;
+
+        // 1. 공통 데이터 추출 (if문 밖에서 한 번만 처리해서 중복을 없앱니다)
+        bool isStartMode = (skinMode == SkinMode.StartScene);
+        
+        var targetAsset = isStartMode ? data.startSceneSpine : data.playSceneSpine;
+        string targetSkinName = isStartMode ? data.startSceneSkinName : data.playSceneSkinName;
+        string targetAnimName = isStartMode ? data.startSceneAnimationName : data.playSceneAnimationName;
+        bool isLoop = isStartMode ? data.startSceneAnimationLoop : data.playSceneAnimationLoop;
+
+        // 2. 스파인 타입에 맞춰 적용 (UI용인지 일반용인지 여기서 분기)
+        if (UiSpine)
         {
-            case SkinMode.StartScene:
-                controllerSpine.skeletonDataAsset = data.startSceneSpine;
-                break;
-            case SkinMode.GameScene:
-                controllerSpine.skeletonDataAsset = data.playSceneSpine;
-                break;
-        }
+            controllerSpineUi.skeletonDataAsset = targetAsset;
+            controllerSpineUi.Initialize(true);
 
-        controllerSpine.Initialize(true);
+            if (!string.IsNullOrEmpty(targetSkinName))
+            {
+                controllerSpineUi.Skeleton.SetSkin(targetSkinName);
+                controllerSpineUi.Skeleton.SetSlotsToSetupPose(); 
+                controllerSpineUi.AnimationState.Apply(controllerSpineUi.Skeleton); 
+            }
 
-        string targetSkinName = (skinMode == SkinMode.StartScene) ? data.startSceneSkinName : data.playSceneSkinName;
-
-        if (!string.IsNullOrEmpty(targetSkinName))
-        {
-            // 실제 스파인 뼈대에 스킨 적용
-            controllerSpine.Skeleton.SetSkin(targetSkinName);
-            controllerSpine.Skeleton.SetSlotsToSetupPose(); // 슬롯을 초기 상태로 정렬(이미지 변경 핵심)
-            controllerSpine.AnimationState.Apply(controllerSpine.Skeleton); // 상태 업데이트
-        }
-
-        // 3. [추가] 애니메이션 재생 로직
-        string targetAnimName = "";
-        bool isLoop = false;
-
-        // 모드에 따라 데이터에서 애니메이션 정보 가져오기
-        if (skinMode == SkinMode.StartScene)
-        {
-            targetAnimName = data.startSceneAnimationName;
-            isLoop = data.startSceneAnimationLoop;
+            if (!string.IsNullOrEmpty(targetAnimName))
+            {
+                controllerSpineUi.AnimationState.SetAnimation(0, targetAnimName, isLoop);
+            }
         }
         else
         {
-            targetAnimName = data.playSceneAnimationName;
-            isLoop = data.playSceneAnimationLoop;
-        }
+            controllerSpine.skeletonDataAsset = targetAsset;
+            controllerSpine.Initialize(true);
 
-        // 애니메이션 이름이 설정되어 있다면 재생
-        if (!string.IsNullOrEmpty(targetAnimName))
-        {
-            // 0번 트랙에 애니메이션 설정
-            controllerSpine.AnimationState.SetAnimation(0, targetAnimName, isLoop);
-            //Debug.Log($"[SkinController] Playing Animation: {targetAnimName} (Loop: {isLoop})");
+            if (!string.IsNullOrEmpty(targetSkinName))
+            {
+                controllerSpine.Skeleton.SetSkin(targetSkinName);
+                controllerSpine.Skeleton.SetSlotsToSetupPose(); 
+                controllerSpine.AnimationState.Apply(controllerSpine.Skeleton); 
+            }
+
+            if (!string.IsNullOrEmpty(targetAnimName))
+            {
+                controllerSpine.AnimationState.SetAnimation(0, targetAnimName, isLoop);
+            }
         }
+    
+    }
+
+    public void SpineChange(PlayerSkinData playerdata)
+    {
+        if(UiSpine && controllerSpineUi == null) return;
+        if(!UiSpine && controllerSpine == null) return;
+
+        // 1. 공통 데이터 추출 (if문 밖에서 한 번만 처리해서 중복을 없앱니다)
+        bool isStartMode = (skinMode == SkinMode.StartScene);
+        
+        var targetAsset = isStartMode ? playerdata.startSceneSpine : playerdata.playSceneSpine;
+        string targetSkinName = isStartMode ? playerdata.startSceneSkinName : playerdata.playSceneSkinName;
+        string targetAnimName = isStartMode ? playerdata.startSceneAnimationName : playerdata.playSceneAnimationName;
+        bool isLoop = isStartMode ? playerdata.startSceneAnimationLoop : playerdata.playSceneAnimationLoop;
+
+        // 2. 스파인 타입에 맞춰 적용 (UI용인지 일반용인지 여기서 분기)
+        if (UiSpine)
+        {
+            controllerSpineUi.skeletonDataAsset = targetAsset;
+            controllerSpineUi.Initialize(true);
+
+            if (!string.IsNullOrEmpty(targetSkinName))
+            {
+                controllerSpineUi.Skeleton.SetSkin(targetSkinName);
+                controllerSpineUi.Skeleton.SetSlotsToSetupPose(); 
+                controllerSpineUi.AnimationState.Apply(controllerSpineUi.Skeleton); 
+            }
+
+            if (!string.IsNullOrEmpty(targetAnimName))
+            {
+                controllerSpineUi.AnimationState.SetAnimation(0, targetAnimName, isLoop);
+            }
+        }
+        else
+        {
+            controllerSpine.skeletonDataAsset = targetAsset;
+            controllerSpine.Initialize(true);
+
+            if (!string.IsNullOrEmpty(targetSkinName))
+            {
+                controllerSpine.Skeleton.SetSkin(targetSkinName);
+                controllerSpine.Skeleton.SetSlotsToSetupPose(); 
+                controllerSpine.AnimationState.Apply(controllerSpine.Skeleton); 
+            }
+
+            if (!string.IsNullOrEmpty(targetAnimName))
+            {
+                controllerSpine.AnimationState.SetAnimation(0, targetAnimName, isLoop);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 외부에서 스킨 변경을 강제로 지시할 때 사용합니다.
+    /// </summary>
+    public void ForceUpdateSkin()
+    {
+        data = SkinManager.Instance.GetSkinData();
+        SpineChange();
     }
 }

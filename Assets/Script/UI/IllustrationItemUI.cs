@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ÀÏ·¯½ºÆ® GridÀÇ °³º° ¾ÆÀÌÅÛ UI
+/// ì¼ëŸ¬ìŠ¤íŠ¸ Gridì˜ ê°œë³„ ì•„ì´í…œ UI
 /// </summary>
 public class IllustrationItemUI : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class IllustrationItemUI : MonoBehaviour
     public IllustrationData IllustrationData => illustrationData;
 
     /// <summary>
-    /// ¾ÆÀÌÅÛ ¼³Á¤
+    /// ì•„ì´í…œ ì„¤ì •
     /// </summary>
     public void Setup(IllustrationData data, IllustrationModal modal)
     {
@@ -31,7 +31,7 @@ public class IllustrationItemUI : MonoBehaviour
 
         UpdateUI();
 
-        // ¹öÆ° ÀÌº¥Æ®
+        // ë²„íŠ¼ ì´ë²¤íŠ¸
         if (selectButton != null)
         {
             selectButton.onClick.AddListener(OnClicked);
@@ -39,17 +39,17 @@ public class IllustrationItemUI : MonoBehaviour
     }
 
     /// <summary>
-    /// UI ¾÷µ¥ÀÌÆ®
+    /// UI ì—…ë°ì´íŠ¸
     /// </summary>
     void UpdateUI()
     {
-        // ½æ³×ÀÏ
+        // ì¸ë„¤ì¼
         if (thumbnailImage != null && illustrationData.thumbnailSprite != null)
         {
             thumbnailImage.sprite = illustrationData.thumbnailSprite;
         }
 
-        // Àá±İ »óÅÂ
+        // ì ê¸ˆ ìƒíƒœ
         bool isLocked = !illustrationData.isUnlocked;
 
         if (lockOverlay != null)
@@ -63,7 +63,7 @@ public class IllustrationItemUI : MonoBehaviour
             lockIcon.gameObject.SetActive(isLocked);
         }
 
-        // ºñ¿ë Ç¥½Ã
+        // ë¹„ìš© í‘œì‹œ
         if (costText != null)
         {
             costText.gameObject.SetActive(isLocked);
@@ -75,18 +75,18 @@ public class IllustrationItemUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Å¬¸¯ ÀÌº¥Æ®
+    /// í´ë¦­ ì´ë²¤íŠ¸
     /// </summary>
     void OnClicked()
     {
         if (!illustrationData.isUnlocked)
         {
-            // Àá±İ ÇØÁ¦ È®ÀÎ ¸ğ´Ş
+            // ì ê¸ˆ í•´ì œ í™•ì¸ ëª¨ë‹¬
             ShowUnlockConfirmation();
         }
         else
         {
-            // ÀüÃ¼º¸±â
+            // ì „ì²´ë³´ê¸°
             if (parentModal != null)
             {
                 parentModal.OnIllustrationSelected(illustrationData);
@@ -95,11 +95,11 @@ public class IllustrationItemUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Àá±İ ÇØÁ¦ È®ÀÎ ¸ğ´Ş Ç¥½Ã
+    /// ì ê¸ˆ í•´ì œ í™•ì¸ ëª¨ë‹¬ í‘œì‹œ
     /// </summary>
     void ShowUnlockConfirmation()
     {
-        // parentModalÀ» ÅëÇØ Á¢±Ù (FindObjectOfType Á¦°Å!)
+        // parentModalì„ í†µí•´ ì ‘ê·¼ (FindObjectOfType ì œê±°!)
         if (parentModal != null)
         {
             parentModal.ShowUnlockConfirmationModal(illustrationData);
