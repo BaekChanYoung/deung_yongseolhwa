@@ -2,9 +2,6 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using Spine;
-using Spine.Unity;
-using TMPro;
 
 /// <summary>
 /// 스킨 선택 모달 컨트롤러
@@ -30,8 +27,7 @@ public class SkinSelectionModal : MonoBehaviour
 
     [Header("Preview")]
     [Tooltip("미리보기 Spine 캐릭터")]
-    public TextMeshProUGUI previewSpineCharacterName;
-    public SkinController previewSpineCharacter;
+    public GameObject previewSpineCharacter;
 
     [Header("Universal Modal")]
     [Tooltip("해금 확인 모달 (Inspector에서 연결!)")]
@@ -52,9 +48,6 @@ public class SkinSelectionModal : MonoBehaviour
 
     // 스킨 아이템 리스트
     private List<SkinItemUI> skinItemUIList = new List<SkinItemUI>();
-
-    // [추가] 현재 선택된/미리보기 중인 스킨의 리스트 내 인덱스
-    private int currentIndex = 0;
 
     public bool IsOpen => isOpen;
 
@@ -111,10 +104,6 @@ public class SkinSelectionModal : MonoBehaviour
 
         // 재화 표시 업데이트
         UpdateCurrencyDisplay();
-
-        SkinData useSkinData = SkinManager.Instance.GetCurrentSkin();
-
-        OnSkinSelected(useSkinData);
 
         // 표시
         gameObject.SetActive(true);
@@ -271,12 +260,7 @@ public class SkinSelectionModal : MonoBehaviour
         }
 
         // 스킨 적용
-        //SelectSkin();
-        currentSelectedSkin = skinData;
-
-        // 클릭한 스킨이 전체 리스트에서 몇 번째인지 찾아서 동기화
-        List<SkinData> allSkins = SkinManager.Instance.GetAllSkins();
-        currentIndex = allSkins.FindIndex(s => s.skinId == skinData.skinId);
+        SkinManager.Instance.SetCurrentSkin(skinData.skinId);
 
         // UI 업데이트
         UpdateSelectedSkin(skinData.skinId);
@@ -284,39 +268,7 @@ public class SkinSelectionModal : MonoBehaviour
         // 미리보기 업데이트 (선택사항)
         UpdatePreview(skinData);
 
-        //Debug.Log($"[SkinSelectionModal] Skin selected: {skinData.skinName}");
-    }
-
-public void SelectSkin()
-    {
-        if (currentSelectedSkin == null) return;
-
-        if (currentSelectedSkin.isLocked)
-        {
-            ShowUnlockConfirmationModal(currentSelectedSkin);
-            return;
-        }
-
-        try
-        {
-            // 1. 시도 로그
-            if (currencyText != null) currencyText.text = "장착 시도 중...";
-
-            // 여기가 문제의 구간!
-            SkinManager.Instance.SetCurrentSkin(currentSelectedSkin.skinId);
-            
-            // 2. 무사히 통과했다면
-            if (currencyText != null) currencyText.text = "장착 성공!";
-        }
-        catch (System.Exception e)
-        {
-            // 3. 에러가 터졌다면 코인 텍스트를 빨간색으로 바꾸고 에러 내용을 화면에 박아버림!
-            if (currencyText != null)
-            {
-                currencyText.color = Color.red;
-                currencyText.text = "에러: " + e.Message;
-            }
-        }
+        Debug.Log($"[SkinSelectionModal] Skin selected: {skinData.skinName}");
     }
 
     /// <summary>
@@ -365,8 +317,7 @@ public void SelectSkin()
 
             // UI 갱신
             LoadSkinList();
-            //UpdateCurrencyDisplay();
-            OnSkinSelected(skinData);
+            UpdateCurrencyDisplay();
 
             Debug.Log($"[SkinSelectionModal] 스킨 해금 완료: {skinData.skinName}");
 
@@ -390,11 +341,8 @@ public void SelectSkin()
             if (itemUI != null)
             {
                 itemUI.SetSelected(itemUI.SkinData.skinId == skinId);
-                //currentSelectedSkin = itemUI.SkinData;
             }
         }
-
-        
     }
 
     /// <summary>
@@ -405,11 +353,6 @@ public void SelectSkin()
         if (previewSpineCharacter == null) return;
 
         // TODO: Spine 캐릭터 변경 로직
-
-        previewSpineCharacterName.text = skinData.skinName;
-
-        previewSpineCharacter.SpineChange(skinData.skinData);
-
         // SpineCharacterController 등을 통해 캐릭터 변경
         Debug.Log($"[SkinSelectionModal] Preview updated: {skinData.skinName}");
     }
@@ -427,37 +370,6 @@ public void SelectSkin()
         if (closeButton != null)
         {
             closeButton.onClick.RemoveListener(OnCloseButtonClicked);
-        }
-    }
-
-    /// <summary>
-    /// 화살표 버튼 클릭 (방향: 왼쪽 -1, 오른쪽 1)
-    /// </summary>
-    public void OnClickArrow(int direction)
-    {
-        List<SkinData> allSkins = SkinManager.Instance.GetAllSkins();
-        if (allSkins.Count == 0) return;
-
-        // 인덱스 이동
-        currentIndex += direction;
-
-        // 인덱스 범위 순환 (끝에서 오른쪽 누르면 처음으로, 처음에서 왼쪽 누르면 끝으로)
-        if (currentIndex < 0) currentIndex = allSkins.Count - 1;
-        else if (currentIndex >= allSkins.Count) currentIndex = 0;
-
-        SkinData targetSkin = allSkins[currentIndex];
-
-        // 만약 잠겨있는 스킨이라면 바로 장착하지 않고 미리보기와 테두리만 보여줍니다.
-        // 잠겨있지 않다면 클릭한 것과 동일하게 처리합니다.
-        if (targetSkin.isLocked)
-        {
-            currentSelectedSkin = targetSkin;
-            UpdateSelectedSkin(targetSkin.skinId);
-            UpdatePreview(targetSkin);
-        }
-        else
-        {
-            OnSkinSelected(targetSkin);
         }
     }
 }

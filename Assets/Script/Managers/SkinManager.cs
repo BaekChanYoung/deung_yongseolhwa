@@ -99,26 +99,13 @@ public class SkinManager : MonoBehaviour
         return allSkins;
     }
 
-/// <summary>
-    /// 플레이어 데이터에서 현재 스킨 ID를 동기화
-    /// </summary>
     public void SaveCurrentSkinId()
     {
         string usePlayerSkinData = PlayerDataManager.instance.GetUseSkinSerialNumber();
+
         SkinData useSkinData = allSkins.FirstOrDefault(s => s.skinData.serialNumber == usePlayerSkinData);
 
-        // [수정된 부분] 처음 실행 시 데이터가 비어있어 Null이 나오는 것을 방어!
-        if (useSkinData != null)
-        {
-            currentSkinId = useSkinData.skinId;
-        }
-        else
-        {
-            // 만약 못 찾았다면, 무조건 0번(기본 스킨)으로 강제 초기화하여 에러 방지
-            currentSkinId = allSkins[0].skinId;
-            PlayerDataManager.instance.ChangeSkin(allSkins[0].skinData.serialNumber);
-            Debug.LogWarning("[SkinManager] 초기 장착 데이터가 없어 기본 스킨으로 강제 세팅합니다.");
-        }
+        currentSkinId = useSkinData.skinId;
     }
 
     /// <summary>
@@ -145,32 +132,38 @@ public class SkinManager : MonoBehaviour
         return PlayerDataManager.instance.PullCoin() >= skinData.unlockCost && skinData.isLocked;
     }
 
-/// <summary>
+    /// <summary>
     /// 스킨 변경
     /// </summary>
     public void SetCurrentSkin(string skinId)
     {
         SkinData skin = allSkins.FirstOrDefault(s => s.skinId == skinId);
 
-        if (skin == null || skin.isLocked) return;
-
-        // 1. 매니저에 저장 명령 (껐다 켰을 때를 대비한 디스크 저장)
-        PlayerDataManager.instance.ChangeSkin(skin.skinData.serialNumber);
-        currentSkinId = skinId;
-
-        // ==========================================
-        // 2. [최종 해결 로직] 빙빙 돌지 않고 데이터를 다이렉트로 꽂아줍니다!
-        // ==========================================
-        // true를 넣으면 팝업창 뒤에 가려져서 비활성화(Inactive)된 캐릭터까지 모조리 찾습니다.
-        SkinController[] allControllers = FindObjectsOfType<SkinController>(true); 
-        
-        foreach(var controller in allControllers)
+        if (skin == null)
         {
-            // GetSkinData()를 부르게 하지 말고, 우리가 찾은 새 스킨 데이터를 직접 넘겨버립니다.
-            controller.SpineChange(skin.skinData); 
+            Debug.LogError($"[SkinManager] Skin not found: {skinId}");
+            return;
         }
 
-        Debug.Log($"[SkinManager] 다이렉트 스킨 갱신 완료: {skin.skinName}");
+        if (skin.isLocked)
+        {
+            Debug.LogWarning($"[SkinManager] Skin is locked: {skinId}");
+            return;
+        }
+
+        //currentSkinId = skinId;
+        PlayerDataManager.instance.ChangeSkin(skin.skinData.serialNumber);
+        
+
+        // 저장!
+        //SavePlayerPrefs();
+
+        // 씬의 캐릭터 업데이트
+        //ApplySkinToCharacters();
+
+        SaveCurrentSkinId();
+
+        Debug.Log($"[SkinManager] Skin changed to: {skin.skinName}");
     }
 
     /// <summary>
@@ -266,4 +259,75 @@ public class SkinManager : MonoBehaviour
         // 스킨 재적용
         //ApplySkinToCharacters();
     }
+
+
+
+    /// <summary>
+    /// 디버깅: 현재 상태 출력
+    /// </summary>
+    // [ContextMenu("Debug: Print Status")]
+    // public void DebugPrintStatus()
+    // {
+    //     Debug.Log("========================================");
+    //     Debug.Log("[SkinManager] Current Status:");
+    //     Debug.Log($"  - Current Skin ID: {currentSkinId}");
+    //     Debug.Log($"  - Current Currency: {currentSkinCurrency}");
+    //     Debug.Log("----------------------------------------");
+    //     Debug.Log("[All Skins]");
+    //     foreach (var skin in allSkins)
+    //     {
+    //         Debug.Log($"  - {skin.skinId} ({skin.skinName}): {(skin.isLocked ? "Locked" : "Unlocked")}");
+    //     }
+    //     Debug.Log("========================================");
+    // }
+
+    // /// <summary>
+    // /// 테스트: PlayerPrefs 초기화
+    // /// </summary>
+    // [ContextMenu("Debug: Reset PlayerPrefs")]
+    // public void DebugResetPlayerPrefs()
+    // {
+    //     PlayerPrefs.DeleteKey(CURRENT_SKIN_ID_KEY);
+    //     PlayerPrefs.DeleteKey(SKIN_CURRENCY_KEY);
+
+    //     foreach (var skin in allSkins)
+    //     {
+    //         string key = $"{SKIN_LOCKED_PREFIX}{skin.skinId}{SKIN_LOCKED_SUFFIX}";
+    //         PlayerPrefs.DeleteKey(key);
+    //     }
+
+    //     PlayerPrefs.Save();
+
+    //     Debug.Log("[SkinManager] PlayerPrefs 초기화 완료! Unity 재시작 후 적용됩니다.");
+    // }
+
+    // /// <summary>
+    // /// 디버깅: 현재 캐릭터 애니메이션 목록 출력
+    // /// </summary>
+    // [ContextMenu("Debug: Print Available Animations")]
+    // public void DebugPrintAvailableAnimations()
+    // {
+    //     Debug.Log("========================================");
+    //     Debug.Log("[SkinManager] Available Animations:");
+
+    //     if (playerStandInStart != null)
+    //     {
+    //         var skeletonAnim = playerStandInStart.GetComponentInChildren<SkeletonAnimation>();
+    //         if (skeletonAnim != null)
+    //         {
+    //             Debug.Log($"Player_Stand: {GetAvailableAnimations(skeletonAnim)}");
+    //         }
+    //     }
+
+    //     if (playerInPrototype != null)
+    //     {
+    //         var skeletonAnim = playerInPrototype.GetComponentInChildren<SkeletonAnimation>();
+    //         if (skeletonAnim != null)
+    //         {
+    //             Debug.Log($"Player (Prototype): {GetAvailableAnimations(skeletonAnim)}");
+    //         }
+    //     }
+
+    //     Debug.Log("========================================");
+    //}
 }
