@@ -1724,88 +1724,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1319190338516182171, guid: 0d3be3040654eaa489cf04f59ece32f1, type: 3}
   m_PrefabInstance: {fileID: 1140316211}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1173795743
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1978045401974333897}
-    m_Modifications:
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310394, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: CustomDataModule.color1.maxColor.b
-      value: 0.50888145
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310394, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: CustomDataModule.color1.maxColor.g
-      value: 0.52711535
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310394, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: CustomDataModule.color1.maxColor.r
-      value: 0.45078585
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310395, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_SortingLayer
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310395, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1203584839
-      objectReference: {fileID: 0}
-    - target: {fileID: 6058072461479310396, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-      propertyPath: m_Name
-      value: Tornado
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
---- !u!4 &1173795744 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6058072461479310393, guid: 1ddf7c2e93e599843b26c7ee6bec3e33, type: 3}
-  m_PrefabInstance: {fileID: 1173795743}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1445058964
 GameObject:
   m_ObjectHideFlags: 0
@@ -2907,10 +2825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 584827140918788549, guid: 8270a587caf5e8c49838457bcf84d9be, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1173795744}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8270a587caf5e8c49838457bcf84d9be, type: 3}
 --- !u!4 &1978045401974333897 stripped

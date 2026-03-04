@@ -86,18 +86,7 @@ public class SkinItemUI : MonoBehaviour
     /// </summary>
     void OnClicked()
     {
-        if (skinData.isLocked)
-        {
-            // 잠금 해제 확인 모달 표시
-            ShowUnlockConfirmation();
-            return;
-        }
-
-        // 스킨 선택
-        if (parentModal != null)
-        {
-            parentModal.OnSkinSelected(skinData);
-        }
+        parentModal.OnSkinSelected(skinData);
     }
 
     /// <summary>
