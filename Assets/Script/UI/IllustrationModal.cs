@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 /// <summary>
 /// 일러스트 선택 모달 컨트롤러
@@ -35,6 +36,18 @@ public class IllustrationModal : MonoBehaviour
     [Tooltip("전체보기 닫기 버튼")]
     public Button fullViewCloseButton;
 
+    [Tooltip("이미지 그림 설명 Panel")]
+    public GameObject fullImageDescriptionPanel;
+
+    [Tooltip("이미지 그림 설명 TextMesh")]
+    public TextMeshProUGUI fullImageDescription;
+
+    [Tooltip("설명보기 닫기 버튼")]
+    public Button descriptionCloseButton;
+
+    [Tooltip("설명보기 열기 버튼")]
+    public Button descriptionOpenButton;
+
     [Header("Universal Modal")]
     [Tooltip("해금 확인 모달 (Inspector에서 연결!)")]
     public UniversalModalController universalModal;
@@ -48,6 +61,8 @@ public class IllustrationModal : MonoBehaviour
     private CanvasGroup canvasGroup;
     private IAudioService audioService;
     private bool isOpen = false;
+
+    private bool descriptionIsOpen = true;
 
     // 일러스트 아이템 리스트
     private List<IllustrationItemUI> illustrationItemUIList = new List<IllustrationItemUI>();
@@ -93,6 +108,18 @@ public class IllustrationModal : MonoBehaviour
             fullViewPanel.SetActive(false);
         }
 
+        // 설명 닫기 버튼 초기화
+        if(descriptionCloseButton != null)
+        {
+            descriptionCloseButton.onClick.AddListener(CloseDescriptionView);
+        }
+
+        // 설명 보기 버튼 초기화
+        if(descriptionOpenButton != null)
+        {
+            descriptionOpenButton.onClick.AddListener(ShowDescriptionView);
+            descriptionOpenButton.gameObject.SetActive(false);
+        }
         // 초기 상태: 숨김
         Hide(true);
     }
@@ -271,6 +298,10 @@ public class IllustrationModal : MonoBehaviour
 
         // 전체보기 표시
         ShowFullView(illustrationData);
+
+        ShowDescriptionView();
+
+        DescriptionUpdate(illustrationData);
     }
 
     /// <summary>
@@ -341,6 +372,42 @@ public class IllustrationModal : MonoBehaviour
         fullViewPanel.SetActive(true);
 
         Debug.Log($"[IllustrationModal] 전체보기: {illustrationData.illustrationName}");
+    }
+
+    /// <summary>
+    /// 설명 업데이트
+    /// </summary>
+    void DescriptionUpdate(IllustrationData illustrationData)
+    {
+        fullImageDescription.text = illustrationData.description;
+    }
+
+    /// <summary>
+    /// 설명 보기
+    /// </summary>
+    void ShowDescriptionView()
+    {
+        if(descriptionIsOpen == false)
+        {
+            descriptionIsOpen = true;
+            fullImageDescriptionPanel.SetActive(true);
+            descriptionOpenButton.gameObject.SetActive(false);
+            descriptionCloseButton.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// 설명 닫기
+    /// </summary>
+    void CloseDescriptionView()
+    {
+        if(descriptionIsOpen == true)
+        {
+            descriptionIsOpen = false;
+            fullImageDescriptionPanel.SetActive(false);
+            descriptionOpenButton.gameObject.SetActive(true);
+            descriptionCloseButton.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
