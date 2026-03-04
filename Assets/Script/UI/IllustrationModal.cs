@@ -36,6 +36,7 @@ public class IllustrationModal : MonoBehaviour
     [Tooltip("전체보기 닫기 버튼")]
     public Button fullViewCloseButton;
 
+    [Header("Description")]
     [Tooltip("이미지 그림 설명 Panel")]
     public GameObject fullImageDescriptionPanel;
 
