@@ -408,7 +408,7 @@ public void SelectSkin()
 
         previewSpineCharacterName.text = skinData.skinName;
 
-        previewSpineCharacter.SpineChange(skinData.skinData);
+        previewSpineCharacter.SpineChange();
 
         // SpineCharacterController 등을 통해 캐릭터 변경
         Debug.Log($"[SkinSelectionModal] Preview updated: {skinData.skinName}");

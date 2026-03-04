@@ -6,7 +6,7 @@ using UnityEngine.U2D.Animation;
 [CreateAssetMenu(fileName = "New Skin Date", menuName = "Date/Skin Date")]
 public class PlayerSkinData : ScriptableObject
 {
-    public int serialNumber;
+    public string serialNumber;
 
     public SpriteLibraryAsset spriteLibrary;
 
