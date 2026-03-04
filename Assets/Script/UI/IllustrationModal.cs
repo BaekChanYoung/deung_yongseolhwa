@@ -299,8 +299,6 @@ public class IllustrationModal : MonoBehaviour
         // 전체보기 표시
         ShowFullView(illustrationData);
 
-        ShowDescriptionView();
-
         DescriptionUpdate(illustrationData);
     }
 
